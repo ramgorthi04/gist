@@ -288,6 +288,36 @@ query {
   }
 }
 
+First N products on sale:
+query {
+  products(first: N, query: "compare_at_price:>0") {
+    edges {
+      node {
+        priceRangeV2 {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        compareAtPriceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
+  }
+}
+
 Get Order by ID: 
 query {
   order(id: $ORDER_ID) {
