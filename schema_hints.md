@@ -196,6 +196,29 @@ query {
   }
 }
 
+Get data on products tagged as complementary:
+**Note: 'sku' is not a valid field for node in this query**
+query {
+  products(first: 200, query: "tag:complementary") {
+    edges {
+      node {
+        id
+        title
+        handle
+        totalInventory
+        variants(first: 1) {
+          edges {
+            node {
+              compareAtPrice
+              price
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 ### Access Requirements
 - **Recent Orders**: Last 60 days' worth of orders.
 - **Access to Older Orders**: Request `read_all_orders` scope.
