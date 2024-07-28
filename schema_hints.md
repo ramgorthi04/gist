@@ -363,6 +363,19 @@ query {
     name
   }
 }
+Get Line Items per Order:
+query GetOrderLineItems {
+  order(id: $ID) {
+    lineItems(first: 10) {
+      edges {
+        node {
+          title
+          quantity
+        }
+      }
+    }
+  }
+}
 
 Order Fields: 
 ### Access Requirements
@@ -490,6 +503,8 @@ query {
     }
   }
 }
+
+
 
 Pending Orders
 {
