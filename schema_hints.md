@@ -1,4 +1,4 @@
-Date last edited: 7/28/2024 at 2:44PM
+Date last edited: 7/28/2024 at 5:35PM
 ASSUME MAX N IS 200 AND ASSUME N IS 200 UNLESS OTHERWISE MENTIONED 
 
 
@@ -363,7 +363,7 @@ query {
     name
   }
 }
-Get Line Items per Order:
+Get Line Items per Order using order ID
 query GetOrderLineItems {
   order(id: $ID) {
     lineItems(first: 10) {
