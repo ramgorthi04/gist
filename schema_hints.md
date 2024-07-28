@@ -1,4 +1,4 @@
-Date last edited: 7/25/2024 at 10:46AM
+Date last edited: 7/28/2024 at 11:11AM
 ASSUME MAX N IS 200 AND ASSUME N IS 200 UNLESS OTHERWISE MENTIONED 
 
 
@@ -290,27 +290,18 @@ query {
 
 First N products on sale:
 query {
-  products(first: N, query: "compare_at_price:>0") {
+  products(first: 200) {
     edges {
       node {
-        priceRangeV2 {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-          maxVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        compareAtPriceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-          maxVariantPrice {
-            amount
-            currencyCode
+        id
+        title
+        handle
+        variants(first: 1) {
+          edges {
+            node {
+              compareAtPrice
+              price
+            }
           }
         }
       }
