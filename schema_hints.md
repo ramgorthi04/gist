@@ -37,6 +37,31 @@ query {
   }
 }
 
+Get customers and their orders with high orders and not updated before 2024: 
+
+query GetHighOrderCountCustomers {
+  customers(first: 100, query: "orders_count:>5 AND NOT updated_at:>2024-01-01") {
+    edges {
+      node {
+        id
+        displayName
+        email
+        numberOfOrders
+        orders(first: 10, sortKey: CREATED_AT, reverse: true) {
+          edges {
+            node {
+              id
+              name
+              createdAt
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 Additional info for customer: 
 ## sortKey =
 
