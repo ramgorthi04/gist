@@ -1,6 +1,38 @@
 Date last edited: 8/7/2024 at 3:28PM
 ASSUME MAX N IS 1 AND ASSUME N IS 1 UNLESS OTHERWISE MENTIONED 
 
+## pagination
+If you need to 'get all' products or customers or anything else, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. 
+The GraphQL query to get all products with pagination looks like this:
+query getOrders($cursor: String) {
+  orders(first: N, after: $cursor) {
+        edges {
+          cursor
+          node {
+            id
+            lineItems(first: N) {
+              edges {
+                node {
+                  variant {
+                    product {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            customer {
+              id
+              displayName
+              email
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+        }
+      }
+    }
 
 ## customer
 Customer by ID
