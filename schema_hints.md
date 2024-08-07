@@ -124,7 +124,7 @@ query {
   }
 }
 
-First N customers (MAX N = 250)
+First N customers
 query {
   customers(first: N) {
     edges {
