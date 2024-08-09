@@ -1,5 +1,5 @@
-Date last edited: 8/9/2024 at 2:56PM
-ASSUME MAX N IS 1 AND ASSUME N IS 1 UNLESS OTHERWISE MENTIONED 
+Date last edited: 8/9/2024 at 3:12PM
+ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
 
 ## pagination
 If you need to 'get all' products or customers or anything else, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. ONLY do this if the user requests to get ALL customers or products. Otherwise, say FALSE for pagination.
