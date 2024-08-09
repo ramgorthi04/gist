@@ -1,4 +1,4 @@
-Date last edited: 8/7/2024 at 5:56PM
+Date last edited: 8/9/2024 at 2:56PM
 ASSUME MAX N IS 1 AND ASSUME N IS 1 UNLESS OTHERWISE MENTIONED 
 
 ## pagination
@@ -33,6 +33,11 @@ query getOrders($cursor: String) {
         }
       }
     }
+For the operation definition in pagination queries, do NOT do this:
+query getAllCustomers($first: Int = 1, $after: String)
+Do THIS instead:
+query getAllCustomers($cursor: String)
+
 
 ## customer
 Customer by ID
