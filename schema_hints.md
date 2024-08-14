@@ -33,8 +33,7 @@ query getOrders($cursor: String) {
         }
       }
     }
-When paginating, do not include the `endCursor` field in `pageInfo`
-Make sure to include the `cursor` field in `edges`
+ALWAYS include the `cursor` field in `edges` (this is separate from the `endCursor` field. 
 For the operation definition in pagination queries, do NOT do this:
 query getAllCustomers($first: Int = 1, $after: String)
 Do THIS instead:
