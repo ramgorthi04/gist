@@ -1,4 +1,4 @@
-Date last edited: 8/14/2024 at 4:03PM
+Date last edited: 8/14/2024 at 4:09PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
 
 ## pagination
@@ -34,6 +34,7 @@ query getOrders($cursor: String) {
       }
     }
 When paginating, do not include the `endCursor` field in `pageInfo`
+Make sure to include the `cursor` field in `edges`
 For the operation definition in pagination queries, do NOT do this:
 query getAllCustomers($first: Int = 1, $after: String)
 Do THIS instead:
