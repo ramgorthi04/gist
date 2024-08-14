@@ -1,4 +1,4 @@
-Date last edited: 8/14/2024 at 4:15PM
+Date last edited: 8/14/2024 at 5:40PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
 
 ## pagination
@@ -548,5 +548,102 @@ Pending Orders
 {
   pendingOrdersCount {
     # Count fields
+  }
+}
+
+## Fields that are in-accessible:
+'relatedProducts' doesn't exist on type 'Product'
+'products' field does not exist on type 'Product'
+
+Be aware of the maximum query 'cost' of 1,000:
+For example, the cost of this query is 4754 and will not work:
+query getOrders($cursor: String) {
+  orders(first: 250, after: $cursor) {
+    edges { cursor 
+      cursor
+      node {
+        id
+        lineItems(first: 250) {
+          edges { cursor 
+            node {
+              title
+              variant {
+                title
+                image {
+                  src
+                }
+                product {
+                  title
+                  onlineStoreUrl
+                  variants(first: 250) {
+                    edges { cursor 
+                      node {
+                        title
+                        image {
+                          src
+                        }
+                        product {
+                          title
+                          onlineStoreUrl
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+    }
+  }
+}
+
+This query does work:
+query getOrders($cursor: String) {
+  orders(first: 250, after: $cursor) {
+    edges {
+      cursor
+      node {
+        id
+        lineItems(first: 10) {
+          edges {
+            node {
+              title
+              variant {
+                title
+                image {
+                  src
+                }
+                product {
+                  title
+                  onlineStoreUrl
+                  variants(first: 10) {
+                    edges {
+                      node {
+                        title
+                        image {
+                          src
+                        }
+                        product {
+                          title
+                          onlineStoreUrl
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+    }
   }
 }
