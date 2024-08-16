@@ -1,5 +1,7 @@
-Date last edited: 8/15/2024 at 5:35PM
+Date last edited: 8/15/2024 at 9:16PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
+
+# Queries
 
 ## pagination
 If you need to 'get all' products or customers or anything else, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. ONLY do this if the user requests to get ALL customers or products. Otherwise, say FALSE for pagination.
@@ -648,16 +650,22 @@ query getOrders($cursor: String) {
   }
 }
 
+# Plans
+
+### Analyze top-selling products
+Plan: 
+Step 1: Create a list of products sorted by their number of sales. RequiresCode: True, DataNeeded: orders. 
+
 ## Cohort Selection
 Examples of cohort selection queries and data collection plans:
 ### Customers who purchased product X and also product Y
 Plan:
-Step 1: Determine the product IDs for product X and product Y. RequiresCode: True, DataNeeded: PRODUCTS
-Step 2: Determine which customers purchased product X and product Y. RequiresCode: True, DataNeeded: CUSTOMERS
+Step 1: Determine the product IDs for product X and product Y. RequiresCode: True, DataNeeded: products
+Step 2: Determine which customers purchased product X and product Y. RequiresCode: True, DataNeeded: customers
 ### Top 10% of customers by total spend in the last 6 months
 Plan:
-Step 1: Sort customers by total spend. RequiresCode: True, DataNeeded: CUSTOMERS
+Step 1: Sort customers by total spend. RequiresCode: True, DataNeeded: customers
 ### Customers who haven't made a purchase in the last 3 months but were active before that
 Plan:
-Step 1: Get a list of customers who haven't made a purchase in the last 3 months. RequiresCode: True, DataNeeded: CUSTOMERS
+Step 1: Get a list of customers who haven't made a purchase in the last 3 months. RequiresCode: True, DataNeeded: customers
 Step 2: For customers who haven't purchased in 3 months, filter down to customers who have multiple orders. RequiresCode: True, DataNeeded: Step 1
