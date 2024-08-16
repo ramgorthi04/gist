@@ -1,10 +1,10 @@
-Date last edited: 8/15/2024 at 10:50PM
+Date last edited: 8/16/2024 at 4:20PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
 
 # Queries
-
+NEVER get all orders, or get all customers, or get all products. This data has already been collected and the plan should never include that step.
 ## pagination
-If you need to 'get all' products or customers or anything else, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. ONLY do this if the user requests to get ALL customers or products. Otherwise, say FALSE for pagination.
+If you need to 'get all' pages of a query, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. ONLY do this if absolutely necessary. Otherwise, say FALSE for pagination.
 The GraphQL query to get all products with pagination looks like this:
 query getOrders($cursor: String) {
   orders(first: N, after: $cursor) {
