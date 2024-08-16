@@ -3,9 +3,6 @@ Date last edited: 8/16/2024 at 4:20PM
 # Successful Plans
 
 ### Find Customers who purchased product X and also product Y
-Plan:
-Step 1: Determine the product IDs for product X and product Y. RequiresCode: True, DataNeeded: products
-Step 2: Determine which customers purchased product X and product Y. RequiresCode: True, DataNeeded: customers
 {
     "Plan": {
         "1": {
