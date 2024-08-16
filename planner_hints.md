@@ -1,5 +1,5 @@
-Date last edited: 8/16/2024 at 4:20PM
-
+Date last edited: 8/16/2024 at 4:20PM. 
+Max N is 250. 
 # Successful Plans
 
 ### Find Customers who purchased product X and also product Y
