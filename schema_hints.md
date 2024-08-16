@@ -1,4 +1,4 @@
-Date last edited: 8/15/2024 at 9:16PM
+Date last edited: 8/15/2024 at 10:50PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
 
 # Queries
@@ -650,11 +650,20 @@ query getOrders($cursor: String) {
   }
 }
 
-# Plans
+# Successful Plans
 
 ### Analyze top-selling products
-Plan: 
-Step 1: Create a list of products sorted by their number of sales. RequiresCode: True, DataNeeded: orders. 
+{
+    "Plan": {
+        "1": {
+            "Request": "Create a list of products sorted by their number of sales",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "True"
+        }
+    },
+    "Original user request": "Analyze top-selling products for the last month"
+}
 
 ## Cohort Selection
 Examples of cohort selection queries and data collection plans:
