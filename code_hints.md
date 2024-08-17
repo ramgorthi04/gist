@@ -9,5 +9,11 @@ Loop through dictionary of products edges and, for each node, check if the "titl
 Data provided: dictionary of order information
 Code logic: 
 Create an empty dictionary that will map customer emails to a list of booleans of whether or not they ordered Product X and Product Y. 
-Loop through the edges and, for each node, add the customer's email to the dictionary. Go into the node's lineItems edges and, for each node, if any part of the title matches product X or product Y, update that boolean. 
-Add all customers who ordered both products into a result list. 
+Loop through the edges and, for each node, add the customer's email to the dictionary. If their name is available, add that instead. Go into the node's lineItems edges and, for each node, if any part of the title matches product X or product Y, update that boolean. 
+Add all customer emails who ordered both products into a result list. 
+
+## Request: Get complete information on customers given incomplete information
+Data provided: dictionary of custoemr information, a list of 1 or 2 data points on each customer (ie, a list of customer emails)
+Code logic:
+Convert the list of emails into a set.
+Loop through the dictionary of customer information and for each edge, check if the email is in the set. If so, add that node to a result data structure.
