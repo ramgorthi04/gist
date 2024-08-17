@@ -6,20 +6,14 @@ Max N is 250.
 {
     "Plan": {
         "1": {
-            "Request": "Determine the product IDs for product X and product Y",
-            "DataNeeded": "products",
+            "Request": "Determine which customers purchased product X and product Y, either in the same order or over multiple orders",
+            "DataNeeded": "orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True"
         },
         "2": {
-            "Request": "Determine which customers ordered product X and product Y, either in the same order or over multiple orders",
-            "DataNeeded": "1, orders",
-            "PaginationNeeded": "False",
-            "RequiresCode": "True"
-        },
-        "3": {
-            "Request": "Get information on the customers found in step 2",
-            "DataNeeded": 2, customers",
+            "Request": "Get information on the customers found in step 1",
+            "DataNeeded": 1, customers",
             "PaginationNeeded": "False",
             "RequiresCode": True"
         }
