@@ -1,4 +1,4 @@
-Date last edited: 8/16/2024 at 4:20PM. 
+Date last edited: 8/17/2024 a 10:30PM. 
 Max N is 250. 
 # Successful Plans
 
@@ -33,8 +33,7 @@ Max N is 250.
             "RequiresCode": True"
             "RequiresQuery": "False"
         }
-    },
-    "Original user request": "Identify which customers are most likely to purchase product X"
+    }
 }
 
 ### Find Customers who purchased product X and also product Y
@@ -54,8 +53,7 @@ Max N is 250.
             "RequiresCode": True",
             "RequiresQuery": "False"
         }
-    },
-    "Original user request": "Find Customers who purchased product X and also product Y"
+    }
 }
 
 ### Analyze top-selling products
@@ -68,8 +66,7 @@ Max N is 250.
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
-    },
-    "Original user request": "Analyze top-selling products for the last month"
+    }
 }
 
 ## Cohort Selection
