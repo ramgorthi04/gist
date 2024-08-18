@@ -2,6 +2,41 @@ Date last edited: 8/16/2024 at 4:20PM.
 Max N is 250. 
 # Successful Plans
 
+### Identify which customers are most likely to purchase product X 
+{
+    "Plan": {
+        "1": {
+            "Request": "Create a list of the names and IDs of all products in your store",
+            "DataNeeded": "products",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Filter the product list down to the products most similar to product X, creating a similar products list",
+            "DataNeeded": "1",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False"
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Determine which customers purchased any of the products in the similar products list"
+            "DataNeeded": "2, orders"
+            "PaginationNeeded": "False",
+            "RequiresCode": "True"
+            "RequiresQuery": "False"
+        },
+        "4": {
+            "Request": "Get information on the customers found in step 3",
+            "DataNeeded": 3, customers",
+            "PaginationNeeded": "False",
+            "RequiresCode": True"
+            "RequiresQuery": "False"
+        }
+    },
+    "Original user request": "Identify which customers are most likely to purchase product X"
+}
+
 ### Find Customers who purchased product X and also product Y
 {
     "Plan": {
@@ -9,13 +44,15 @@ Max N is 250.
             "Request": "Determine which customers purchased product X and product Y, either in the same order or over multiple orders",
             "DataNeeded": "orders",
             "PaginationNeeded": "False",
-            "RequiresCode": "True"
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
         },
         "2": {
             "Request": "Get information on the customers found in step 1",
             "DataNeeded": 1, customers",
             "PaginationNeeded": "False",
-            "RequiresCode": True"
+            "RequiresCode": True",
+            "RequiresQuery": "False"
         }
     },
     "Original user request": "Find Customers who purchased product X and also product Y"
@@ -28,7 +65,8 @@ Max N is 250.
             "Request": "Create a list of products sorted by their number of sales",
             "DataNeeded": "orders",
             "PaginationNeeded": "True",
-            "RequiresCode": "True"
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
         }
     },
     "Original user request": "Analyze top-selling products for the last month"
