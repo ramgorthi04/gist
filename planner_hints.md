@@ -1,7 +1,8 @@
-Date last edited: 8/17/2024 a 10:30PM. 
+Date last edited: 8/20/2024 a 8:59PM. 
 Max N is 250. 
 # Successful Plans
 
+Reasoning tasks can be performed without code. "Filter the product list down to products most similar to X" does not require code and can be done using reasoning.
 ### Identify which customers are most likely to purchase product X 
 {
     "Plan": {
@@ -16,7 +17,7 @@ Max N is 250.
             "Request": "Filter the product list down to the products most similar to product X, creating a similar products list",
             "DataNeeded": "1",
             "PaginationNeeded": "False",
-            "RequiresCode": "False"
+            "RequiresCode": "False" (**NOTE**: This does not require code because it is a REASONING task)
             "RequiresQuery": "False"
         },
         "3": {
