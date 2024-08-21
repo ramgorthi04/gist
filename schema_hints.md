@@ -1,49 +1,17 @@
 Date last edited: 8/16/2024 at 4:20PM
 ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED 
+# Shopify GraphQL Schema Hints
 
-# Queries
-NEVER get all orders, or get all customers, or get all products. This data has already been collected and the plan should never include that step.
-## pagination
-If you need to 'get all' pages of a query, use pagination: In the plan, collect all this data in a single step with a step request like 'Get all ...'. ONLY do this if absolutely necessary. Otherwise, say FALSE for pagination.
-The GraphQL query to get all products with pagination looks like this:
-query getOrders($cursor: String) {
-  orders(first: N, after: $cursor) {
-        edges {
-          cursor
-          node {
-            id
-            lineItems(first: N) {
-              edges {
-                node {
-                  variant {
-                    product {
-                      id
-                    }
-                  }
-                }
-              }
-            }
-            customer {
-              id
-              displayName
-              email
-            }
-          }
-        }
-        pageInfo {
-          hasNextPage
-        }
-      }
-    }
-ALWAYS include the `cursor` field in `edges` (this is separate from the `endCursor` field. 
-For the operation definition in pagination queries, do NOT do this:
-query getAllCustomers($first: Int = 1, $after: String)
-Do THIS instead:
-query getAllCustomers($cursor: String)
+## General Notes
+- **Date Last Edited**: 8/16/2024 at 4:20 PM
+- **Pagination**: Use pagination when retrieving large datasets. Only collect all data if absolutely necessary. Otherwise, set pagination to `FALSE`.
+- **Max N**: Assume `N` is 250 unless otherwise specified.
+- **Query Cost**: Be aware of the maximum query cost of 1,000. Queries exceeding this will not work.
+- **Data Collection**: NEVER get all orders, all customers, or all products; these data have already been collected.
 
+## Customers
 
-## customer
-Customer by ID
+### Get Customer by ID
 query {
   customer(id: $CUSTOMER_ID) {
     id
@@ -77,8 +45,7 @@ query {
   }
 }
 
-Get customers and their orders with high orders and not updated before 2024: 
-
+### Get High Order Count Customers
 query GetHighOrderCountCustomers {
   customers(first: 100, query: "orders_count:>5 AND NOT updated_at:>2024-01-01") {
     edges {
@@ -101,7 +68,7 @@ query GetHighOrderCountCustomers {
   }
 }
 
-Given a list of customer IDs, you can get the email, name, and account creation date of multiple specific customers using a GraphQL Inline Fragment with a Connection Field. 
+### Get Multiple Specific Customers
 query {
   customers: nodes(ids: [$CUSTOMER_ID1, $CUSTOMER_ID2, $CUSTOMER_ID3]) {
     ... on Customer {
@@ -114,8 +81,44 @@ query {
   }
 }
 
-First N line items of customers order
+### Get First N Customers
+query {
+  customers(first: N) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
 
+### Get Customers with High Order Count
+query {
+  customers(first: N, query: "orders_count:>X") {
+    edges {
+      node {
+        displayName
+        amountSpent {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
+}
+
+### Get Customers by Country
+query {
+  customers(first: N, query: "country:$COUNTRY") {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+
+### First N Line Items of Customer's Last Order
 query {
   customer(id: $CUSTOMER_ID) {
     lastOrder {
@@ -131,87 +134,9 @@ query {
   }
 }
 
-First N customers
-query {
-  customers(first: N) {
-    edges {
-      node {
-        id
-      }
-    }
-  }
-}
+## Products
 
-Display name and spend of first N customers with more than X orders 
-
-query {
-  customers(first: N, query: "orders_count:>X") {
-    edges {
-      node {
-        displayName
-        amountSpent {
-          amount
-          currencyCode
-        }
-      }
-    }
-  }
-}
-
-First N customers in COUNTRY:
-query {
-  customers(first: N, query: "country:$COUNTRY") {
-    edges {
-      node {
-        id
-      }
-    }
-  }
-}
-
-Segment customer id: 
-{
-  segment(id) {
-    # Segment fields
-  }
-}
-
-Get details about specific inventory item: 
-query {
-  inventoryItem(id: $INVENTORY_ID) {
-    id
-    tracked
-    sku
-  }
-}
-
-Get details on first N inventory items: 
-query {
-  inventoryItems(first: N) {
-    edges {
-      node {
-        id
-        tracked
-        sku
-      }
-    }
-  }
-}
-
-Inventory properties for a shop: 
-query inventoryProperties {
-  inventoryProperties {
-    quantityNames {
-      belongsTo
-      comprises
-      displayName
-      isInUse
-      name
-    }
-  }
-}
-
-Title, description, and url of product: 
+### Get Product Details
 query {
   product(id: $PRODUCT_ID) {
     title
@@ -220,7 +145,7 @@ query {
   }
 }
 
-Total Inventory of Product: 
+### Get Product Inventory
 query {
   product(id: $PRODUCT_ID) {
     title
@@ -228,8 +153,8 @@ query {
   }
 }
 
-Get data on products tagged as complementary:
-**Note: 'sku' is not a valid field for node in this query**
+### Get Products with Specific Tag
+**Note: 'sku' is not a valid field for `node` in this query**
 query {
   products(first: 200, query: "tag:complementary") {
     edges {
@@ -251,8 +176,7 @@ query {
   }
 }
 
-
-N recently created products: 
+### Get Recently Created Products
 query {
   products(first: N, reverse: true) {
     edges {
@@ -273,7 +197,7 @@ query {
   }
 }
 
-First N products updated after date: 
+### Get Recently Updated Products
 query {
   products(first: N, query: "updated_at:>$DATE") {
     edges {
@@ -285,7 +209,7 @@ query {
   }
 }
 
-First N products on sale:
+### Get Products on Sale
 query {
   products(first: 200) {
     edges {
@@ -306,15 +230,18 @@ query {
   }
 }
 
-Get Order by ID: 
+## Orders
+
+### Get Order by ID
 query {
   order(id: $ORDER_ID) {
     name
   }
 }
-Get Line Items per Order using order ID
+
+### Get Order Line Items by ID
 query GetOrderLineItems {
-  order(id: $ID) {
+  order(id: $ORDER_ID) {
     lineItems(first: 10) {
       edges {
         node {
@@ -326,14 +253,7 @@ query GetOrderLineItems {
   }
 }
 
-Order Fields: 
-### Access Requirements
-- **Recent Orders**: Last 60 days' worth of orders.
-- **Access to Older Orders**: Request `read_all_orders` scope.
-- **Private Apps**: Automatically granted access.
-
-
-First N orders after specific date: 
+### Get Orders Updated After Specific Date
 query {
   orders(first: N, query: "updated_at:>$DATE") {
     edges {
@@ -345,69 +265,10 @@ query {
   }
 }
 
-
-
-Pending Orders
-{
-  pendingOrdersCount {
-    # Count fields
-  }
-}
-
-## Fields that are in-accessible:
-'relatedProducts' doesn't exist on type 'Product'
-'products' field does not exist on type 'Product'
-
-Be aware of the maximum query 'cost' of 1,000:
-For example, the cost of this query is 4754 and will not work:
+### Get Orders with Pagination
+**Remember to manage the query cost and use pagination properly.**
 query getOrders($cursor: String) {
-  orders(first: 250, after: $cursor) {
-    edges { cursor 
-      cursor
-      node {
-        id
-        lineItems(first: 250) {
-          edges { cursor 
-            node {
-              title
-              variant {
-                title
-                image {
-                  src
-                }
-                product {
-                  title
-                  onlineStoreUrl
-                  variants(first: 250) {
-                    edges { cursor 
-                      node {
-                        title
-                        image {
-                          src
-                        }
-                        product {
-                          title
-                          onlineStoreUrl
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    pageInfo {
-      hasNextPage
-    }
-  }
-}
-
-This query does work:
-query getOrders($cursor: String) {
-  orders(first: 250, after: $cursor) {
+  orders(first: N, after: $cursor) {
     edges {
       cursor
       node {
@@ -450,3 +311,60 @@ query getOrders($cursor: String) {
     }
   }
 }
+
+## Inventory
+
+### Get Inventory Item Details
+query {
+  inventoryItem(id: $INVENTORY_ID) {
+    id
+    tracked
+    sku
+  }
+}
+
+### Get Multiple Inventory Items
+query {
+  inventoryItems(first: N) {
+    edges {
+      node {
+        id
+        tracked
+        sku
+      }
+    }
+  }
+}
+
+### Get Inventory Properties
+query inventoryProperties {
+  inventoryProperties {
+    quantityNames {
+      belongsTo
+      comprises
+      displayName
+      isInUse
+      name
+    }
+  }
+}
+
+## Miscellaneous
+
+### Get Segment Details
+query {
+  segment(id: $SEGMENT_ID) {
+    # Segment fields
+  }
+}
+
+### Get Pending Orders Count
+{
+  pendingOrdersCount {
+    # Count fields
+  }
+}
+
+### Fields that are Inaccessible
+- `'relatedProducts'` does not exist on type `Product`.
+- `'products'` field does not exist on type `Product`.
