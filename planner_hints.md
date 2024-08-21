@@ -1,4 +1,4 @@
-Date last edited: 8/20/2024 a 10:03PM. 
+Date last edited: 8/20/2024 a 10:22PM. 
 Max N is 250. 
 # Successful Plans
 
@@ -14,7 +14,7 @@ Plan: {
             "RequiresQuery": "False"
         },
         "2": {
-            "Request": "Filter down to a list of customers with multiple orders",
+            "Request": "Filter down the list from step 1 to only the customers with multiple orders",
             "DataNeeded": "1, customers",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
