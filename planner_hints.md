@@ -1,8 +1,42 @@
-Date last edited: 8/20/2024 a 8:59PM. 
+Date last edited: 8/20/2024 a 10:03PM. 
 Max N is 250. 
 # Successful Plans
 
 Reasoning tasks can be performed without code. "Filter the product list down to products most similar to X" does not require code and can be done using reasoning.
+### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
+Plan: {
+    "Plan": {
+        "1": {
+            "Request": "Get a list of customers who haven't made a purchase in the last 3 months",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Filter down to a list of customers with multiple orders",
+            "DataNeeded": "1, customers",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Create a list of which products each customer in the list has purchased",
+            "DataNeeded": "2, orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "4": {
+            "Request": "Group customers into segments given their past purchases",
+            "DataNeeded": "3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
 ### Identify which customers are most likely to purchase product X 
 {
     "Plan": {
