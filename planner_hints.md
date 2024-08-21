@@ -1,17 +1,19 @@
-Date last edited: 8/21/2024 a 3:31PM. 
-Max N is 250. 
+Date last edited: 8/21/2024 at 3:31 PM.  
+Max N is 250.  
+
 # Successful Plans
 
 ### Filter this product list down to products most similar to X
-Does not require code or query
+Does not require code or query  
 Plan: given the product list, use reasoning to determine which products are similar to X and create a list
 
 ### Segment customers based on X
-The basis for segmenting customers will usually be found in the customers data
+The basis for segmenting customers will usually be found in the customers data  
 Plan: given a list of customers from a previous step, get 
 
 ### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
-Plan: {
+Plan:  
+{
     "Plan": {
         "1": {
             "Request": "Get a list of customers who haven't made a purchase in the last 3 months",
@@ -45,6 +47,7 @@ Plan: {
 }
 
 ### Identify which customers are most likely to purchase product X 
+Plan:  
 {
     "Plan": {
         "1": {
@@ -58,27 +61,28 @@ Plan: {
             "Request": "Filter the product list down to the products most similar to product X, creating a similar products list",
             "DataNeeded": "1",
             "PaginationNeeded": "False",
-            "RequiresCode": "False" (**NOTE**: This does not require code because it is a REASONING task)
+            "RequiresCode": "False", 
             "RequiresQuery": "False"
         },
         "3": {
-            "Request": "Determine which customers purchased any of the products in the similar products list"
-            "DataNeeded": "2, orders"
+            "Request": "Determine which customers purchased any of the products in the similar products list",
+            "DataNeeded": "2, orders",
             "PaginationNeeded": "False",
-            "RequiresCode": "True"
+            "RequiresCode": "True",
             "RequiresQuery": "False"
         },
         "4": {
             "Request": "Get information on the customers found in step 3",
-            "DataNeeded": 3, customers",
+            "DataNeeded": "3, customers",
             "PaginationNeeded": "False",
-            "RequiresCode": True"
+            "RequiresCode": "True",
             "RequiresQuery": "False"
         }
     }
 }
 
 ### Find Customers who purchased product X and also product Y
+Plan:  
 {
     "Plan": {
         "1": {
@@ -90,15 +94,16 @@ Plan: {
         },
         "2": {
             "Request": "Get information on the customers found in step 1",
-            "DataNeeded": 1, customers",
+            "DataNeeded": "1, customers",
             "PaginationNeeded": "False",
-            "RequiresCode": True",
+            "RequiresCode": "True",
             "RequiresQuery": "False"
         }
     }
 }
 
 ### Analyze top-selling products
+Plan:  
 {
     "Plan": {
         "1": {
@@ -112,18 +117,18 @@ Plan: {
 }
 
 ### Get Customers with Specific Tag
-Plan: 
+Plan:  
 Step 1: Loop through customers JSON and build list of customers with specific tag. RequiresCode: True, DataNeeded: customers
 
 ### Top 10% of customers by total spend in the last 6 months
-Plan:
+Plan:  
 Step 1: Sort customers by total spend. RequiresCode: True, DataNeeded: customers
 
 ### Customers who haven't made a purchase in the last 3 months but were active before that
-Plan:
-Step 1: Get a list of customers who haven't made a purchase in the last 3 months. RequiresCode: True, DataNeeded: customers
+Plan:  
+Step 1: Get a list of customers who haven't made a purchase in the last 3 months. RequiresCode: True, DataNeeded: customers  
 Step 2: For customers who haven't purchased in 3 months, filter down to customers who have multiple orders. RequiresCode: True, DataNeeded: Step 1
 
 ### Get Customer By Name
-Plan: 
+Plan:  
 Step 1: Loop through list of all customers and check if any part of the name matches, and return the information on matches. RequiresCode: True, DataNeeded: customers
