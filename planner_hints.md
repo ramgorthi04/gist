@@ -1,8 +1,15 @@
-Date last edited: 8/20/2024 a 10:22PM. 
+Date last edited: 8/21/2024 a 3:31PM. 
 Max N is 250. 
 # Successful Plans
 
-Reasoning tasks can be performed without code. "Filter the product list down to products most similar to X" does not require code and can be done using reasoning.
+### Filter this product list down to products most similar to X
+Does not require code or query
+Plan: given the product list, use reasoning to determine which products are similar to X and create a list
+
+### Segment customers based on X
+The basis for segmenting customers will usually be found in the customers data
+Plan: given a list of customers from a previous step, get 
+
 ### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
 Plan: {
     "Plan": {
@@ -104,12 +111,19 @@ Plan: {
     }
 }
 
-## Cohort Selection
-Examples of cohort selection queries and data collection plans:
+### Get Customers with Specific Tag
+Plan: 
+Step 1: Loop through customers JSON and build list of customers with specific tag. RequiresCode: True, DataNeeded: customers
+
 ### Top 10% of customers by total spend in the last 6 months
 Plan:
 Step 1: Sort customers by total spend. RequiresCode: True, DataNeeded: customers
+
 ### Customers who haven't made a purchase in the last 3 months but were active before that
 Plan:
 Step 1: Get a list of customers who haven't made a purchase in the last 3 months. RequiresCode: True, DataNeeded: customers
 Step 2: For customers who haven't purchased in 3 months, filter down to customers who have multiple orders. RequiresCode: True, DataNeeded: Step 1
+
+### Get Customer By Name
+Plan: 
+Step 1: Loop through list of all customers and check if any part of the name matches, and return the information on matches. RequiresCode: True, DataNeeded: customers
