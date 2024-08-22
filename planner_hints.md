@@ -134,7 +134,9 @@ Plan:
 Step 1: Loop through list of all customers and check if any part of the name matches, and return the information on matches. RequiresCode: True, DataNeeded: customers
 
 
-## List all orders
+### List all orders
+Plan: 
+{
     "Plan": {
         "1": {
             "Request": "List all orders",
@@ -143,4 +145,5 @@ Step 1: Loop through list of all customers and check if any part of the name mat
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
-    },
+    }
+}
