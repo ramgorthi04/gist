@@ -1,18 +1,20 @@
 Date last edited: 8/17/2024 at 10:03 PM
 
-## Request: Determine the product IDs for product X and product Y  
+# Successful Code Logics
+
+### Request: Determine the product IDs for product X and product Y  
 Data provided: dictionary of product information  
 Code logic:  
 Loop through the dictionary of product edges, and for each node, check if the "title" matches any part of the product X name given in the request. If so, add the "id" into a list. Return this list of IDs.
 
-## Request: Determine which customers purchased both product X and product Y  
+### Request: Determine which customers purchased both product X and product Y  
 Data provided: dictionary of order information  
 Code logic:  
 Create an empty dictionary that will map customer emails to a list of booleans, indicating whether they ordered Product X and Product Y.  
 Loop through the edges, and for each node, add the customer's email to the dictionary. If their name is available, add that instead. Go into the node's `lineItems` edges, and for each node, if any part of the title matches Product X or Product Y, update that boolean.  
 Add all customer emails who ordered both products into a result list. If the result list is empty, return the string "No customers ordered both Product X and Product Y."
 
-## Request: Get complete information on customers given incomplete information  
+### Request: Get complete information on customers given incomplete information  
 Data provided: dictionary of customer information, a list of 1 or 2 data points on each customer (e.g., a list of customer emails)  
 Code logic:  
 Convert the list of emails into a set.  
