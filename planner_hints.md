@@ -1,4 +1,4 @@
-Date last edited: 8/21/2024 at 3:31 PM.  
+Date last edited: 8/22/2024 at 2:28 PM.  
 Max N is 250.  
 
 # Successful Plans
@@ -132,3 +132,15 @@ Step 2: For customers who haven't purchased in 3 months, filter down to customer
 ### Get Customer By Name
 Plan:  
 Step 1: Loop through list of all customers and check if any part of the name matches, and return the information on matches. RequiresCode: True, DataNeeded: customers
+
+
+## List all orders
+    "Plan": {
+        "1": {
+            "Request": "List all orders",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    },
