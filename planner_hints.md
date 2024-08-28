@@ -1,4 +1,4 @@
-Date last edited: 8/22/2024 at 2:28 PM.  
+Date last edited: 8/28/2024 at 12:48 PM.  
 Max N is 250.  
 
 # Successful Plans
@@ -141,6 +141,27 @@ Plan:
         "1": {
             "Request": "List all orders",
             "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+
+### Get all orders by Customer Name
+{
+    "Plan": {
+        "1": {
+            "Request": "Get the email for Customer Name",
+            "DataNeeded": "customers",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Filter orders to find those placed by Customer Name's email",
+            "DataNeeded": "1",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
