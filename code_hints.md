@@ -46,3 +46,44 @@ for customer in customers_data:
             "customerID": customer.get("id"),
             "email": customer.get("email)
         })
+
+### Filter orders to find those placed by Customer firstName
+import json
+
+if isinstance(data, str):
+    data = json.loads(data)
+
+orders = data.get("orders")
+if isinstance(orders, str):
+    orders = json.loads(orders)
+
+for order in orders.get("results", []):
+    customer = order.get("customer", {})
+    
+    # Check that customer exists before accessing it
+    if customer:
+        first_name = customer.get("firstName")
+        last_name = customer.get("lastName")
+        
+        if first_name == "Jackie":
+            line_items = []
+            for item in order.get("lineItems", {}).get("edges", []):
+                node = item.get("node", {})
+                line_items.append({
+                    "title": node.get("title"),
+                    "quantity": node.get("quantity"),
+                    "price": node.get("originalTotalSet", {}).get("shopMoney", {}).get("amount"),
+                    "currency": node.get("originalTotalSet", {}).get("shopMoney", {}).get("currencyCode")
+                })
+            
+            result.append({
+                "order_id": order.get("id"),
+                "customer_first_name": first_name,
+                "customer_last_name": last_name,
+                "email": order.get("email"),
+                "total_price": order.get("totalPriceSet", {}).get("shopMoney", {}).get("amount"),
+                "currency": order.get("totalPriceSet", {}).get("shopMoney", {}).get("currencyCode"),
+                "processed_at": order.get("processedAt"),
+                "line_items": line_items
+            })
+
