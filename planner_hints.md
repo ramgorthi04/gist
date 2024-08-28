@@ -153,15 +153,8 @@ Plan:
 {
     "Plan": {
         "1": {
-            "Request": "Get the email for Customer Name",
-            "DataNeeded": "customers",
-            "PaginationNeeded": "False",
-            "RequiresCode": "True",
-            "RequiresQuery": "False"
-        },
-        "2": {
-            "Request": "Filter orders to find those placed by Customer Name's email",
-            "DataNeeded": "1",
+            "Request": "Filter orders to find those placed by Customer Name",
+            "DataNeeded": "orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
