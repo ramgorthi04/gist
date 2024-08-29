@@ -1,6 +1,11 @@
-Date last edited: 8/17/2024 at 10:03 PM
+Date last edited: 8/28/2024 at 9:28PM
 
 # Successful Code Logics
+
+### Filter the list from step N to only the customers with multiple orders
+Data provided: shortened list of customer emails from step X, full dictionary of customer information
+Code logic: 
+Access the shortened list of customer emails keyed by "N" in the data dictionary. Add all the customer emails in that list to a dictionary of `relevant_customers` that maps each email to the order count for that customer. Loop through the full dictionary of customer information. If the customer's email is in `relevant_customers`, increment the order count. Finally, add customers from `relevant_customers` with over 1 order to a result list.
 
 ### Determine the product IDs for product X and product Y  
 Data provided: dictionary of product information  
