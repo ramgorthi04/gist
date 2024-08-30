@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 3:33PM
+Date last edited: 8/30/2024 at 3:53PM
 
 # Successful Code Logics
 
@@ -94,37 +94,46 @@ for key in data:
 ### Identify customers who have consistently increased their spending over multiple orders
 
 if isinstance(data, str):
-    data = json.loads(data)
+    try:
+        data = json.loads(data)
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON string")
+        data = {}
 
+# First pass: Collect all customer data
+all_customer_data = []
+for key, value in data.items():
+    if isinstance(value, str):
+        try:
+            customers = json.loads(value)
+        except json.JSONDecodeError:
+            customers = value
+    else:
+        customers = value
+    
+    if isinstance(customers, list):
+        all_customer_data.extend(customers)
+
+# Second pass: Process customer data
+customer_spends = {}
+for customer in all_customer_data:
+    email = customer.get("email")
+    total_spend = customer.get("total_spend")
+    
+    if email and total_spend is not None:
+        if email not in customer_spends:
+            customer_spends[email] = []
+        customer_spends[email].append(total_spend)
+
+# Third pass: Check for strictly increasing spends
 result = []
-
-for key in data:
-    customers = data.get(key)
-    if isinstance(customers, str):
-        customers = json.loads(customers)
-    
-    if not isinstance(customers, list):
-        continue
-    
-    customer_spends = {}
-    
-    # First, populate the customer_spends dictionary
-    for customer in customers:
-        email = customer.get("email")
-        total_spend = customer.get("total_spend")
+for email, spends in customer_spends.items():
+    if len(spends) > 1 and all(x < y for x, y in zip(spends, spends[1:])):
+        result.append({
+            "email": email,
+            "spends": spends
+        })
         
-        if email and total_spend is not None:
-            if email not in customer_spends:
-                customer_spends[email] = []
-            customer_spends[email].append(total_spend)
-    
-    # Then, process the customer_spends dictionary
-    for email, spends in customer_spends.items():
-        if len(spends) > 1 and all(x < y for x, y in zip(spends, spends[1:])):
-            result.append({
-                "email": email,
-                "spends": spends
-            })
 ### Filter orders to find those placed by Customer firstName
 import json
 
