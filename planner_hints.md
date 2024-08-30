@@ -1,4 +1,4 @@
-Date last edited: 8/28/2024 at 12:48 PM.  
+Date last edited: 8/30/2024 at 4:36 PM ET.  
 Max N is 250.  
 
 # Successful Plans
@@ -157,6 +157,40 @@ Plan:
             "DataNeeded": "orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+### Find customers who have consistently increased their spending over multiple orders
+{
+    "Plan": {
+        "1": {
+            "Request": "Get a list of customers with multiple orders",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "For each customer from step 1, get their order history",
+            "DataNeeded": "1, orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Analyze the order history to identify customers with consistently increasing spending",
+            "DataNeeded": "2",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "4": {
+            "Request": "Create a list of customers identified in step 3 as candidates for a loyalty program upgrade",
+            "DataNeeded": "3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
             "RequiresQuery": "False"
         }
     }
