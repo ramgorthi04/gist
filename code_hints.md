@@ -53,7 +53,7 @@ for customer in customers_data:
         })
 
 
-### Parsing through Customer, Order, Product jsons
+### Parsing through Customer json
 def parse_json(data):
     if isinstance(data, str):
         try:
