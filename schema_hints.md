@@ -11,6 +11,34 @@ ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED
 
 ## Customers
 
+### Fetch all customers using pagination
+        query ($cursor: String) {
+          customers(first: 250, after: $cursor) {
+            edges {
+              node {
+                id
+                email
+                firstName
+                lastName
+                tags
+                createdAt
+                updatedAt
+                orders(first: 250) {
+                  edges {
+                    node {
+                      totalPrice
+                    }
+                  }
+                }
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+
 ### Get Customer by ID
 query {
   customer(id: $CUSTOMER_ID) {
@@ -136,6 +164,39 @@ query {
 
 ## Products
 
+### Fetch all products using pagination
+        query ($cursor: String) {
+          products(first: 250, after: $cursor) {
+            edges {
+              node {
+                id
+                title
+                handle
+                description
+                productType
+                vendor
+                totalInventory
+                priceRange {
+                  minVariantPrice {
+                    amount
+                    currencyCode
+                  }
+                  maxVariantPrice {
+                    amount
+                    currencyCode
+                  }
+                }
+                createdAt
+                updatedAt
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+
 ### Get Product Details
 query {
   product(id: $PRODUCT_ID) {
@@ -231,6 +292,48 @@ query {
 }
 
 ## Orders
+
+### Fetch all orders using pagination
+        query ($cursor: String) {
+          orders(first: 250, after: $cursor) {
+            edges {
+              node {
+                id
+                name
+                customer {
+                    firstName
+                    lastName
+                }
+                email
+                totalPriceSet {
+                  shopMoney {
+                    amount
+                    currencyCode
+                  }
+                }
+                processedAt
+                lineItems(first: 250) {
+                  edges {
+                    node {
+                      title
+                      quantity
+                      originalTotalSet {
+                        shopMoney {
+                          amount
+                          currencyCode
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
 
 ### Get Order by ID
 query {
