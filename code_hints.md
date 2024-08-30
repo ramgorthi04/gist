@@ -52,6 +52,41 @@ for customer in customers_data:
             "email": customer.get("email)
         })
 
+
+### Parsing through Customer, Order, Product jsons
+def parse_json(data):
+    if isinstance(data, str):
+        try:
+            return json.loads(data)
+        except json.JSONDecodeError:
+            return data
+    return data
+
+data = parse_json(data)
+
+result = []
+
+for key in data:
+    customers_str = data.get(key, "[]")
+    customers = parse_json(customers_str)
+    
+    if not isinstance(customers, list):
+        continue
+    
+    for customer in customers:
+        if not isinstance(customer, dict):
+            continue
+        
+        orders = customer.get("orders", [])
+        if isinstance(orders, list) and len(orders) > 1:
+            result.append({
+                "id": customer.get("id"),
+                "email": customer.get("email"),
+                "firstName": customer.get("firstName"),
+                "lastName": customer.get("lastName"),
+                "order_count": len(orders)
+            })
+            
 ### Filter orders to find those placed by Customer firstName
 import json
 
