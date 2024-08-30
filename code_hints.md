@@ -172,3 +172,46 @@ for email, info in decreasing_customers.items():
     print("  Purchase dates:")
     for date in info['purchase_dates']:
         print(f"    {date}")
+
+### Filter Orders by Purchase Time
+import json
+from collections import defaultdict
+from datetime import datetime
+
+with open('otest.json', 'r') as file:
+    orders = json.load(file)
+
+if not isinstance(orders, list):
+    raise ValueError("Expected a list of orders in the JSON file")
+
+morning_customers = defaultdict(list)
+afternoon_customers = defaultdict(list)
+evening_customers = defaultdict(list)
+
+morning_hours = list(range(6, 12))
+afternoon_hours = list(range(12, 18))
+evening_hours = list(range(18, 24)) + list(range(0, 6))
+
+for order in orders:
+    processed_at = order.get("processed_at")
+    if processed_at:
+        try:
+            dt = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            hour = dt.hour
+            day_of_week = dt.strftime("%A")
+
+            if hour in morning_hours:
+                morning_customers[day_of_week].append(order)
+            elif hour in afternoon_hours:
+                afternoon_customers[day_of_week].append(order)
+            elif hour in evening_hours:
+                evening_customers[day_of_week].append(order)
+        except ValueError:
+            continue
+result = {
+    "morning_customers": dict(morning_customers),
+    "afternoon_customers": dict(afternoon_customers),
+    "evening_customers": dict(evening_customers)
+}
+
+print(result)
