@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 1:55PM
+Date last edited: 8/30/2024 at 2:10PM
 
 # Successful Code Logics
 
@@ -248,5 +248,3 @@ result = {
     "afternoon_customers": dict(afternoon_customers),
     "evening_customers": dict(evening_customers)
 }
-
-print(result)
