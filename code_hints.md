@@ -1,4 +1,4 @@
-Date last edited: 8/28/2024 at 9:28PM
+Date last edited: 8/29/2024 at 10:21PM
 
 # Successful Code Logics
 
@@ -92,3 +92,32 @@ for order in orders.get("results", []):
                 "line_items": line_items
             })
 
+
+### Count Orders by Customer Emails 
+import json
+from collections import defaultdict
+
+def count_emails(file_path):
+    # Read data from the file
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    result = defaultdict(int)
+
+    # Iterate directly over the list of orders
+    for order in data:
+        if isinstance(order, dict):
+            email = order.get("email")
+            if email:
+                result[email] += 1
+
+    # Convert defaultdict to a regular dictionary for the final result
+    return dict(result)
+
+
+file_path = 'otest.json'
+email_counts = count_emails(file_path)
+
+print("Email counts:")
+for email, count in email_counts.items():
+    print(f"{email}: {count}")
