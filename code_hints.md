@@ -211,3 +211,50 @@ result = {
     "afternoon_customers": dict(afternoon_customers),
     "evening_customers": dict(evening_customers)
 }
+
+
+### From orders, identify customers with increasing spending
+import json
+from datetime import datetime
+
+data_copy = data.copy() if isinstance(data, dict) else json.loads(data)
+
+result = {}
+
+for email, customer_data in data_copy.items():
+    if not isinstance(customer_data, dict):
+        continue
+    
+    orders = customer_data.get("orders", [])
+    if not isinstance(orders, list) or len(orders) < 2:
+        continue
+
+    # Extract order dates and total prices
+    order_dates_prices = []
+    for order in orders:
+        if not isinstance(order, dict):
+            continue
+        processed_at = order.get("processed_at")
+        total_price = order.get("total_price")
+        if processed_at and total_price:
+            try:
+                date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+                price = float(total_price)
+                order_dates_prices.append((date, price))
+            except (ValueError, TypeError):
+                continue
+
+    # Sort by date
+    order_dates_prices.sort(key=lambda x: x[0])
+
+    # Check for consistently increasing spending
+    if len(order_dates_prices) >= 2:
+        increasing = all(order_dates_prices[i][1] < order_dates_prices[i+1][1] for i in range(len(order_dates_prices) - 1))
+
+        if increasing:
+            result[email] = {
+                "order_count": len(orders),
+                "orders": [(date.strftime("%Y-%m-%dT%H:%M:%SZ"), price) for date, price in order_dates_prices]
+            }
+
+
