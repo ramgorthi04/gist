@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 2:10PM
+Date last edited: 8/30/2024 at 2:16PM
 
 # Successful Code Logics
 
@@ -53,7 +53,7 @@ for customer in customers_data:
         })
 
 
-### Parsing through Customer json
+### Parsing through json (Error executing generated code: 'str' object has no attribute 'get')
 def parse_json(data):
     if isinstance(data, str):
         try:
