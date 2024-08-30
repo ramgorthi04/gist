@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 2:16PM
+Date last edited: 8/30/2024 at 3:16PM
 
 # Successful Code Logics
 
@@ -53,7 +53,7 @@ for customer in customers_data:
         })
 
 
-### Parsing through json (Error executing generated code: 'str' object has no attribute 'get')
+### Filter customers who have made multiple orders 
 def parse_json(data):
     if isinstance(data, str):
         try:
@@ -62,12 +62,16 @@ def parse_json(data):
             return data
     return data
 
-data = parse_json(data)
+def safe_get(obj, key, default=None):
+    if isinstance(obj, dict):
+        return obj.get(key, default)
+    return default
 
+data = parse_json(data)
 result = []
 
 for key in data:
-    customers_str = data.get(key, "[]")
+    customers_str = safe_get(data, key, "[]")
     customers = parse_json(customers_str)
     
     if not isinstance(customers, list):
@@ -77,13 +81,13 @@ for key in data:
         if not isinstance(customer, dict):
             continue
         
-        orders = customer.get("orders", [])
+        orders = safe_get(customer, "orders", [])
         if isinstance(orders, list) and len(orders) > 1:
             result.append({
-                "id": customer.get("id"),
-                "email": customer.get("email"),
-                "firstName": customer.get("firstName"),
-                "lastName": customer.get("lastName"),
+                "id": safe_get(customer, "id"),
+                "email": safe_get(customer, "email"),
+                "firstName": safe_get(customer, "firstName"),
+                "lastName": safe_get(customer, "lastName"),
                 "order_count": len(orders)
             })
             
