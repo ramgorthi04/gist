@@ -1,4 +1,4 @@
-Date last edited: 8/29/2024 at 10:21PM
+Date last edited: 8/29/2024 at 10:38PM
 
 # Successful Code Logics
 
@@ -121,3 +121,54 @@ email_counts = count_emails(file_path)
 print("Email counts:")
 for email, count in email_counts.items():
     print(f"{email}: {count}")
+
+
+### Filter Orders to Customers with decreasing purchasing frequency
+import json
+from collections import defaultdict
+from datetime import datetime
+
+def identify_decreasing_frequency(file_path, threshold_days=30):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    purchase_dates = defaultdict(list)
+
+    for order in data:
+        email = order.get('email')
+        processed_at = order.get('processed_at')
+        if email and processed_at:
+            date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            purchase_dates[email].append(date)
+
+    decreasing_frequency_customers = {}
+
+    for email, dates in purchase_dates.items():
+        if len(dates) > 2:
+            sorted_dates = sorted(dates)
+            time_diffs = [(sorted_dates[i] - sorted_dates[i-1]).days for i in range(1, len(sorted_dates))]
+            
+            # Check if the last time difference is significantly larger than the average of previous ones
+            if len(time_diffs) > 1:
+                avg_previous = sum(time_diffs[:-1]) / len(time_diffs[:-1])
+                if time_diffs[-1] > avg_previous + threshold_days:
+                    decreasing_frequency_customers[email] = {
+                        'purchase_dates': sorted_dates,
+                        'time_diffs': time_diffs,
+                        'avg_previous': avg_previous,
+                        'last_diff': time_diffs[-1]
+                    }
+
+    return decreasing_frequency_customers
+
+file_path = 'otest.json'
+decreasing_customers = identify_decreasing_frequency(file_path)
+
+print("Customers with decreasing purchase frequency:")
+for email, info in decreasing_customers.items():
+    print(f"\nEmail: {email}")
+    print(f"  Average time between previous purchases: {info['avg_previous']:.2f} days")
+    print(f"  Time since last purchase: {info['last_diff']} days")
+    print("  Purchase dates:")
+    for date in info['purchase_dates']:
+        print(f"    {date}")
