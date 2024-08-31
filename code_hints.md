@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 6:27PM
+Date last edited: 8/31/2024 at 7:27PM
 
 # Successful Code Logics
 
@@ -236,5 +236,61 @@ result = {
     "morning_customers": dict(morning_customers),
     "afternoon_customers": dict(afternoon_customers),
     "evening_customers": dict(evening_customers)
+}
+```
+### Get customer information for those who purchased gift cards
+```
+import json
+from datetime import datetime
+
+def get_nested_value(data, keys):
+    for key in keys:
+        if isinstance(data, dict):
+            data = data.get(key)
+        elif isinstance(data, list) and isinstance(key, int):
+            data = data[key] if 0 <= key < len(data) else None
+        else:
+            return None
+        if data is None:
+            return None
+    return data
+
+def parse_json_if_string(value):
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return value
+    return value
+
+# Assume data_copy is already created and contains the necessary data
+orders_data = parse_json_if_string(data_copy.get('1', '[]'))
+customers_data = parse_json_if_string(data_copy.get('customers', '{}'))
+
+# Step 1: Identify orders that include gift cards (assuming this is already done)
+gift_card_emails = set(order['email'] for order in orders_data if 'gift_card_title' in order)
+
+# Step 2: Get customer information for those who purchased gift cards
+gift_card_customers = []
+
+for customer in get_nested_value(customers_data, ['results']) or []:
+    if customer.get('email') in gift_card_emails:
+        gift_card_customers.append({
+            'id': customer.get('id'),
+            'email': customer.get('email'),
+            'firstName': customer.get('firstName'),
+            'lastName': customer.get('lastName'),
+            'tags': customer.get('tags', []),
+            'createdAt': customer.get('createdAt'),
+            'updatedAt': customer.get('updatedAt')
+        })
+
+result = {
+    "metadata": {
+        "processedAt": datetime.utcnow().isoformat() + "Z",
+        "dataSource": "orders and customers",
+        "recordsProcessed": len(gift_card_customers)
+    },
+    "data": gift_card_customers
 }
 ```
