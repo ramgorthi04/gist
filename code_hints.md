@@ -10,7 +10,9 @@ from datetime import datetime
 result = {}
 data_copy = data.copy() if isinstance(data, dict) else json.loads(data)
 
+# Access the appropriate key
 customer_orders = data.get("2", {})
+
 for email, customer_data in customer_orders.items():
     if not isinstance(customer_data, dict):
         continue
@@ -71,6 +73,8 @@ Data provided: list of customers to filter and orders data
 Code logic:
 Create a dictionary to store the last purchase date for each customer
 Process orders to find the last purchase date for each customer: 
+```
+orders_data = data["key"]
 for order in orders_data.get("results", []):
     email = order.get("email")
     processed_at = order.get("processedAt")
@@ -81,10 +85,14 @@ for order in orders_data.get("results", []):
                 last_purchase_date[email] = processed_at_date
         except ValueError:
             continue
+```
 Define the cutoff date for 3 months ago (timezone-aware): 
 cutoff_date = datetime.now(timezone.utc) - timedelta(days=90)
 Filter customers who haven't made a purchase in the last 3 months:
+```
 result = []
+# Access the appropriate key
+customers_data = data["key"]
 for customer in customers_data:
     email = customer.get("email")
     if email and (email not in last_purchase_date or last_purchase_date[email] < cutoff_date):
@@ -92,17 +100,9 @@ for customer in customers_data:
             "customerID": customer.get("id"),
             "email": customer.get("email)
         })
-
-
-### Filter customers who have made multiple orders 
-def parse_json(data):
-    if isinstance(data, str):
-        try:
-            return json.loads(data)
-        except json.JSONDecodeError:
-            return data
-    return data
-
+```
+### Filter customers who have made multiple orders
+```
 def safe_get(obj, key, default=None):
     if isinstance(obj, dict):
         return obj.get(key, default)
@@ -111,6 +111,7 @@ def safe_get(obj, key, default=None):
 data = parse_json(data)
 result = []
 
+# Access the keys
 for key in data:
     customers_str = safe_get(data, key, "[]")
     customers = parse_json(customers_str)
@@ -131,20 +132,20 @@ for key in data:
                 "lastName": safe_get(customer, "lastName"),
                 "order_count": len(orders)
             })
-
+```
 ### Count Orders by Customer Emails 
+```
 import json
 from collections import defaultdict
 
 def count_emails(file_path):
-    # Read data from the file
-    with open(file_path, 'r') as file:
-        data = json.load(file)
 
     result = defaultdict(int)
-
+    # Access the appropriate key
+    orders_data = data["key"]
+    
     # Iterate directly over the list of orders
-    for order in data:
+    for order in orders_data:
         if isinstance(order, dict):
             email = order.get("email")
             if email:
@@ -152,27 +153,21 @@ def count_emails(file_path):
 
     # Convert defaultdict to a regular dictionary for the final result
     return dict(result)
-
-
-file_path = 'otest.json'
-email_counts = count_emails(file_path)
-
-print("Email counts:")
-for email, count in email_counts.items():
-    print(f"{email}: {count}")
-
+```
 
 ### Filter Orders to Customers with decreasing purchasing frequency
+```
 import json
 from collections import defaultdict
 from datetime import datetime
 
 def identify_decreasing_frequency(file_path, threshold_days=30):
-
-```
+    
     purchase_dates = defaultdict(list)
 
-    for order in data:
+    # Access the appropriate key
+    orders_data = data["key"]
+    for order in orders_data:
         email = order.get('email')
         processed_at = order.get('processed_at')
         if email and processed_at:
@@ -201,12 +196,14 @@ def identify_decreasing_frequency(file_path, threshold_days=30):
 ```
 
 ### Filter Orders by Purchase Time
+```
 import json
 from collections import defaultdict
 from datetime import datetime
 
-with open('otest.json', 'r') as file:
-    orders = json.load(file)
+# Access the appropriate key
+orders_data = data["key"]
+orders = orders_data["results"]
 
 if not isinstance(orders, list):
     raise ValueError("Expected a list of orders in the JSON file")
@@ -240,3 +237,4 @@ result = {
     "afternoon_customers": dict(afternoon_customers),
     "evening_customers": dict(evening_customers)
 }
+```
