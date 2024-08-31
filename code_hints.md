@@ -3,6 +3,7 @@ Date last edited: 8/30/2024 at 5:41PM
 # Successful Code Logics
 
 ### Analyze the order history to identify customers with consistently increasing spending
+```
 import json
 from datetime import datetime
 
@@ -40,6 +41,7 @@ for email, customer_data in customer_orders.items():
                 "order_count": len(orders),
                 "orders": [(date.strftime("%Y-%m-%dT%H:%M:%SZ"), price) for date, price in order_dates_prices]
             }
+```
 
 ### Filter the list from step N to only the customers with multiple orders
 Data provided: shortened list of customer emails from step X, full dictionary of customer information
