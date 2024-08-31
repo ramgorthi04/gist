@@ -1,4 +1,4 @@
-Date last edited: 8/31/2024 at 11:39 AM PT
+Date last edited: 8/31/2024 at 12:58 PMPT
 Max N is 250.  
 
 # Successful Plans
@@ -207,7 +207,7 @@ Plan:
             "RequiresQuery": "False"
         },
         "2": {
-            "Request": "Filter orders to find those placed by customers within 60 days of their respective date_sent",
+            "Request": "Filter orders to find those placed by customers within 60 days after their respective date_sent",
             "DataNeeded": "1",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
