@@ -1,6 +1,44 @@
-Date last edited: 8/30/2024 at 3:53PM
+Date last edited: 8/30/2024 at 5:53PM
 
 # Successful Code Logics
+
+### Analyze the order history to identify customers with consistently increasing spending
+import json
+from datetime import datetime
+
+result = {}
+data_copy = data.copy() if isinstance(data, dict) else json.loads(data)
+
+for email, customer_data in data.get("2", {}).items():
+    if not isinstance(customer_data, dict):
+        continue
+
+    orders = customer_data.get("orders", [])
+    if not isinstance(orders, list) or len(orders) < 2:
+        continue
+
+    # Extract order dates and total prices
+    order_dates_prices = []
+    for order in orders:
+        processed_at = order.get("processed_at")
+        total_price = order.get("total_price")
+        if processed_at and total_price:
+            try:
+                date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+                price = float(total_price)
+                order_dates_prices.append((date, price))
+            except (ValueError, TypeError):
+                continue
+
+    # Sort by date and check for consistently increasing spending
+    order_dates_prices.sort(key=lambda x: x[0])
+    if len(order_dates_prices) >= 2:
+        increasing = all(order_dates_prices[i][1] < order_dates_prices[i + 1][1] for i in range(len(order_dates_prices) - 1))
+        if increasing:
+            result[email] = {
+                "order_count": len(orders),
+                "orders": [(date.strftime("%Y-%m-%dT%H:%M:%SZ"), price) for date, price in order_dates_prices]
+            }
 
 ### Filter the list from step N to only the customers with multiple orders
 Data provided: shortened list of customer emails from step X, full dictionary of customer information
