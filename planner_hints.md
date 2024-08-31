@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 4:36 PM ET.  
+Date last edited: 8/31/2024 at 11:39 AM PT
 Max N is 250.  
 
 # Successful Plans
@@ -191,6 +191,33 @@ Plan:
             "DataNeeded": "3",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+### Given date_sent for each user, report if the user ordered within 60 days of date_sent, as well as how much the order value was.
+{
+    "Plan": {
+        "1": {
+            "Request": "Get a list of all orders with dates for the given users",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Filter orders to find those placed by customers within 60 days of their respective date_sent",
+            "DataNeeded": "1",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Extract order value, date placed, and customer name for each order",
+            "DataNeeded": "2",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
             "RequiresQuery": "False"
         }
     }
