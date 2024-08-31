@@ -1,4 +1,4 @@
-Date last edited: 8/30/2024 at 5:53PM
+Date last edited: 8/30/2024 at 5:41PM
 
 # Successful Code Logics
 
@@ -9,7 +9,8 @@ from datetime import datetime
 result = {}
 data_copy = data.copy() if isinstance(data, dict) else json.loads(data)
 
-for email, customer_data in data.get("2", {}).items():
+customer_orders = data.get("2", {})
+for email, customer_data in customer_orders.items():
     if not isinstance(customer_data, dict):
         continue
 
