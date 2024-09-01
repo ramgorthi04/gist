@@ -1,4 +1,4 @@
-Date last edited: 8/31/2024 at 7:27PM
+Date last edited: 8/31/2024 at 7:07PM
 
 # Successful Code Logics
 
@@ -11,7 +11,7 @@ result = {}
 data_copy = data.copy() if isinstance(data, dict) else json.loads(data)
 
 # Access the appropriate key
-customer_orders = data.get("2", {})
+customer_orders = data.get("KEY", {})
 
 for email, customer_data in customer_orders.items():
     if not isinstance(customer_data, dict):
@@ -264,7 +264,7 @@ def parse_json_if_string(value):
     return value
 
 # Assume data_copy is already created and contains the necessary data
-orders_data = parse_json_if_string(data_copy.get('1', '[]'))
+orders_data = parse_json_if_string(data_copy.get('KEY', '[]'))
 customers_data = parse_json_if_string(data_copy.get('customers', '{}'))
 
 # Step 1: Identify orders that include gift cards (assuming this is already done)
