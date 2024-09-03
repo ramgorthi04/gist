@@ -1,4 +1,4 @@
-Date last edited: 09/03/2024 at 6:26 ET
+Date last edited: 09/03/2024 at 3:42 PT
 Max N is 250.  
 
 # Successful Plans
@@ -109,7 +109,7 @@ Plan:
         "1": {
             "Request": "Create a list of products sorted by their number of sales",
             "DataNeeded": "orders",
-            "PaginationNeeded": "True",
+            "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
@@ -224,21 +224,15 @@ Plan:
 }
 
 ### Analyze the top-selling products for the last month
+Plan:  
 {
     "Plan": {
-            "1": {
-                "Request": "Filter orders from the last month",
-                "DataNeeded": "orders",
-                "PaginationNeeded": "True",
-                "RequiresCode": "True",
-                "RequiresQuery": "False"
-            },
-            "2": {
-                "Request": "Create a list of products sorted by their number of sales from the filtered orders",
-                "DataNeeded": "1",
-                "PaginationNeeded": "True",
-                "RequiresCode": "True",
-                "RequiresQuery": "True"
-            }
+        "1": {
+            "Request": "Create a list of products and the number of times they were ordered last month",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
         }
+    }
 }
