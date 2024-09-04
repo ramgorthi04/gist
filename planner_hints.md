@@ -1,4 +1,4 @@
-Date last edited: 09/03/2024 at 3:42 PT
+Date last edited: 09/03/2024 at 9:46 ET
 Max N is 250.  
 
 # Successful Plans
@@ -232,6 +232,33 @@ Plan:
             "DataNeeded": "orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+### Create a cohort of customers who have purchased complementary products and might be interested in a new bundle offer.
+{
+    "Plan": {
+        "1": {
+            "Request": "Identify customers who have purchased complementary products",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Get information on the customers found in step 1",
+            "DataNeeded": "1, customers",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Segment customers based on their purchase history of complementary products",
+            "DataNeeded": "2",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
             "RequiresQuery": "False"
         }
     }
