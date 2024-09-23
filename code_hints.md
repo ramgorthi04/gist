@@ -1,4 +1,4 @@
-Date last edited: 8/31/2024 at 7:07PM
+Date last edited: 9/23/2024 at 3:40PM
 
 # Successful Code Logics
 
@@ -154,6 +154,56 @@ def count_emails(file_path):
     # Convert defaultdict to a regular dictionary for the final result
     return dict(result)
 ```
+
+### Filter orders for customers who made a purchase 20+ days ago and have not made a new purchase since then
+
+```
+import json
+from datetime import datetime, timedelta
+
+# Load the orders data
+with open('orders.json') as f:
+    orders_data = json.load(f)
+
+# Convert orders into a more manageable format
+orders = orders_data["results"]
+
+# Get the current date
+current_date = datetime.now()
+
+# Set the threshold for "20+ days ago"
+threshold_date = current_date - timedelta(days=20)
+
+# Dictionary to store the last order date for each customer
+customer_last_order = {}
+
+# Iterate over each order and store the latest order date for each customer
+for order in orders:
+    email = order.get('email')
+    processed_at = order.get('processedAt')
+
+    # Skip orders without email
+    if email:
+        order_date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+
+        # If customer is already in the dictionary, check if this order is more recent
+        if email in customer_last_order:
+            if order_date > customer_last_order[email]:
+                customer_last_order[email] = order_date
+        else:
+            customer_last_order[email] = order_date
+
+# Filter customers who made their last purchase more than 20 days ago
+inactive_customers = [email for email, last_order_date in customer_last_order.items() if last_order_date < threshold_date]
+
+# Output inactive customers
+print("Customers who haven't made a purchase in the last 20 days:")
+for customer in inactive_customers:
+    print(customer)
+
+
+```
+
 
 ### Filter Orders to Customers with decreasing purchasing frequency
 ```
