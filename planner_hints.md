@@ -1,4 +1,4 @@
-Date last edited: 09/03/2024 at 9:46 ET
+Date last edited: 09/24/2024 at 9:01 ET
 Max N is 250.  
 
 # Successful Plans
@@ -7,9 +7,35 @@ Max N is 250.
 Does not require code or query  
 Plan: given the product list, use reasoning to determine which products are similar to X and create a list
 
-### Segment customers based on X
-The basis for segmenting customers will usually be found in the customers data  
-Plan: given a list of customers from a previous step, get 
+### Select customers who haven't ordered in _+ days and fill in the email template with their last order:
+Plan: 
+{
+    "Plan": {
+        "1": {
+            "Request": "Filter customers who haven't ordered in _+ days and fetch their last order ID",
+            "DataNeeded": "customers",
+            "PaginationNeeded": "false",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Identify what the last product customers in step 1 ordered",
+            "DataNeeded": "1, orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Generate personalized emails for each of the _ customers based on their last purchased item",
+            "DataNeeded": "2",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+
 
 ### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
 Plan:  
