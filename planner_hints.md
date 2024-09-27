@@ -1,4 +1,4 @@
-Date last edited: 09/27/2024 at 5:55pm ET
+Date last edited: 09/27/2024 at 7:57pm ET
 Max N is 250.  
 
 # Successful Plans
@@ -303,6 +303,33 @@ Plan:
         "2": {
             "Request": "Generate a chart showing the performance of the top SKU this year",
             "DataNeeded": "2, orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+### Show a chart of sales of multiple products
+{
+    "Plan": {
+        "1": {
+            "Request": "Filter orders to find those containing the specified products",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Create a time-series data structure for each product",
+            "DataNeeded": "1",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Generate a line chart with multiple lines showing sales of each product over time",
+            "DataNeeded": "2",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
