@@ -344,3 +344,54 @@ result = {
     "data": gift_card_customers
 }
 ```
+
+### Show a graph/chart
+```
+import matplotlib.pyplot as plt
+import mplcyberpunk
+plt.style.use("cyberpunk")
+
+<write code here to prepare data for plotting>
+
+# Plot the data
+plt.figure(figsize=(10, 5))
+plt.plot(x_data, y_data, marker='o', linestyle='-', color='b')
+plt.xlabel(x_label)
+plt.ylabel(y_label)
+plt.title(title)
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+mplcyberpunk.add_glow_effects()
+
+# Save the plot to a file named 'query_visualization.png'
+plt.savefig('query_visualization.png')
+
+# Store the result
+result = {
+    "return_data": result_data,
+    "plot_file": "query_visualization.png"
+}
+```
+Instead of add_glow_effects, you can add the line glow and underglow effects separately:
+```
+mplcyberpunk.make_lines_glow()
+mplcyberpunk.add_underglow()
+```
+You can also add the effect to a specific axis object explicitly:
+```
+fig, ax = plt.subplots()
+...
+mplcyberpunk.make_lines_glow(ax)
+```
+
+For plotting with the cyberpunk style, you can also add these effects:
+Gradient underglow effect can be added with
+```
+mplcyberpunk.add_glow_effects(gradient_fill=True)
+```
+or independently of line glow with
+```
+mplcyberpunk.add_gradient_fill(alpha_gradientglow=0.5)
+```
+Glow effect can be added to scatter plots via ```mplcyberpunk.make_scatter_glow()```:
