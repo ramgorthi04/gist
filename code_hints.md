@@ -346,6 +346,7 @@ result = {
 ```
 
 ### Show a graph/chart
+FUCKING NAME YOUR FILE `query_visualization.png`
 ```
 import matplotlib.pyplot as plt
 import mplcyberpunk
