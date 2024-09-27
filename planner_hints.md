@@ -289,3 +289,23 @@ Plan:
         }
     }
 }
+
+### Show a chart of the SKU with the highest order volume.
+{
+    "Plan": {
+        "1": {
+            "Request": "Identify the SKU with the highest order volume",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Generate a chart showing the performance of the top SKU this year",
+            "DataNeeded": "2, orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
