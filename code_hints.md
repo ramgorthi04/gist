@@ -355,7 +355,7 @@ plt.style.use("cyberpunk")
 <write code here to prepare data for plotting>
 
 # Plot the data
-plt.figure(figsize=(10, 5))
+plt.figure(figsize=(<INSERT APPROPRIATE SIZES HERE>))
 plt.plot(x_data, y_data, marker='o', linestyle='-', color='b')
 plt.xlabel(x_label)
 plt.ylabel(y_label)
