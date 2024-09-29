@@ -1,4 +1,4 @@
-Date last edited: 9/23/2024 at 3:40PM
+Date last edited: 9/29/2024 at 2:55PM
 
 # Successful Code Logics
 
@@ -348,6 +348,8 @@ result = {
 ### Show a graph/chart
 FUCKING NAME YOUR FILE `query_visualization.png`
 ```
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive Agg backend for PNG file generation
 import matplotlib.pyplot as plt
 
 <write code here to prepare data for plotting>
