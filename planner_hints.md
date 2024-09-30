@@ -19,7 +19,7 @@ Plan:
             "RequiresQuery": "False"
         },
         "2": {
-            "Request": "Identify what the last product customers in step 1 ordered",
+            "Request": "Using the list from step 1, get the last product that each customer in that list ordered",
             "DataNeeded": "1, orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
@@ -49,7 +49,7 @@ Plan:
             "RequiresQuery": "False"
         },
         "2": {
-            "Request": "Filter down the list from step 1 to only the customers with multiple orders",
+            "Request": "Using the list from step 1, get only the customers with multiple orders in that list",
             "DataNeeded": "1, customers",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
