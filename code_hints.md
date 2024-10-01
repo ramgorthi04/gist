@@ -1,6 +1,75 @@
-Date last edited: 9/29/2024 at 2:55PM
+Date last edited: 10/1/2024 at 3:32PM
 
 # Successful Code Logics
+
+### Determine the next likely product order for each customer in a list
+```
+# Given:
+# List of target customer emails
+# orders data
+
+# Build a mapping from customer email to their orders
+customer_orders = {}
+for order in orders:
+    email = order['email']
+    if email not in customer_orders:
+        customer_orders[email] = []
+    customer_orders[email].append(order)
+
+# Build a mapping from customer email to products they've purchased
+customer_products = {}
+for email, orders_list in customer_orders.items():
+    products = set()
+    for order in orders_list:
+        for item_edge in order['lineItems']['edges']:
+            product_title = item_edge['node']['title']
+            products.add(product_title)
+    customer_products[email] = products
+
+# Step 2 and 3: Identify Similar Customers and Analyze Product Popularity
+
+# We will store the predicted next product for each target customer
+predicted_products = []
+
+for email in target_customers:
+    products_bought = customer_products.get(email, set())
+    
+    # Find similar customers among all customers
+    similar_customers = set()
+    for other_email, other_products in customer_products.items():
+        if other_email == email:
+            continue
+        if products_bought & other_products:
+            similar_customers.add(other_email)
+    
+    # Compile products purchased by similar customers, excluding already purchased products
+    product_frequency = {}
+    for similar_email in similar_customers:
+        other_products = customer_products[similar_email]
+        for product in other_products:
+            if product not in products_bought:
+                product_frequency[product] = product_frequency.get(product, 0) + 1
+    
+    # Rank the products
+    sorted_products = sorted(product_frequency.items(), key=lambda x: x[1], reverse=True)
+    
+    # Predict the next product
+    if sorted_products:
+        next_likely_product = sorted_products[0][0]
+    else:
+        next_likely_product = "No prediction available"
+    
+    # Add to the result list
+    predicted_products.append({
+        "email": email,
+        "next_likely_product": next_likely_product
+    })
+
+# Store the predictions
+result = {}
+for prediction in predicted_products:
+    result[prediction['email'] = prediction['next_likely_product']
+```
 
 ### Analyze the order history to identify customers with consistently increasing spending
 ```
