@@ -1,4 +1,4 @@
-Date last edited: 09/27/2024 at 7:57pm ET
+Date last edited: 10/01/2024 at 7:57pm ET
 Max N is 250.  
 
 # Successful Plans
@@ -7,35 +7,26 @@ Max N is 250.
 Does not require code or query  
 Plan: given the product list, use reasoning to determine which products are similar to X and create a list
 
-### Select customers who haven't ordered in _+ days and fill in the email template with their last order:
-Plan: 
+### Find customers who made a purchase _+ days ago with no ne purchase since then who are good fits for re-engagement. Select 10 likely to repurchase and generate a personalized email based on a given template:
+DO NOT FUCKING assign a step in the plan to filling in the email template. Leave it to the final analysis step.
 {
     "Plan": {
         "1": {
-            "Request": "Filter customers who haven't ordered in _+ days and fetch their last order ID",
+            "Request": "Filter customers who haven't ordered in _ days, fetch their last order ID and their total number of orders.",
             "DataNeeded": "customers",
-            "PaginationNeeded": "false",
-            "RequiresCode": "True",
-            "RequiresQuery": "False"
-        },
-        "2": {
-            "Request": "Using the list from step 1, get the last product that each customer in that list ordered",
-            "DataNeeded": "1, orders",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
-        },
-        "3": {
-            "Request": "Generate personalized emails for each of the _ customers based on their last purchased item",
-            "DataNeeded": "2",
+        }
+        "2": {
+            "Request": "Pick the top 10 customers from the list returned by step 1 and get their past orders."
+            "DataNeeded": "1, customers",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
     }
 }
-
-
 
 ### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
 Plan:  
