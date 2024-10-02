@@ -3,7 +3,7 @@ Max N is 250.
 
 # Successful Plans
 
-### RE-ENGAGEMENT DATA ANALYSIS FOR TOP N CUSTOMERS
+### RE-ENGAGEMENT DATA ANALYSIS FOR TOP S CUSTOMERS
 {
     "Plan": {
       "1": {
@@ -42,14 +42,14 @@ Max N is 250.
         "RequiresQuery": "False"
       },
       "6": {
-        "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers top 5N customers.",
+        "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers top 5S customers.",
         "DataNeeded": "1, 2, 3, 4, 5",
         "PaginationNeeded": "False",
         "RequiresCode": "True",
         "RequiresQuery": "False"
       },
       "7": {
-        "Request": "Identify and rank the top N customers for re-engagement based on the combined analysis.",
+        "Request": "Identify and rank the top S customers for re-engagement based on the combined analysis.",
         "DataNeeded": "6",
         "PaginationNeeded": "False",
         "RequiresCode": "True",
