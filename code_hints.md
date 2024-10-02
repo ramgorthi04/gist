@@ -1,6 +1,89 @@
-Date last edited: 10/1/2024 at 3:32PM
+Date last edited: 10/2/2024 at 4:18PM
 
 # Successful Code Logics
+
+### Analyze purchase frequency trends to identify customers with declining activity
+```
+# Given: 
+# orders data
+import json
+from datetime import datetime
+from collections import defaultdict
+import numpy as np
+
+# Function to safely parse JSON
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Create a copy of the input data dictionary
+data_copy = data.copy()
+
+# Safely access 'results' key from the data dictionary
+orders_data = parse_json_if_string(data_copy.get('results', []))
+
+# Initialize dictionaries to track customer orders and activity
+customer_orders = defaultdict(list)
+customer_activity = {}
+
+# Build customer purchase history
+for order in orders_data:
+    try:
+        # Access email and processedAt safely
+        email = order.get('email', None)
+        processed_at = order.get('processedAt', None)
+        
+        # Ensure both email and processedAt are present
+        if email and processed_at:
+            # Parse the date
+            date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            customer_orders[email].append(date)
+    
+    except Exception as e:
+        # Catch and print any errors during parsing
+        print(f"Error processing order: {e}")
+
+# For each customer, count purchases per month
+for email, dates in customer_orders.items():
+    activity = defaultdict(int)
+    
+    for date in dates:
+        month_year = date.strftime("%Y-%m")  # Extract year-month
+        activity[month_year] += 1  # Count purchases per month
+    
+    customer_activity[email] = dict(activity)  # Store activity for each customer
+
+# Identify customers with declining activity
+declining_customers = []
+
+for email, activity in customer_activity.items():
+    months = sorted(activity.keys())  # Sort the months
+    counts = [activity[month] for month in months]  # Get purchase counts
+
+    if len(counts) > 1:  # Only consider customers with data for multiple months
+        try:
+            # Use numpy to calculate linear regression slope
+            x = np.arange(len(months))  # x-axis: time (months)
+            y = counts  # y-axis: purchase counts
+            slope, intercept = np.polyfit(x, y, 1)  # Perform regression
+
+            # If the slope is negative, the activity is declining
+            if slope < 0:
+                declining_customers.append({
+                    'email': email,
+                    'months': months,
+                    'counts': counts,
+                    'slope': slope
+                })
+        
+        except Exception as e:
+            # Catch and print any errors during regression calculation
+            print(f"Error calculating trend for {email}: {e}")
+
+# Store the final result
+result = {
+    "declining_customers": declining_customers
+}
+```
 
 ### Determine the next likely product order for each customer in a list
 ```
