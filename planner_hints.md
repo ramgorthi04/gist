@@ -1,4 +1,4 @@
-Date last edited: 10/02/2024 at 3:33pm ET
+Date last edited: 10/02/2024 at 3:44pm ET
 Max N is 250.  
 
 # Successful Plans
@@ -59,7 +59,8 @@ Max N is 250.
   }
   
 
-
+### Find customers with high order volumes in the past
+Use the customers data to count the number of orders for each customer.
 
 ### Filter this product list down to products most similar to X
 Does not require code or query  
