@@ -1,7 +1,36 @@
-Date last edited: 10/2/2024 at 4:27PM
+Date last edited: 10/2/2024 at 5:36PM
 
 # Successful Code Logics
 
+### Get the last order for a customer
+```
+# Initialize variable to track the most recent order
+most_recent_order = None
+
+# Process orders to find the most recent one
+for order in orders_data:
+    try:
+        # Access processedAt safely
+        processed_at = order.get('processedAt', None)
+        
+        # Ensure processedAt is present
+        if processed_at:
+            # Parse the date
+            date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            
+            # Update the most recent order if this one is more recent
+            if most_recent_order is None or date > most_recent_order['date']:
+                most_recent_order = {
+                    'order': order,
+                    'date': date
+                }
+    except Exception as e:
+        # Catch and print any errors during parsing
+        print(f"Error processing order: {e}")
+
+# Store the final result
+result = most_recent_order['order'] if most_recent_order else None
+```
 ### Calculate the time since the last interaction (purchase or abandoned cart) for each customer.
 ```
 import json
