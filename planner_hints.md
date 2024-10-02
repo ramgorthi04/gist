@@ -3,60 +3,61 @@ Max N is 250.
 
 # Successful Plans
 
-### RE-ENGAGEMENT DATA ANALYSIS
+### RE-ENGAGEMENT DATA ANALYSIS FOR TOP N CUSTOMERS
 {
-  "Plan": {
-    "1": {
-      "Request": "Collect all abandoned cart data sorted by recency.",
-      "DataNeeded": "None",
-      "PaginationNeeded": "True",
-      "RequiresCode": "False",
-      "RequiresQuery": "True"
-    },
-    "2": {
-      "Request": "Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.",
-      "DataNeeded": "orders",
-      "PaginationNeeded": "True",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
-    },
-    "3": {
-      "Request": "Calculate Customer Lifetime Value (CLV) for each customer using orders data.",
-      "DataNeeded": "orders",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
-    },
-    "4": {
-      "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
-      "DataNeeded": "orders",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
-    },
-    "5": {
-      "Request": "Calculate the time since the last interaction (purchase or abandoned cart) for each customer.",
-      "DataNeeded": "orders, 1",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
-    },
-    "6": {
-      "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers.",
-      "DataNeeded": "1, 2, 3, 4, 5",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
-    },
-    "7": {
-      "Request": "Identify and rank the top N customers for re-engagement based on the combined analysis.",
-      "DataNeeded": "6",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
-      "RequiresQuery": "False"
+    "Plan": {
+      "1": {
+        "Request": "Collect all abandoned cart data sorted by recency.",
+        "DataNeeded": "None",
+        "PaginationNeeded": "True",
+        "RequiresCode": "False",
+        "RequiresQuery": "True"
+      },
+      "2": {
+        "Request": "Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.",
+        "DataNeeded": "orders",
+        "PaginationNeeded": "True",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+      "3": {
+        "Request": "Calculate Customer Lifetime Value (CLV) for each customer using orders data.",
+        "DataNeeded": "orders",
+        "PaginationNeeded": "False",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+      "4": {
+        "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
+        "DataNeeded": "orders",
+        "PaginationNeeded": "False",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+      "5": {
+        "Request": "Calculate the time since the last interaction (purchase or abandoned cart) for each customer.",
+        "DataNeeded": "orders, 1",
+        "PaginationNeeded": "False",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+      "6": {
+        "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers top 5N customers.",
+        "DataNeeded": "1, 2, 3, 4, 5",
+        "PaginationNeeded": "False",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+      "7": {
+        "Request": "Identify and rank the top N customers for re-engagement based on the combined analysis.",
+        "DataNeeded": "6",
+        "PaginationNeeded": "False",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      }
     }
   }
-}
+  
 
 
 
