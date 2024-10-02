@@ -2,6 +2,94 @@ Date last edited: 10/2/2024 at 4:18PM
 
 # Successful Code Logics
 
+### Calculate the time since the last interaction (purchase or abandoned cart) for each customer."
+```
+import json
+from datetime import datetime
+from collections import defaultdict
+
+# Function to safely parse JSON
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Create a copy of the input data dictionary
+data_copy = data.copy()
+
+# Safely access 'orders' and 'abandonedCheckouts' keys from the data dictionary
+orders_data = parse_json_if_string(data_copy.get('orders', []))
+abandoned_checkouts_data = parse_json_if_string(data_copy.get('abandonedCheckouts', {}).get('edges', []))
+
+# Initialize dictionary to track customer interactions (date and type)
+customer_interactions = defaultdict(list)
+
+# Process orders to build customer interactions
+for order in orders_data:
+    try:
+        # Access email and processedAt safely
+        email = order.get('email', None)
+        processed_at = order.get('processedAt', None)
+        
+        # Ensure both email and processedAt are present
+        if email and processed_at:
+            # Parse the date and store the interaction as a tuple (date, 'purchase')
+            date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            customer_interactions[email].append((date, 'purchase'))
+    except Exception as e:
+        # Catch and print any errors during parsing
+        print(f"Error processing order: {e}")
+
+# Process abandoned checkouts to build customer interactions
+for checkout in abandoned_checkouts_data:
+    try:
+        # Access nested customer email and updatedAt fields safely
+        customer_info = checkout.get('node', {}).get('customer', {})
+        email = customer_info.get('email', None)
+        updated_at = checkout.get('node', {}).get('updatedAt', None)
+        
+        # Ensure both email and updatedAt are present
+        if email and updated_at:
+            # Parse the date and store the interaction as a tuple (date, 'abandoned_cart')
+            date = datetime.strptime(updated_at, "%Y-%m-%dT%H:%M:%SZ")
+            customer_interactions[email].append((date, 'abandoned_cart'))
+    except Exception as e:
+        # Catch and print any errors during parsing
+        print(f"Error processing abandoned checkout: {e}")
+
+# Calculate time since last interaction and its type for each customer
+time_since_last_interaction = {}
+
+# Get current UTC time
+current_time = datetime.utcnow()
+
+# Process the interaction dates to find the last interaction for each customer
+for email, interactions in customer_interactions.items():
+    if interactions:
+        # Get the most recent interaction (based on date)
+        last_interaction = max(interactions, key=lambda x: x[0])
+        last_interaction_date, interaction_type = last_interaction
+        
+        # Calculate the time difference in days
+        time_diff = current_time - last_interaction_date
+        
+        # Store the time difference and the interaction type
+        time_since_last_interaction[email] = {
+            'days_since_last_interaction': time_diff.days,
+            'interaction_type': interaction_type
+        }
+    else:
+        # If no interactions, set to None or a default value
+        time_since_last_interaction[email] = {
+            'days_since_last_interaction': None,
+            'interaction_type': None
+        }
+
+# Store the final result
+result = {
+    "time_since_last_interaction": time_since_last_interaction
+}
+```
+
+
 ### Analyze purchase frequency trends to identify customers with declining activity
 ```
 # Given: 
