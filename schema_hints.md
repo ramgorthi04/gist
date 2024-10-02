@@ -3,7 +3,7 @@ ASSUME MAX N IS 250 AND ASSUME N IS 250 UNLESS OTHERWISE MENTIONED
 # Shopify GraphQL Schema Hints
 
 ## General Notes
-- **Date Last Edited**: 8/16/2024 at 4:20 PM
+- **Date Last Edited**: 10/2/2024 at 3:13 PM
 - **Pagination**: Use pagination when retrieving large datasets. Only collect all data if absolutely necessary. Otherwise, set pagination to `FALSE`.
 - **Max N**: Assume `N` is 250 unless otherwise specified.
 - **Query Cost**: Be aware of the maximum query cost of 1,000. Queries exceeding this will not work.
@@ -453,6 +453,50 @@ query inventoryProperties {
 }
 
 ## Miscellaneous
+
+### Abandoned Cart
+{
+  abandonedCheckouts(first: 250, reverse: true) {
+    edges {
+      node {
+        id
+        abandonedCheckoutUrl
+        totalPriceSet {
+          presentmentMoney {
+            amount
+            currencyCode
+          }
+        }
+        lineItems(first: 50) {
+          edges {
+            node {
+              title
+              quantity
+              product {
+                id
+                title
+              }
+              discountedTotalPriceSet {
+                presentmentMoney {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
+        customer {
+          id
+          displayName
+          email
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 
 ### Get Segment Details
 query {
