@@ -3,12 +3,68 @@ Max N is 250.
 
 # Successful Plans
 
+### RE-ENGAGEMENT DATA ANALYSIS
+{
+    "Plan": {
+      "1": {
+        "Request": "Collect all abandoned cart data sorted by recency.",
+        "DataNeeded": "None",
+        "PaginationNeeded": "True",
+        "RequiresCode": "False",
+        "RequiresQuery": "True"
+      },
+      "2": {
+        "Request": "Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.",
+        "DataNeeded": "orders",
+        "PaginationNeeded": "True",
+        "RequiresCode": "True",
+        "RequiresQuery": "False"
+      },
+        "3": {
+          "Request": "Calculate Customer Lifetime Value (CLV) for each customer using orders data.",
+          "DataNeeded": "orders",
+          "PaginationNeeded": "False",
+          "RequiresCode": "True",
+          "RequiresQuery": "False"
+        },
+        "4": {
+          "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
+          "DataNeeded": "orders",
+          "PaginationNeeded": "False",
+          "RequiresCode": "True",
+          "RequiresQuery": "False"
+        },
+        "5": {
+          "Request": "Calculate the time since the last interaction (purchase or abandoned cart) for each customer.",
+          "DataNeeded": "orders, 1",
+          "PaginationNeeded": "False",
+          "RequiresCode": "True",
+          "RequiresQuery": "False"
+        },
+        "6": {
+          "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers.",
+          "DataNeeded": "1, 2, 3, 4, 5",
+          "PaginationNeeded": "False",
+          "RequiresCode": "True",
+          "RequiresQuery": "False"
+        },
+        "7": {
+          "Request": "Identify and rank the top N customers for re-engagement based on the combined analysis.",
+          "DataNeeded": "7",
+          "PaginationNeeded": "False",
+          "RequiresCode": "True",
+          "RequiresQuery": "False"
+        }
+      }
+      
+
+
 ### Filter this product list down to products most similar to X
 Does not require code or query  
 Plan: given the product list, use reasoning to determine which products are similar to X and create a list
 
 ### Find customers who made a purchase _+ days ago with no ne purchase since then who are good fits for re-engagement. Select 10 likely to repurchase and generate a personalized email based on a given template:
-DO NOT FUCKING assign a step in the plan to filling in the email template. Leave it to the final analysis step.
+**DO NOT FUCKING assign a step in the plan to filling in the email template. Leave it to the final analysis step.**
 {
     "Plan": {
         "1": {
