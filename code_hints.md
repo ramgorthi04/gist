@@ -1,8 +1,8 @@
-Date last edited: 10/2/2024 at 4:18PM
+Date last edited: 10/2/2024 at 4:27PM
 
 # Successful Code Logics
 
-### Calculate the time since the last interaction (purchase or abandoned cart) for each customer."
+### Calculate the time since the last interaction (purchase or abandoned cart) for each customer.
 ```
 import json
 from datetime import datetime
