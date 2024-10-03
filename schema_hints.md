@@ -461,13 +461,7 @@ query inventoryProperties {
       node {
         id
         abandonedCheckoutUrl
-        totalPriceSet {
-          presentmentMoney {
-            amount
-            currencyCode
-          }
-        }
-        lineItems(first: 50) {
+        lineItems(first: 20) {
           edges {
             node {
               title
@@ -475,12 +469,6 @@ query inventoryProperties {
               product {
                 id
                 title
-              }
-              discountedTotalPriceSet {
-                presentmentMoney {
-                  amount
-                  currencyCode
-                }
               }
             }
           }
