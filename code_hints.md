@@ -144,11 +144,9 @@ result = {
 
 ### Analyze purchase frequency trends to identify customers with declining activity
 ```
-# Given: 
-# orders data
 import json
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
 import numpy as np
 
 # Function to safely parse JSON
@@ -158,8 +156,8 @@ def parse_json_if_string(value):
 # Create a copy of the input data dictionary
 data_copy = data.copy()
 
-# Safely access 'results' key from the data dictionary
-orders_data = parse_json_if_string(data_copy.get('results', []))
+# Safely access 'orders' key from the data dictionary
+orders_data = parse_json_if_string(data_copy.get('orders', '[]')).get('results', [])
 
 # Initialize dictionaries to track customer orders and activity
 customer_orders = defaultdict(list)
@@ -184,20 +182,22 @@ for order in orders_data:
 
 # For each customer, count purchases per month
 for email, dates in customer_orders.items():
-    activity = defaultdict(int)
+    monthly_activity = defaultdict(int)
     
     for date in dates:
         month_year = date.strftime("%Y-%m")  # Extract year-month
-        activity[month_year] += 1  # Count purchases per month
+        monthly_activity[month_year] += 1  # Count purchases per month
     
-    customer_activity[email] = dict(activity)  # Store activity for each customer
+    customer_activity[email] = dict(monthly_activity)  # Store activity for each customer
 
 # Identify customers with declining activity
 declining_customers = []
 
 for email, activity in customer_activity.items():
     months = sorted(activity.keys())  # Sort the months
-    counts = [activity[month] for month in months]  # Get purchase counts
+    counts = []
+    for month in months:
+        counts.append(activity[month])  # Get purchase counts
 
     if len(counts) > 1:  # Only consider customers with data for multiple months
         try:
