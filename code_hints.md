@@ -67,9 +67,9 @@ def parse_json_if_string(value):
 # Create a copy of the input data dictionary
 data_copy = data.copy()
 
-# Safely access 'orders' and 'abandonedCheckouts' keys from the data dictionary
+# Safely access 'orders' and 'abandonedCheckouts' data using their respective keys from the data dictionary. In this data, the key for abandoned checkout data is '1' and the key for orders is 'orders'
 orders_data = parse_json_if_string(data_copy.get('orders', []))
-abandoned_checkouts_data = parse_json_if_string(data_copy.get('abandonedCheckouts', {}).get('edges', []))
+abandoned_checkouts_data = parse_json_if_string(data_copy.get('1', {}).get('edges', []))
 
 # Initialize dictionary to track customer interactions (date and type)
 customer_interactions = defaultdict(list)
