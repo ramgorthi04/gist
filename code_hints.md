@@ -654,3 +654,98 @@ result = {
     "plot_file": "query_visualization.png"
 }
 ```
+
+### Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers
+```
+import json
+from collections import defaultdict
+
+# Function to safely parse JSON
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Read data_copy from data_store.json
+with open("data_store.json", "r") as f:
+    data_copy = json.load(f)
+
+# Safely access data using their respective keys from the data dictionary
+abandoned_checkouts_data = parse_json_if_string(data_copy.get('2', '[]'))
+rfm_scores_data = parse_json_if_string(data_copy.get('3', '{}')).get("rfm_scores", {})
+clv_data = parse_json_if_string(data_copy.get('4', '{}')).get("customer_lifetime_value", {})
+declining_customers_data = parse_json_if_string(data_copy.get('5', '{}')).get("declining_customers", [])
+time_since_last_interaction_data = parse_json_if_string(data_copy.get('6', '{}')).get("time_since_last_interaction", {})
+
+# Initialize a dictionary to store customer rankings
+customer_rankings = defaultdict(dict)
+
+# Process RFM scores
+for email, rfm in rfm_scores_data.items():
+    if isinstance(rfm, dict):
+        try:
+            recency = rfm.get('recency', 0)
+            frequency = rfm.get('frequency', 0)
+            monetary = rfm.get('monetary', 0.0)
+            customer_rankings[email]['rfm_score'] = (recency, frequency, monetary)
+        except Exception as e:
+            print(f"Error processing RFM scores for {email}: {e}")
+    else:
+        print(f"Skipping non-dict item in RFM data: {email}")
+
+# Process CLV data
+for email, clv in clv_data.items():
+    if isinstance(clv, (float, int)):
+        try:
+            customer_rankings[email]['clv'] = clv
+        except Exception as e:
+            print(f"Error processing CLV for {email}: {e}")
+    else:
+        print(f"Skipping non-numeric CLV for {email}: {clv}")
+
+# Process declining customers
+for customer in declining_customers_data:
+    if isinstance(customer, dict):
+        try:
+            email = customer.get('email', None)
+            slope = customer.get('slope', 0)
+            if email:
+                customer_rankings[email]['trend_slope'] = slope
+        except Exception as e:
+            print(f"Error processing declining customers for {email}: {e}")
+    else:
+        print(f"Skipping non-dict item in declining customers data: {customer}")
+
+# Process time since last interaction
+for email, interaction in time_since_last_interaction_data.items():
+    if isinstance(interaction, dict):
+        try:
+            days_since_last = interaction.get('days_since_last_interaction', None)
+            customer_rankings[email]['days_since_last_interaction'] = days_since_last if days_since_last is not None else float('inf')
+        except Exception as e:
+            print(f"Error processing time since last interaction for {email}: {e}")
+    else:
+        print(f"Skipping non-dict item in time since last interaction data: {interaction}")
+
+# Rank customers based on combined metrics
+ranked_customers = []
+
+for email, metrics in customer_rankings.items():
+    if email in ['rfm_scores', 'customer_lifetime_value', 'time_since_last_interaction']:
+        continue  # Skip non-customer keys
+    try:
+        rfm_score = metrics.get('rfm_score', (0, 0, 0))
+        clv = metrics.get('clv', 0)
+        trend_slope = metrics.get('trend_slope', 0)
+        days_since_last = metrics.get('days_since_last_interaction', float('inf'))
+
+        # Calculate a simple ranking score
+        score = (1 / (1 + rfm_score[0])) * rfm_score[1] * rfm_score[2] + clv - trend_slope - days_since_last
+        ranked_customers.append((email, score))
+    except Exception as e:
+        print(f"Error ranking customer {email}: {e}")
+
+# Sort customers by their ranking score in descending order
+ranked_customers.sort(key=lambda x: x[1], reverse=True)
+
+# Store the final result
+result = ranked_customers
+```
