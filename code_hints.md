@@ -450,13 +450,6 @@ def count_emails(file_path):
 ### Filter orders for customers who made a purchase 20+ days ago and have not made a new purchase since then
 
 ```
-import json
-from datetime import datetime, timedelta
-
-# Load the orders data
-with open('orders.json') as f:
-    orders_data = json.load(f)
-
 # Convert orders into a more manageable format
 orders = orders_data["results"]
 
@@ -486,14 +479,7 @@ for order in orders:
             customer_last_order[email] = order_date
 
 # Filter customers who made their last purchase more than 20 days ago
-inactive_customers = [email for email, last_order_date in customer_last_order.items() if last_order_date < threshold_date]
-
-# Output inactive customers
-print("Customers who haven't made a purchase in the last 20 days:")
-for customer in inactive_customers:
-    print(customer)
-
-
+result = [email for email, last_order_date in customer_last_order.items() if last_order_date < threshold_date]
 ```
 
 
