@@ -1,8 +1,8 @@
-Date last edited: 10/2/2024 at 5:36PM
+Date last edited: 10/2/2024 at 9:22PM
 
 # Successful Code Logics
 
-### Get all previous order items for a customer
+### Get all previous order items for a list of customers (given their emails)
 ```
 # Parse the orders JSON data
 orders_data = parse_json_if_string(orders_json_string)
