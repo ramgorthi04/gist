@@ -169,12 +169,12 @@ Plan:
 }
 
 
-### Get all orders by Customer Name
+### Retrieve order history for this list of customers: [...]
 {
     "Plan": {
         "1": {
-            "Request": "Filter orders to find those placed by Customer Name",
-            "DataNeeded": "orders",
+            "Request": "Filter orders to find those placed by customers in the prompt",
+            "DataNeeded": "orders, prompt",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
@@ -330,3 +330,4 @@ Plan:
         }
     }
 }
+
