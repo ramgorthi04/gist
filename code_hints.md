@@ -655,97 +655,151 @@ result = {
 }
 ```
 
-### Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers
+### Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers who haven't ordered in last n days
 ```
 import json
 from collections import defaultdict
+import numpy as np
+
+# Introduce variable n_days_since_last_order
+n_days_since_last_order = 30  # You can set this to any number of days you prefer
 
 # Function to safely parse JSON
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Read data_copy from data_store.json
-with open("data_store.json", "r") as f:
-    data_copy = json.load(f)
+# Create a copy of the data
+data_copy = data.copy()
+
 
 # Safely access data using their respective keys from the data dictionary
-abandoned_checkouts_data = parse_json_if_string(data_copy.get('2', '[]'))
-rfm_scores_data = parse_json_if_string(data_copy.get('3', '{}')).get("rfm_scores", {})
-clv_data = parse_json_if_string(data_copy.get('4', '{}')).get("customer_lifetime_value", {})
-declining_customers_data = parse_json_if_string(data_copy.get('5', '{}')).get("declining_customers", [])
-time_since_last_interaction_data = parse_json_if_string(data_copy.get('6', '{}')).get("time_since_last_interaction", {})
+# Adjust the keys based on how your data is structured
+orders_data = parse_json_if_string(data_copy.get('orders', '{}'))
+
+abandoned_checkouts_data = parse_json_if_string(data_copy.get('abandonedCheckouts', '[]'))
+
+rfm_scores_data = parse_json_if_string(data_copy.get('rfm_scores', '{}'))
+
+clv_data = parse_json_if_string(data_copy.get('customer_lifetime_value', '{}'))
+
+declining_customers_data = parse_json_if_string(data_copy.get('declining_customers', '{}')).get('declining_customers', [])
+
+time_since_last_interaction_data = parse_json_if_string(data_copy.get('time_since_last_interaction', '{}')).get('time_since_last_interaction', {})
 
 # Initialize a dictionary to store customer rankings
 customer_rankings = defaultdict(dict)
 
-# Process RFM scores
-for email, rfm in rfm_scores_data.items():
-    if isinstance(rfm, dict):
-        try:
-            recency = rfm.get('recency', 0)
-            frequency = rfm.get('frequency', 0)
-            monetary = rfm.get('monetary', 0.0)
-            customer_rankings[email]['rfm_score'] = (recency, frequency, monetary)
-        except Exception as e:
-            print(f"Error processing RFM scores for {email}: {e}")
-    else:
-        print(f"Skipping non-dict item in RFM data: {email}")
+# Create a unified set of all emails
+all_emails = set(rfm_scores_data.keys()) | set(clv_data.keys()) | set(time_since_last_interaction_data.keys())
 
-# Process CLV data
-for email, clv in clv_data.items():
-    if isinstance(clv, (float, int)):
-        try:
-            customer_rankings[email]['clv'] = clv
-        except Exception as e:
-            print(f"Error processing CLV for {email}: {e}")
-    else:
-        print(f"Skipping non-numeric CLV for {email}: {clv}")
-
-# Process declining customers
-for customer in declining_customers_data:
-    if isinstance(customer, dict):
-        try:
-            email = customer.get('email', None)
-            slope = customer.get('slope', 0)
-            if email:
-                customer_rankings[email]['trend_slope'] = slope
-        except Exception as e:
-            print(f"Error processing declining customers for {email}: {e}")
-    else:
-        print(f"Skipping non-dict item in declining customers data: {customer}")
-
-# Process time since last interaction
-for email, interaction in time_since_last_interaction_data.items():
-    if isinstance(interaction, dict):
-        try:
-            days_since_last = interaction.get('days_since_last_interaction', None)
-            customer_rankings[email]['days_since_last_interaction'] = days_since_last if days_since_last is not None else float('inf')
-        except Exception as e:
-            print(f"Error processing time since last interaction for {email}: {e}")
-    else:
-        print(f"Skipping non-dict item in time since last interaction data: {interaction}")
-
-# Rank customers based on combined metrics
-ranked_customers = []
-
-for email, metrics in customer_rankings.items():
-    if email in ['rfm_scores', 'customer_lifetime_value', 'time_since_last_interaction']:
-        continue  # Skip non-customer keys
+# Build customer rankings
+for email in all_emails:
     try:
-        rfm_score = metrics.get('rfm_score', (0, 0, 0))
-        clv = metrics.get('clv', 0)
-        trend_slope = metrics.get('trend_slope', 0)
-        days_since_last = metrics.get('days_since_last_interaction', float('inf'))
+        # Process RFM scores
+        rfm = rfm_scores_data.get(email)
+        if rfm:
+            recency = rfm.get('recency')
+            frequency = rfm.get('frequency')
+            monetary = rfm.get('monetary')
+        else:
+            recency = frequency = monetary = None
+        customer_rankings[email]['recency'] = recency
+        customer_rankings[email]['frequency'] = frequency
+        customer_rankings[email]['monetary'] = monetary
 
-        # Calculate a simple ranking score
-        score = (1 / (1 + rfm_score[0])) * rfm_score[1] * rfm_score[2] + clv - trend_slope - days_since_last
-        ranked_customers.append((email, score))
+        # Process CLV data
+        clv = clv_data.get(email)
+        customer_rankings[email]['clv'] = clv
+
+        # Process trend slope
+        slope = next((item['slope'] for item in declining_customers_data if item.get('email') == email), None)
+        if slope is None:
+            slope = 0  # Set default value for missing trend_slope
+        customer_rankings[email]['trend_slope'] = slope
+
+        # Process time since last interaction
+        interaction = time_since_last_interaction_data.get(email, {})
+        days_since_last = interaction.get('days_since_last_interaction', None)
+        customer_rankings[email]['days_since_last_interaction'] = days_since_last
+
     except Exception as e:
-        print(f"Error ranking customer {email}: {e}")
+        print(f"Error processing data for {email}: {e}")
 
-# Sort customers by their ranking score in descending order
-ranked_customers.sort(key=lambda x: x[1], reverse=True)
+# Remove customers with missing essential data and those who have ordered within the last n days
+essential_metrics = ['recency', 'monetary', 'days_since_last_interaction']
+filtered_customers = {}
+for email, metrics in customer_rankings.items():
+    if all(metrics.get(key) is not None for key in essential_metrics):
+        if metrics['recency'] >= n_days_since_last_order:
+            filtered_customers[email] = metrics
 
-# Store the final result
-result = ranked_customers
+# Check if we have any customers after filtering
+if not filtered_customers:
+    print(f"No customers with recency >= {n_days_since_last_order} days were found.")
+else:
+    # Collect metrics for normalization
+    recency_list = [metrics['recency'] for metrics in filtered_customers.values()]
+    frequency_list = [metrics['frequency'] if metrics['frequency'] is not None else 0 for metrics in filtered_customers.values()]
+    monetary_list = [metrics['monetary'] for metrics in filtered_customers.values()]
+    clv_list = [metrics['clv'] if metrics['clv'] is not None else 0 for metrics in filtered_customers.values()]
+    trend_slope_list = [metrics['trend_slope'] for metrics in filtered_customers.values()]
+    days_since_last_list = [metrics['days_since_last_interaction'] for metrics in filtered_customers.values()]
+
+    # Convert lists to numpy arrays for calculations
+    recency_array = np.array(recency_list, dtype=np.float64)
+    frequency_array = np.array(frequency_list, dtype=np.float64)
+    monetary_array = np.array(monetary_list, dtype=np.float64)
+    clv_array = np.array(clv_list, dtype=np.float64)
+    trend_slope_array = np.array(trend_slope_list, dtype=np.float64)
+    days_since_last_array = np.array(days_since_last_list, dtype=np.float64)
+
+    # Handle cases where all values are the same (avoid division by zero)
+    def normalize_array(array):
+        if array.size == 0:
+            return array  # Return empty array without normalization
+        min_val = np.nanmin(array)
+        max_val = np.nanmax(array)
+        if max_val - min_val == 0:
+            return np.zeros_like(array)
+        else:
+            return (array - min_val) / (max_val - min_val)
+
+    # Normalize metrics
+    recency_scores = normalize_array(recency_array)
+    frequency_scores = normalize_array(frequency_array)
+    monetary_scores = normalize_array(monetary_array)
+    clv_scores = normalize_array(clv_array)
+    # For trend_slope, invert the normalization to prioritize negative slopes
+    trend_slope_scores = normalize_array(-trend_slope_array)
+    interaction_scores = normalize_array(days_since_last_array)
+
+    # Assign weights
+    w_recency = 0.25
+    w_interaction = 0.20 
+    w_trend = 0.15
+    w_monetary = 0.20
+    w_clv = 0.10
+    w_frequency = 0.10
+
+    # Calculate total scores
+    total_scores = []
+    emails = list(filtered_customers.keys())
+
+    for i in range(len(emails)):
+        score = (
+            w_recency * recency_scores[i] +
+            w_interaction * interaction_scores[i] +
+            w_trend * trend_slope_scores[i] +
+            w_monetary * monetary_scores[i] +
+            w_clv * clv_scores[i] +
+            w_frequency * frequency_scores[i]
+        )
+        total_scores.append((emails[i], score))
+
+    # Sort customers by their total score in descending order
+    total_scores.sort(key=lambda x: x[1], reverse=True)
+
+    # Store the final result
+    result = total_scores
+
 ```
