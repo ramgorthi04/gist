@@ -1,4 +1,4 @@
-Date last edited: 10/3/2024 at 3:18PM
+Date last edited: 10/4/2024 at 4:40PM
 
 # Successful Code Logics
 
@@ -360,38 +360,71 @@ Code logic:
 Convert the list of emails into a set.  
 Loop through the dictionary of customer information, and for each edge, check if the email is in the set. If so, add that node to a result data structure.
 
-### Filter down a given list of customers to those who haven't ordered in the past 3 months
+### Determine if a list of customers ordered within _ days
 Data provided: list of customers to filter and orders data
-Code logic:
-Create a dictionary to store the last purchase date for each customer
-Process orders to find the last purchase date for each customer: 
 ```
-orders_data = data["key"]
-for order in orders_data.get("results", []):
-    email = order.get("email")
-    processed_at = order.get("processedAt")
-    if email and processed_at:
-        try:
-            processed_at_date = datetime.fromisoformat(processed_at.replace("Z", "+00:00"))
-            if email not in last_purchase_date or processed_at_date > last_purchase_date[email]:
-                last_purchase_date[email] = processed_at_date
-        except ValueError:
-            continue
-```
-Define the cutoff date for 3 months ago (timezone-aware): 
-cutoff_date = datetime.now(timezone.utc) - timedelta(days=90)
-Filter customers who haven't made a purchase in the last 3 months:
-```
-result = []
-# Access the appropriate key
-customers_data = data["key"]
-for customer in customers_data:
-    email = customer.get("email")
-    if email and (email not in last_purchase_date or last_purchase_date[email] < cutoff_date):
-        result.append({
-            "customerID": customer.get("id"),
-            "email": customer.get("email)
-        })
+import json
+from datetime import datetime, timedelta, timezone
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Copy the data dictionary
+data_copy = {}
+# Read the data from the JSON file orders.json
+with open("orders.json", "r") as f:
+    data_copy['orders'] = json.load(f)
+
+# Parse the orders JSON data
+orders_json_string = data_copy.get('orders', '{}')
+orders_data = parse_json_if_string(orders_json_string)
+
+# List of specified email addresses to filter
+specified_emails = [
+    "anonymous-8651470169255@example.com",
+    "Enrightskisv@gmail.com",
+    "4deming@comcast.net",
+    "Sf4okeefe@concast.net",
+    "egeddes1@verizon.net",
+    "Ashlindmom2@gmail.com",
+    "ledanzig@me.com",
+    "heath@crosslanesearch.com",
+    "Mollypope@yahoo.com",
+    "Susankempler@yahoo.com"
+]
+
+# Create a set for faster lookup
+specified_emails_set = set(specified_emails)
+
+# Calculate the date 30 days ago from today with timezone awareness
+thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+
+# Initialize a list to store filtered orders
+filtered_orders = []
+
+# Process orders to find those placed by specified customers within the last 30 days
+for order in orders_data.get('results', []):
+    try:
+        email = order.get('email', None)
+        if email in specified_emails_set:
+            processed_at = order.get('processedAt', None)
+            if processed_at:
+                # Convert processedAt to a datetime object
+                processed_at_dt = datetime.fromisoformat(processed_at.replace('Z', '+00:00'))
+                # Check if the order was placed within the last 30 days
+                if processed_at_dt >= thirty_days_ago:
+                    filtered_orders.append(order)
+    except Exception as e:
+        print(f"Error processing order: {e}")
+
+# Check if the result is empty and set an appropriate message if so
+if not filtered_orders:
+    result = "No orders found for specified customers within the last 30 days."
+else:
+    result = filtered_orders
+
+print(result)
 ```
 ### Filter customers who have made multiple orders
 ```
@@ -801,5 +834,4 @@ else:
 
     # Store the final result
     result = total_scores
-
 ```
