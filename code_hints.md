@@ -694,30 +694,22 @@ import json
 from collections import defaultdict
 import numpy as np
 
-# Introduce variable n_days_since_last_order
-n_days_since_last_order = 30  # You can set this to any number of days you prefer
-
 # Function to safely parse JSON
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Create a copy of the data
-data_copy = data.copy()
+# Read data_copy from data_store.json
+with open("data_store.json", "r") as f:
+    data_copy = json.load(f)
 
+#data_copy = data.copy()
 
 # Safely access data using their respective keys from the data dictionary
-# Adjust the keys based on how your data is structured
-orders_data = parse_json_if_string(data_copy.get('orders', '{}'))
-
-abandoned_checkouts_data = parse_json_if_string(data_copy.get('abandonedCheckouts', '[]'))
-
-rfm_scores_data = parse_json_if_string(data_copy.get('rfm_scores', '{}'))
-
-clv_data = parse_json_if_string(data_copy.get('customer_lifetime_value', '{}'))
-
-declining_customers_data = parse_json_if_string(data_copy.get('declining_customers', '{}')).get('declining_customers', [])
-
-time_since_last_interaction_data = parse_json_if_string(data_copy.get('time_since_last_interaction', '{}')).get('time_since_last_interaction', {})
+abandoned_checkouts_data = parse_json_if_string(data_copy.get('2', '[]'))
+rfm_scores_data = parse_json_if_string(data_copy.get('3', '{}'))
+clv_data = parse_json_if_string(data_copy.get('4', '{}'))
+declining_customers_data = parse_json_if_string(data_copy.get('5', '{}')).get('declining_customers', [])
+time_since_last_interaction_data = parse_json_if_string(data_copy.get('6', '{}')).get('time_since_last_interaction', {})
 
 # Initialize a dictionary to store customer rankings
 customer_rankings = defaultdict(dict)
@@ -745,9 +737,11 @@ for email in all_emails:
         customer_rankings[email]['clv'] = clv
 
         # Process trend slope
-        slope = next((item['slope'] for item in declining_customers_data if item.get('email') == email), None)
-        if slope is None:
-            slope = 0  # Set default value for missing trend_slope
+        slope = 0
+        for item in declining_customers_data:
+            if item.get('email') == email:
+                slope = item.get('slope', 0)
+                break
         customer_rankings[email]['trend_slope'] = slope
 
         # Process time since last interaction
@@ -758,25 +752,34 @@ for email in all_emails:
     except Exception as e:
         print(f"Error processing data for {email}: {e}")
 
-# Remove customers with missing essential data and those who have ordered within the last n days
+# Remove customers with missing essential data and those who have ordered within the last 30 days
 essential_metrics = ['recency', 'monetary', 'days_since_last_interaction']
 filtered_customers = {}
 for email, metrics in customer_rankings.items():
     if all(metrics.get(key) is not None for key in essential_metrics):
-        if metrics['recency'] >= n_days_since_last_order:
+        # Safely handle the 'days_since_last_interaction' check
+        if metrics['days_since_last_interaction'] is not None and metrics['days_since_last_interaction'] >= 30:
             filtered_customers[email] = metrics
 
 # Check if we have any customers after filtering
 if not filtered_customers:
-    print(f"No customers with recency >= {n_days_since_last_order} days were found.")
+    print("No customers with recency >= 30 days were found.")
 else:
     # Collect metrics for normalization
-    recency_list = [metrics['recency'] for metrics in filtered_customers.values()]
-    frequency_list = [metrics['frequency'] if metrics['frequency'] is not None else 0 for metrics in filtered_customers.values()]
-    monetary_list = [metrics['monetary'] for metrics in filtered_customers.values()]
-    clv_list = [metrics['clv'] if metrics['clv'] is not None else 0 for metrics in filtered_customers.values()]
-    trend_slope_list = [metrics['trend_slope'] for metrics in filtered_customers.values()]
-    days_since_last_list = [metrics['days_since_last_interaction'] for metrics in filtered_customers.values()]
+    recency_list = []
+    frequency_list = []
+    monetary_list = []
+    clv_list = []
+    trend_slope_list = []
+    days_since_last_list = []
+
+    for metrics in filtered_customers.values():
+        recency_list.append(metrics['recency'])
+        frequency_list.append(metrics['frequency'] if metrics['frequency'] is not None else 0)
+        monetary_list.append(metrics['monetary'])
+        clv_list.append(metrics['clv'] if metrics['clv'] is not None else 0)
+        trend_slope_list.append(metrics['trend_slope'])
+        days_since_last_list.append(metrics['days_since_last_interaction'])
 
     # Convert lists to numpy arrays for calculations
     recency_array = np.array(recency_list, dtype=np.float64)
