@@ -704,137 +704,68 @@ with open("data_store.json", "r") as f:
 
 #data_copy = data.copy()
 
+# Parameters
+N = 30  # Number of days to consider for customers who haven't purchased
+
 # Safely access data using their respective keys from the data dictionary
-abandoned_checkouts_data = parse_json_if_string(data_copy.get('2', '[]'))
-rfm_scores_data = parse_json_if_string(data_copy.get('3', '{}'))
+rfm_data = parse_json_if_string(data_copy.get('3', '{}'))
 clv_data = parse_json_if_string(data_copy.get('4', '{}'))
-declining_customers_data = parse_json_if_string(data_copy.get('5', '{}')).get('declining_customers', [])
 time_since_last_interaction_data = parse_json_if_string(data_copy.get('6', '{}')).get('time_since_last_interaction', {})
 
-# Initialize a dictionary to store customer rankings
-customer_rankings = defaultdict(dict)
+# Merge data into a single dictionary
+customers = {}
+for email in rfm_data:
+    customers[email] = {
+        'recency': rfm_data[email]['recency'],
+        'frequency': rfm_data[email]['frequency'],
+        'monetary': rfm_data[email]['monetary'],
+        'clv': clv_data.get(email, 0),
+        'days_since_last_interaction': time_data.get(email, {}).get('days_since_last_interaction', None)
+    }
 
-# Create a unified set of all emails
-all_emails = set(rfm_scores_data.keys()) | set(clv_data.keys()) | set(time_since_last_interaction_data.keys())
-
-# Build customer rankings
-for email in all_emails:
-    try:
-        # Process RFM scores
-        rfm = rfm_scores_data.get(email)
-        if rfm:
-            recency = rfm.get('recency')
-            frequency = rfm.get('frequency')
-            monetary = rfm.get('monetary')
-        else:
-            recency = frequency = monetary = None
-        customer_rankings[email]['recency'] = recency
-        customer_rankings[email]['frequency'] = frequency
-        customer_rankings[email]['monetary'] = monetary
-
-        # Process CLV data
-        clv = clv_data.get(email)
-        customer_rankings[email]['clv'] = clv
-
-        # Process trend slope
-        slope = 0
-        for item in declining_customers_data:
-            if item.get('email') == email:
-                slope = item.get('slope', 0)
-                break
-        customer_rankings[email]['trend_slope'] = slope
-
-        # Process time since last interaction
-        interaction = time_since_last_interaction_data.get(email, {})
-        days_since_last = interaction.get('days_since_last_interaction', None)
-        customer_rankings[email]['days_since_last_interaction'] = days_since_last
-
-    except Exception as e:
-        print(f"Error processing data for {email}: {e}")
-
-# Remove customers with missing essential data and those who have ordered within the last 30 days
-essential_metrics = ['recency', 'monetary', 'days_since_last_interaction']
+# Filter customers who haven't purchased in the last N days
 filtered_customers = {}
-for email, metrics in customer_rankings.items():
-    if all(metrics.get(key) is not None for key in essential_metrics):
-        # Safely handle the 'days_since_last_interaction' check
-        if metrics['days_since_last_interaction'] is not None and metrics['days_since_last_interaction'] >= 30:
-            filtered_customers[email] = metrics
+for email, data in customers.items():
+    days_since = data['days_since_last_interaction']
+    if days_since is not None and days_since >= N:
+        filtered_customers[email] = data
 
-# Check if we have any customers after filtering
-if not filtered_customers:
-    print("No customers with recency >= 30 days were found.")
+# Calculate weighted score
+# Normalize RFM scores and CLV
+if filtered_customers:
+    max_recency = max([data['recency'] for data in filtered_customers.values()])
+    max_frequency = max([data['frequency'] for data in filtered_customers.values()])
+    max_monetary = max([data['monetary'] for data in filtered_customers.values()])
+    max_clv = max([data['clv'] for data in filtered_customers.values()])
 else:
-    # Collect metrics for normalization
-    recency_list = []
-    frequency_list = []
-    monetary_list = []
-    clv_list = []
-    trend_slope_list = []
-    days_since_last_list = []
+    max_recency = max_frequency = max_monetary = max_clv = 1  # Avoid division by zero
 
-    for metrics in filtered_customers.values():
-        recency_list.append(metrics['recency'])
-        frequency_list.append(metrics['frequency'] if metrics['frequency'] is not None else 0)
-        monetary_list.append(metrics['monetary'])
-        clv_list.append(metrics['clv'] if metrics['clv'] is not None else 0)
-        trend_slope_list.append(metrics['trend_slope'])
-        days_since_last_list.append(metrics['days_since_last_interaction'])
+for email, data in filtered_customers.items():
+    # Normalize the scores
+    recency_score = (max_recency - data['recency']) / max_recency  # Higher score for more recent customers
+    frequency_score = data['frequency'] / max_frequency
+    monetary_score = data['monetary'] / max_monetary
+    clv_score = data['clv'] / max_clv
 
-    # Convert lists to numpy arrays for calculations
-    recency_array = np.array(recency_list, dtype=np.float64)
-    frequency_array = np.array(frequency_list, dtype=np.float64)
-    monetary_array = np.array(monetary_list, dtype=np.float64)
-    clv_array = np.array(clv_list, dtype=np.float64)
-    trend_slope_array = np.array(trend_slope_list, dtype=np.float64)
-    days_since_last_array = np.array(days_since_last_list, dtype=np.float64)
+    # Weights (adjust these weights as needed)
+    recency_weight = 0.3
+    frequency_weight = 0.2
+    monetary_weight = 0.3
+    clv_weight = 0.2
 
-    # Handle cases where all values are the same (avoid division by zero)
-    def normalize_array(array):
-        if array.size == 0:
-            return array  # Return empty array without normalization
-        min_val = np.nanmin(array)
-        max_val = np.nanmax(array)
-        if max_val - min_val == 0:
-            return np.zeros_like(array)
-        else:
-            return (array - min_val) / (max_val - min_val)
+    # Calculate weighted score
+    total_score = (
+        recency_weight * recency_score +
+        frequency_weight * frequency_score +
+        monetary_weight * monetary_score +
+        clv_weight * clv_score
+    )
 
-    # Normalize metrics
-    recency_scores = normalize_array(recency_array)
-    frequency_scores = normalize_array(frequency_array)
-    monetary_scores = normalize_array(monetary_array)
-    clv_scores = normalize_array(clv_array)
-    # For trend_slope, invert the normalization to prioritize negative slopes
-    trend_slope_scores = normalize_array(-trend_slope_array)
-    interaction_scores = normalize_array(days_since_last_array)
+    filtered_customers[email]['total_score'] = total_score
 
-    # Assign weights
-    w_recency = 0.25
-    w_interaction = 0.20 
-    w_trend = 0.15
-    w_monetary = 0.20
-    w_clv = 0.10
-    w_frequency = 0.10
+# Sort customers by total_score
+top_customers = sorted(filtered_customers.items(), key=lambda x: x[1]['total_score'], reverse=True)
 
-    # Calculate total scores
-    total_scores = []
-    emails = list(filtered_customers.keys())
-
-    for i in range(len(emails)):
-        score = (
-            w_recency * recency_scores[i] +
-            w_interaction * interaction_scores[i] +
-            w_trend * trend_slope_scores[i] +
-            w_monetary * monetary_scores[i] +
-            w_clv * clv_scores[i] +
-            w_frequency * frequency_scores[i]
-        )
-        total_scores.append((emails[i], score))
-
-    # Sort customers by their total score in descending order
-    total_scores.sort(key=lambda x: x[1], reverse=True)
-
-    # Store the final result
-    result = total_scores
+# Get the top 500 customers
+top_500_customers = top_customers[:500]
 ```
