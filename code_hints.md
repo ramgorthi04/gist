@@ -2,6 +2,62 @@ Date last edited: 10/4/2024 at 4:40PM
 
 # Successful Code Logics
 
+### Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.
+```
+# Function to safely parse JSON
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Safely access 'orders' data using the key from the data dictionary
+orders_data = parse_json_if_string(data_copy.get('orders', '{}'))
+
+# Ensure 'results' is in orders_data and contains the list of orders
+orders_list = orders_data.get('results', [])
+
+# Process orders to calculate RFM metrics
+for order in orders_list:  # Loop through orders_list instead of orders_data
+    try:
+        # Access email, processedAt, and totalPriceSet safely
+        email = order.get('email', None)
+        processed_at = order.get('processedAt', None)
+        total_price = float(order.get('totalPriceSet', {}).get('shopMoney', {}).get('amount', 0))
+
+        # Ensure email and processedAt are present
+        if email and processed_at:
+            # Parse the date
+            order_date = datetime.strptime(processed_at, "%Y-%m-%dT%H:%M:%SZ")
+            
+            # Calculate recency
+            days_since_order = (current_date - order_date).days
+            if email not in recency or days_since_order < recency[email]:
+                recency[email] = days_since_order
+            
+            # Calculate frequency
+            frequency[email] += 1
+            
+            # Calculate monetary value
+            monetary[email] += total_price
+    except Exception as e:
+        # Catch and print any errors during parsing
+        print(f"Error processing order: {e}")
+
+# Combine RFM scores into a single dictionary
+rfm_scores = {}
+for email in set(recency.keys()).union(frequency.keys()).union(monetary.keys()):
+    rfm_scores[email] = {
+        'recency': recency.get(email, float('inf')),
+        'frequency': frequency.get(email, 0),
+        'monetary': monetary.get(email, 0.0)
+    }
+
+# Store the final result
+result = {
+    "rfm_scores": rfm_scores
+}
+```
+
+
+
 ### Get all previous order items for a list of customers (given their emails)
 ```
 # Parse the orders JSON data
