@@ -748,42 +748,50 @@ result = {
 ```
 import json
 from collections import defaultdict
+from datetime import datetime, timedelta
 import numpy as np
 
 # Function to safely parse JSON
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Read data_copy from data_store.json
-with open("data_store.json", "r") as f:
-    data_copy = json.load(f)
+# Create a copy of the input data dictionary
+data_copy = data.copy()
 
-#data_copy = data.copy()
+# Safely access data using their respective keys from the data dictionary
+rfm_data = parse_json_if_string(data_copy.get('1', '{}')).get('rfm_scores', {})
+clv_data = parse_json_if_string(data_copy.get('2', '{}')).get('customer_lifetime_value', {})
+declining_data = parse_json_if_string(data_copy.get('3', '[]'))
+time_since_last_purchase_data = parse_json_if_string(data_copy.get('4', '{}')).get('time_since_last_purchase', {})
 
 # Parameters
 N = 30  # Number of days to consider for customers who haven't purchased
 
-# Safely access data using their respective keys from the data dictionary
-rfm_data = parse_json_if_string(data_copy.get('3', '{}'))
-clv_data = parse_json_if_string(data_copy.get('4', '{}'))
-time_since_last_interaction_data = parse_json_if_string(data_copy.get('6', '{}')).get('time_since_last_interaction', {})
-
 # Merge data into a single dictionary
 customers = {}
 for email in rfm_data:
+    time_since_last = time_since_last_purchase_data.get(email)
+    if time_since_last is None:
+        time_since_last = float('inf')
+    else:
+        try:
+            time_since_last = float(time_since_last)
+        except ValueError:
+            time_since_last = float('inf')
+
     customers[email] = {
         'recency': rfm_data[email]['recency'],
         'frequency': rfm_data[email]['frequency'],
         'monetary': rfm_data[email]['monetary'],
         'clv': clv_data.get(email, 0),
-        'days_since_last_interaction': time_data.get(email, {}).get('days_since_last_interaction', None)
+        'time_since_last_purchase': time_since_last
     }
 
 # Filter customers who haven't purchased in the last N days
 filtered_customers = {}
 for email, data in customers.items():
-    days_since = data['days_since_last_interaction']
-    if days_since is not None and days_since >= N:
+    days_since = data['time_since_last_purchase']
+    if days_since >= N:
         filtered_customers[email] = data
 
 # Calculate weighted score
@@ -816,12 +824,11 @@ for email, data in filtered_customers.items():
         monetary_weight * monetary_score +
         clv_weight * clv_score
     )
-
     filtered_customers[email]['total_score'] = total_score
 
 # Sort customers by total_score
 top_customers = sorted(filtered_customers.items(), key=lambda x: x[1]['total_score'], reverse=True)
 
 # Get the top 500 customers
-top_500_customers = top_customers[:500]
+result = top_customers[:500]
 ```
