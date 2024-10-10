@@ -1,4 +1,4 @@
-Date last edited: 10/09/2024 at 4:00pm ET
+Date last edited: 10/09/2024 at 10:20pm ET
 
 # Datasets and Tables
 
@@ -227,12 +227,14 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Create a list of products sorted by their number of sales",
       "DataNeeded": "2020_salestraffic.allorders_BKG_US_2020-09-01",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     }
   }
 }
+
+
 
 
 ### Get a list of customers who haven't made a purchase in the last 3 months and filter for repeat customers
@@ -241,19 +243,20 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Get a list of customers who haven't made a purchase in the last 3 months",
       "DataNeeded": "AAB_Finals.scheduled_wbr_brandlevelorders_month",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Using the list from step 1, get only the customers with multiple orders in that list",
-      "DataNeeded": "1, AAB_Finals.scheduled_wbr_brandlevelorders_month",
+      "DataNeeded": "1",
       "PaginationNeeded": "False",
       "RequiresCode": "True",
-      "RequiresQuery": "True"
+      "RequiresQuery": "False"
     }
   }
 }
+
 
 
 ### Identify the SKU with the highest order volume and analyze its performance
@@ -262,19 +265,20 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Identify the SKU with the highest order volume",
       "DataNeeded": "AAC_TopLevelTables_Finals.sku_salesunits_month_blend_fcastactuals",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Generate a chart showing the performance of the top SKU this year",
-      "DataNeeded": "1, AAC_TopLevelTables_Finals.sku_salesunits_month_blend_fcastactuals",
+      "DataNeeded": "1",
       "PaginationNeeded": "False",
       "RequiresCode": "True",
-      "RequiresQuery": "True"
+      "RequiresQuery": "False"
     }
   }
 }
+
 
 
 ### Analyze sales trends and PPC performance across different channels
@@ -283,18 +287,20 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Analyze sales trends across different channels",
       "DataNeeded": "2020_salestraffic.allchannels_2020_reports_month, Ebay.ebay_sales, Etsy.etsy_sales",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Compare PPC performance across channels",
       "DataNeeded": "AAB_Finals.scheduled_ppc_metrics_all_channels, Ebay.ebay_ppc_metrics, Etsy.etsy_ppc_metrics",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     }
   }
+}
+
 }
 
 
@@ -305,22 +311,22 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Create a list of top-selling products in the US, sorted by sales",
       "DataNeeded": "2020_salestraffic.allorders_BKG_US_2020-09-01",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Create a similar list of top-selling products in Europe",
       "DataNeeded": "2020_salestraffic.allorders_BKG_2020-01-01_2020-09-01",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "3": {
       "Request": "Compare top-selling products across both regions",
       "DataNeeded": "1, 2",
       "PaginationNeeded": "False",
-      "RequiresCode": "False",
+      "RequiresCode": "True",
       "RequiresQuery": "False"
     }
   }
@@ -333,19 +339,20 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Generate an inventory turnover report for the current month",
       "DataNeeded": "AAC_TopLevelTables_Finals.inventory_turnover_cogs_month",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Create an inventory forecast based on historical data",
       "DataNeeded": "AAC_TopLevelTables_Finals.inventoryactualsfcast_month",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     }
   }
 }
+
 
 
 ### Compare overall sales and returns by SKU
@@ -354,15 +361,15 @@ Date last edited: 10/09/2024 at 4:00pm ET
     "1": {
       "Request": "Create a list of SKUs along with their total sales volume",
       "DataNeeded": "AAC_TopLevelTables_Finals.sku_salesunits_month_blend_fcastactuals",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "2": {
       "Request": "Get the number of returns for each SKU in the last 6 months",
       "DataNeeded": "AACC_inventoryadjustment.brands_amazonreturns",
-      "PaginationNeeded": "False",
-      "RequiresCode": "True",
+      "PaginationNeeded": "True",
+      "RequiresCode": "False",
       "RequiresQuery": "True"
     },
     "3": {
@@ -374,6 +381,7 @@ Date last edited: 10/09/2024 at 4:00pm ET
     }
   }
 }
+
 
 
 
