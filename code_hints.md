@@ -1,9 +1,12 @@
-Date last edited: 10/4/2024 at 4:40PM
+Date last edited: 10/12/2024 at 4:51PM
 
 # Successful Code Logics
 
 ### Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.
 ```
+# Create a copy of the input data dictionary
+data_copy = data.copy()
+
 # Function to safely parse JSON
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
@@ -60,8 +63,11 @@ result = {
 
 ### Get all previous order items for a list of customers (given their emails)
 ```
+# Create a copy of the input data dictionary
+data_copy = data.copy()
+
 # Parse the orders JSON data
-orders_data = parse_json_if_string(orders_json_string)
+orders_data = parse_json_if_string(data_copy['orders'])
 
 # List of specified email addresses to filter
 specified_emails = [...]
