@@ -6,7 +6,7 @@ Date last edited: 10/14/2024 at 6:00pm ET
 ### amz_salestraffic.amz_salestraffic_date
 
 #### Dataset Components:
-A collection of sales and feedback data for various Amazon seller accounts across different countries and dates. Here's a breakdown of the columns and what they likely represent:
+A collection of sales and feedback data for various Amazon seller accounts across different countries and dates. Includes the following columns:
 
 1. **Date**: This column indicates the specific date on which the data was recorded. It allows for time-series analysis and tracking trends over time.
 
@@ -38,7 +38,7 @@ Overall, this dataset can be a valuable tool for Amazon sellers to enhance their
 ### amazon_orders.amz_numberorders_per_datesku
 
 #### Dataset Components:
-Contains information about product orders on Amazon, segmented by date, brand, country, and SKU (Stock Keeping Unit). Here's a breakdown of the dataset's components and the potential insights that can be drawn from it:
+Contains information about product orders on Amazon, segmented by date, brand, country, and SKU (Stock Keeping Unit). Includes the following columns:
 
 1. **Date**: The date on which the orders were placed. This allows for time-series analysis and trend identification.
 
@@ -72,49 +72,12 @@ Contains information about product orders on Amazon, segmented by date, brand, c
 
 Overall, this dataset is a valuable resource for businesses looking to optimize their sales strategies, improve customer satisfaction, and enhance operational efficiency. By leveraging the insights from this data, companies can make informed decisions that drive growth and profitability.
 
-
-### amazon_orders.amz_numberorders_per_datesku
-
-#### Dataset Components:
-Contains information about product orders on Amazon, segmented by date, brand, country, and SKU (Stock Keeping Unit). Here's a breakdown of the dataset's components and the potential insights that can be drawn from it:
-
-1. **Date**: The date on which the orders were placed. This allows for time-series analysis and trend identification.
-
-2. **Brand**: The brand of the product ordered. This helps in analyzing brand performance and customer preferences.
-
-3. **Country**: The country where the order was placed. This is useful for geographical analysis and understanding market penetration.
-
-4. **Channel**: The sales channel, which in this case is Amazon. This indicates the platform through which the sales were made.
-
-5. **Official SKU**: A unique identifier for each product. This allows for detailed product-level analysis.
-
-6. **Ordered Quantity**: The number of units ordered for each SKU on a given date. This is crucial for understanding demand and sales volume.
-
-#### Dataset Potential Insights:
-
-1. **Sales Trends Over Time**: By analyzing the ordered quantities over different dates, you can identify trends such as peak sales periods, seasonal variations, and growth patterns.
-
-2. **Brand Performance**: Comparing ordered quantities across different brands can reveal which brands are performing well and which are not. This can inform marketing and inventory decisions.
-
-3. **Geographical Insights**: Analyzing data by country can help identify strong and weak markets, allowing for targeted marketing strategies and resource allocation.
-
-4. **Product Popularity**: By examining the ordered quantities of different SKUs, you can determine which products are most popular and which may need additional promotion or discontinuation.
-
-5. **Inventory Management**: Understanding order patterns can help in forecasting demand and managing inventory levels to avoid stockouts or overstock situations.
-
-6. **Channel Effectiveness**: Although the dataset only includes Amazon as a channel, if expanded to include other channels, it could provide insights into the effectiveness of different sales platforms.
-
-7. **Market Expansion Opportunities**: Identifying countries with growing order quantities can highlight potential markets for expansion.
-
-8. **Promotional Impact**: If promotional periods are known, the dataset can be used to assess the impact of marketing campaigns on sales.
-
-Overall, this dataset is a valuable resource for businesses looking to optimize their sales strategies, improve customer satisfaction, and enhance operational efficiency. By leveraging the insights from this data, companies can make informed decisions that drive growth and profitability.
 
 ### AAA_General_Core_Tables.official_sku_database
 
 #### Dataset Components:
 
-A product catalog that includes information about various products sold by different brands across multiple sales channels and countries. Here's a breakdown of the key components and potential insights that can be drawn from this dataset:
+A product catalog that includes information about various products sold by different brands across multiple sales channels and countries. Includes the following columns:
 
 1. **Brand**: The name of the company or brand that manufactures or sells the product. This can help in analyzing brand performance and market presence.
 
@@ -153,7 +116,7 @@ Overall, this dataset provides a comprehensive view of a company's product offer
 ### Etsy.etsy_Reviews
 
 #### Dataset Components:
-A collection of customer reviews for products sold on Etsy. Based on the preview provided, the dataset likely contains the following columns:
+A collection of customer reviews for products sold on Etsy. Includes the following columns:
 
 1. **_daton_user_id**: An identifier for the user who processed or uploaded the data.
 2. **_daton_batch_runtime**: A timestamp indicating when the data batch was processed.
@@ -195,7 +158,7 @@ Overall, this dataset provides a rich source of information for understanding cu
 ### Etsy.etsy_ListingsByShop
 
 #### Dataset Components:
-Contains detailed information about various product listings from a specific Etsy shop. Based on the preview provided, the dataset includes a wide range of attributes for each product listing. Here's a breakdown of what the dataset likely contains:
+Contains detailed information about various product listings from Etsy. Includes the following information:
 
 1. **Listing Information:**
    - `listing_id`: Unique identifier for each product listing.
@@ -263,7 +226,7 @@ Overall, this dataset provides a comprehensive view of a shop's product listings
 ### shopify.shopify_products
 
 #### Dataset Components:
-A collection of product listings from various Shopify stores. Each row in the dataset represents a product and contains several attributes that provide detailed information about the product. The dataset includes the following columns:
+A collection of product listings from various Shopify stores. Each row in the dataset represents a product and contains several attributes that provide detailed information about the product. Includes the following columns:
 
 1. **Date**: The date when the product information was recorded or updated. This can help track changes over time.
 
@@ -356,7 +319,7 @@ Overall, this dataset is a valuable resource for understanding sales dynamics, c
 ### walmart.walmart_customer_reviews
 
 #### Dataset Components:
-Contains information about customer reviews for various products sold through Walmart. The dataset includes the following columns:
+Contains information about customer reviews for various products sold through Walmart. Includes the following columns:
 
 1. **Date**: The date when the review data was recorded or aggregated.
 2. **Brand**: The brand name of the product being reviewed.
@@ -385,7 +348,7 @@ Contains information about customer reviews for various products sold through Wa
 
 8. **Competitive Analysis**: Brands can use this data to benchmark their performance against competitors, identifying strengths and weaknesses in their product offerings.
 
-Overall, this dataset provides valuable information for retailers, manufacturers, and marketers to understand customer preferences, improve product offerings, and enhance customer satisfaction.
+Overall, this dataset provides info to understand customer preferences, improve product offerings, and enhance customer satisfaction.
 
 ### walmart.walmart_returns
 
@@ -440,7 +403,7 @@ Contains information about Walmart inventory levels over time for various produc
 5. **Supply Chain Efficiency**: Insights into how quickly inventory is replenished and sold can highlight areas for improvement in the supply chain.
 6. **Sales Analysis**: Although direct sales data isn't provided, changes in availtosell_qty can be used to infer sales activity, especially when combined with input_qty data.
 
-Overall, this dataset is a valuable resource for inventory management, helping Walmart ensure product availability, minimize costs, and improve customer satisfaction.
+Overall, this dataset is a valuable resource for inventory management, helping ensure product availability, minimize costs, and improve customer satisfaction.
 
 ### Ebay.ebay_sales
 
@@ -482,7 +445,7 @@ Record of sales transactions from an eBay store or multiple stores, capturing va
 
 8. **Promotional Effectiveness**: If the dataset includes data from promotional periods, it can be used to evaluate the impact of marketing campaigns on sales.
 
-Overall, this dataset provides a comprehensive view of sales activity and can be a valuable tool for decision-making in areas such as marketing, inventory management, and strategic planning.
+Overall, this dataset provides a comprehensive view of sales activity and can be a valuable tool for marketing, inventory management, and strategic planning.
 
 ### COGS.cogs_all_brands
 
@@ -513,12 +476,12 @@ Collection of cost-related data for various products sold by different brands on
 
 7. **Cost Optimization**: By understanding the breakdown of costs, businesses can explore ways to reduce FOB costs or costs to landed, potentially through negotiating better terms with suppliers or optimizing logistics.
 
-Overall, this dataset provides a comprehensive view of the cost structure for products sold on Amazon, enabling businesses to make informed decisions to enhance profitability and efficiency.
+Overall, this dataset provides a comprehensive view of the cost structure for products sold on Amazon to enhance profitability and efficiency.
 
 ### Etsy.etsy_sales
 
 #### Dataset Components:
-Sales record from the Etsy platform. The dataset includes the following columns:
+Sales record from Etsy. The dataset includes the following columns:
 
 1. **Date**: The date on which the sale occurred. This allows for time-series analysis and understanding sales trends over time.
 
@@ -557,13 +520,13 @@ Sales record from the Etsy platform. The dataset includes the following columns:
 
 8. **Inventory Management**: Understanding which products sell the most can help in managing inventory levels and reducing stockouts or overstock situations.
 
-Overall, this dataset provides a comprehensive view of sales activity on Etsy for the included brands, allowing for detailed analysis and strategic insights into sales performance, customer behavior, and market opportunities.
+Overall, this dataset provides a comprehensive view of sales activity on Etsy for insights into sales performance, customer behavior, and market opportunities.
 
 ### Shopify.shopify_orders
 
 #### Dataset Components:
 
-Collection of transactional data from a Shopify store, capturing details about individual orders. The dataset includes the following columns:
+Collection of transactional data from Shopify, capturing details about individual orders. The dataset includes the following columns:
 
 1. **Order Details:**
    - **Process Date:** The date when the order was processed.
@@ -612,7 +575,7 @@ Collection of transactional data from a Shopify store, capturing details about i
    - **Order Volume Trends:** Tracking changes in order volume over time to identify peak sales periods.
    - **Shipping Costs:** Analyzing shipping costs to optimize logistics and reduce expenses.
 
-Overall, this dataset provides a comprehensive view of the sales and operational aspects of a Shopify store, enabling data-driven decision-making to enhance business performance.
+Overall, this dataset provides a comprehensive view of the sales and operational aspects of involvement on Shopify.
 
 ### Shopify.shopify_refunds
 
@@ -644,7 +607,7 @@ Information about refunds processed through Shopify for various brands. Each row
 
 7. **Customer Behavior**: While not directly available in the dataset, combining this data with customer data could provide insights into customer behavior, such as identifying customers with high refund rates and understanding their reasons for dissatisfaction.
 
-Overall, this dataset can be a valuable tool for businesses to improve their operations, enhance customer satisfaction, and optimize their product offerings by addressing the root causes of refunds.
+Overall, this dataset can be a valuable tool to improve operations, enhance customer satisfaction, and optimize their product offerings by addressing the root causes of refunds.
 
 
 ### amazon_orders.amz_returns_report
@@ -727,7 +690,7 @@ Collection of weekly data on the Best Seller Rank (BSR) for various products sol
 
 8. **Localization Strategy**: Insights into how products perform in different countries can inform localization strategies, such as product modifications or targeted marketing.
 
-Overall, this dataset is a valuable resource to optimize their product offerings, marketing strategies, and market expansion plans on Amazon.
+Overall, this dataset is a valuable resource to optimize product offerings, marketing strategies, and market expansion plans on Amazon.
 
 
 ### shopify.shopify_customers_orders_data
@@ -773,7 +736,7 @@ Comprehensive collection of customer order data from Shopify. Includes the follo
 
 - **Operational Efficiency**: Insights into processing methods and subscription orders can help optimize order fulfillment processes and evaluate the success of subscription models.
 
-Overall, this dataset provides a rich source of information for e-commerce businesses to enhance their understanding of customer behavior, optimize operations, and improve marketing strategies.
+Overall, this dataset provides a rich source of information to enhance understanding of customer behavior, optimize operations, and improve marketing strategies.
 
 ## Successful Plans
 ### Get the name of a particular SKU
