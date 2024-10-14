@@ -2,27 +2,38 @@ Date last edited: 10/13/2024 at 8:50pm ET
 
 ## Notes
 ### Available datasets and tables, in the format dataset.table:
-AAA_General_Core_Tables.official_sku_database
-AACC_inventoryadjustment.brands_amazonorders
-AACC_inventoryadjustment.brands_amazonreturns
-COGS.cogs_all_brands
-Ebay.ebay_sales
-Etsy.etsy_ListingsByShop
-Etsy.etsy_Reviews
-Etsy.etsy_sales
-amazon_bsr_and_other.bsr_weekly
-amazon_orders.amz_numberorders_per_datesku
-amazon_orders.amz_returns_report
-amz_salestraffic.amz_salestraffic_date
-names.txt
-shopify.shopify_customers_orders_data
-shopify.shopify_orders
-shopify.shopify_products
-shopify.shopify_refunds
-walmart.walmart_customer_reviews
-walmart.walmart_inventory
-walmart.walmart_orders
-walmart.walmart_returns
+#### All Orders: 
+* if sku ends with -US or -CA, remove
+- Ebay/ebay_sales
+- walmart/walmart_orders
+- Etsy/etsy_sales
+- amazon_orders/amz_numberorders_per_datesku
+- shopify/shopify_orders
+
+#### All Products and SKUs (across all channels): 
+- AAA_General_Core_Tables/official_sku_database
+
+#### COGS (all brands): 
+- COGS/cogs_all_brands
+
+#### Amazon BSR: 
+- amazon_bsr_and_other/bsr_weekly
+
+#### Returns/refunds
+- amazon_orders/amz_returns_report
+- walmart/walmart_returns
+- shopify/shopify_refunds
+
+#### Customer Reviews: 
+- walmart/walmart_customer_reviews
+- Etsy/etsy_Reviews.csv
+
+#### Shopify Customer Order Data: 
+- shopify/shopify_customers_orders_data
+
+#### Listings by Shop: 
+- shopify/shopify_products
+- Etsy/etsy_ListingsByShop
 
 ## Successful Plans
 ### Get the name of a particular SKU
