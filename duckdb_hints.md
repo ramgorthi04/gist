@@ -16,6 +16,12 @@ FROM df
 WHERE channel = 'Walmart' 
 AND strftime('%Y-%m', CAST(date AS DATE)) = strftime('%Y-%m', CURRENT_DATE)
 
+### Filter by channel 'Ebay' and date within the current month. Make sure to CAST date AS DATE.
+SELECT date, Custom_label AS SKU, units AS ordered_quantity 
+FROM df 
+WHERE strftime('%Y-%m', CAST(date AS DATE)) = strftime('%Y-%m', CURRENT_DATE) 
+LIMIT 100;
+
 ## Common Errors
 Catalog Error: Scalar Function with name curdate does not exist. 
 Binder Error: No function matches the given name and argument types 'date_sub(DATE, INTERVAL)'. 
