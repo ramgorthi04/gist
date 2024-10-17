@@ -1,4 +1,4 @@
-Date last edited: 10/17/2024 at 7:21pm ET
+Date last edited: 10/17/2024 at 7:26pm ET
 Max N is 250.  
 
 # Successful Plans
@@ -265,13 +265,6 @@ Plan:
             "DataNeeded": "1, customers",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
-        },
-        "3": {
-            "Request": "Segment customers based on their purchase history of complementary products",
-            "DataNeeded": "2",
-            "PaginationNeeded": "False",
-            "RequiresCode": "False",
             "RequiresQuery": "False"
         }
     }
