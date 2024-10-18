@@ -1,26 +1,13 @@
 
 ## Successful Queries
 
-### Get data on a particular SKU from Amazon
-SELECT date, ordered_quantity FROM df WHERE official_sku = 'BC-001' AND channel = 'Amazon' AND CAST(date AS DATE) >= CURRENT_DATE - INTERVAL '1 year' LIMIT 100; """
+### Get data on a particular SKU
+SELECT date, ordered_quantity FROM df WHERE official_sku = 'BC-001' AND CAST(date AS DATE) >= CURRENT_DATE - INTERVAL '1 year' LIMIT 100; """
 
-### Filter by channel 'Amazon' for the current month, including SKU and ordered quantity. Make sure to CAST date AS DATE.
+### Get all SKUs and their sales for the current month, including SKU and ordered quantity. Make sure to CAST date AS DATE.
 SELECT date, official_sku, ordered_quantity 
 FROM df 
-WHERE channel = 'Amazon' 
 AND strftime('%Y-%m', date::DATE) = strftime('%Y-%m', CURRENT_DATE)
-
-### Filter by channel 'Walmart' and date within the current month. Make sure to CAST date AS DATE.
-SELECT * 
-FROM df 
-WHERE channel = 'Walmart' 
-AND strftime('%Y-%m', CAST(date AS DATE)) = strftime('%Y-%m', CURRENT_DATE)
-
-### Filter by channel 'Ebay' and date within the current month. Make sure to CAST date AS DATE.
-SELECT date, Custom_label AS SKU, units AS ordered_quantity 
-FROM df 
-WHERE strftime('%Y-%m', CAST(date AS DATE)) = strftime('%Y-%m', CURRENT_DATE) 
-LIMIT 100;
 
 ## Common Errors
 Catalog Error: Scalar Function with name curdate does not exist. 
