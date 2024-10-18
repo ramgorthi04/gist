@@ -1,4 +1,4 @@
-Date last edited: 10/17/2024 at 9:48pm ET
+Date last edited: 10/18/2024 at 6:11pm ET
 
 
 ## Available datasets and tables, in the format dataset.table:
@@ -339,7 +339,7 @@ Customer order data from Shopify. Key columns:
             "RequiresQuery": "True"
         },
         "4": {
-            "Request": "Aggregate sales data from Amazon, Walmart, and eBay for SKU 'BC-001' over the last year and plot cumulative sales over time.",
+            "Request": "Aggregate sales data from Amazon, Walmart, and eBay for SKU 'BC-001' over the last year and plot sales over time.",
             "DataNeeded": "1, 2, 3",
             "RequiresCode": "True",
             "RequiresQuery": "False"
