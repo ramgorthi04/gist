@@ -275,6 +275,47 @@ Customer order data from Shopify. Key columns:
     }
 }
 
+### Get the top SKU this month
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract all sales data by SKU for this month.",
+            "DataNeeded": "amazon_orders.amz_numberorders_per_datesku",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Extract all sales data by SKU for this month.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Extract all sales data by SKU for this month.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Aggregate sales data from Amazon, Walmart, and eBay to identify the best performing SKU this month.",
+            "DataNeeded": "1, 2, 3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "5": {
+            "Request": "Retrieve the product name for the best performing SKU identified.",
+            "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 4",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        }
+    }
+}
+
 ### Chart sales for a particular SKU
 **NOTE** You must retrieve sales data from EVERY RELEVANT DATASET that contains orders information. You MUST BE THOROUGH.
 {
