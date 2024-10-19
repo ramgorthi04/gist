@@ -445,15 +445,7 @@ orders_data = parse_json_if_string(orders_json_string)
 # List of specified email addresses to filter
 specified_emails = [
     "anonymous-8651470169255@example.com",
-    "Enrightskisv@gmail.com",
-    "4deming@comcast.net",
-    "Sf4okeefe@concast.net",
-    "egeddes1@verizon.net",
-    "Ashlindmom2@gmail.com",
-    "ledanzig@me.com",
-    "heath@crosslanesearch.com",
-    "Mollypope@yahoo.com",
-    "Susankempler@yahoo.com"
+    ...
 ]
 
 # Create a set for faster lookup
