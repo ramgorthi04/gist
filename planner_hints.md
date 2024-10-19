@@ -198,13 +198,6 @@ Plan:
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
-        },
-        "4": {
-            "Request": "Create a list of customers identified in step 3 as candidates for a loyalty program upgrade",
-            "DataNeeded": "3",
-            "PaginationNeeded": "False",
-            "RequiresCode": "False",
-            "RequiresQuery": "False"
         }
     }
 }
