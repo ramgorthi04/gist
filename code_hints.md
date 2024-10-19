@@ -1,4 +1,4 @@
-Date last edited: 10/12/2024 at 4:51PM
+Date last edited: 10/19/2024 at 1:28PM
 
 # Successful Code Logics
 
@@ -719,6 +719,7 @@ result = {
 ```
 
 ### Show a graph/chart
+Note that mdates expects datetime objects, not strings. Instead of using strftime to convert dates to strings, keep the dates as datetime objects for proper handling by matplotlib. Make sure the final result JSON is serializable.
 FUCKING NAME YOUR FILE `query_visualization.png`
 ```
 import matplotlib
