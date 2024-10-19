@@ -256,6 +256,8 @@ Customer order data from Shopify. Key columns:
 - **brand**: Product brand.
 - **customer_country**: Customer location.
 - **gross_sales**: Total sales.
+- **customer_name**
+- **verified_email**
 
 **Potential Insights**:
 - Analyze customer behavior and sales trends.
