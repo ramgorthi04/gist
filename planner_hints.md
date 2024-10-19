@@ -3,6 +3,41 @@ Max N is 250.
 
 # Successful Plans
 
+### Segment customers based on their preferred shopping time (morning, afternoon, evening) and day of the week.
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve all orders with timestamps and customer IDs to analyze shopping times and days of the week.",
+            "DataNeeded": "orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "2": {
+            "Request": "Extract customer IDs and order timestamps from the orders data.",
+            "DataNeeded": "1",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "3": {
+            "Request": "Determine the preferred shopping time (morning, afternoon, evening) and day of the week for each customer based on their order timestamps.",
+            "DataNeeded": "2",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "4": {
+            "Request": "Segment customers into groups based on their preferred shopping time and day of the week.",
+            "DataNeeded": "3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
+
 ### Find customers with high order volumes in the past
 Use the customers data to count the number of orders for each customer.
 
