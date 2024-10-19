@@ -724,18 +724,25 @@ FUCKING NAME YOUR FILE `query_visualization.png`
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive Agg backend for PNG file generation
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates # If you need to plot dates
 import mplcyberpunk
 plt.style.use("cyberpunk")
+
 
 <write code here to prepare data for plotting>
 
 # Plot the data
-plt.figure(figsize=(<INSERT APPROPRIATE SIZES HERE>))
+plt.figure(figsize=(<INSERT APPROPRIATE SIZES HERE>)) # Increase the width of the figure if there's a lot of data
 plt.plot(x_data, y_data, marker='o', linestyle='-', color='b')
 plt.xlabel(x_label)
 plt.ylabel(y_label)
 plt.title(title)
 plt.grid(True)
+
+# Improve x-axis date formatting if applicable
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())  # Set major ticks to months
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))  # Format date as 'Month Year'
+
 plt.xticks(rotation=45)
 plt.tight_layout()
 mplcyberpunk.add_glow_effects()
