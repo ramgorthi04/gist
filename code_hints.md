@@ -1,4 +1,4 @@
-Date last edited: 10/19/2024 at 1:28PM
+Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
 
@@ -837,4 +837,86 @@ top_customers = sorted(filtered_customers.items(), key=lambda x: x[1]['total_sco
 
 # Get the top 500 customers
 result = top_customers[:500]
+```
+
+### Calculate profitability of a product given various data sources
+```
+import json
+
+# Extract and parse the relevant data
+amazon_data = parse_json_if_string(data_copy.get('2', '[]'))
+walmart_data = parse_json_if_string(data_copy.get('3', '[]'))
+shopify_data = parse_json_if_string(data_copy.get('6', '[]'))
+cost_data = parse_json_if_string(data_copy.get('7', '[]'))
+
+# Initialize variables to store total revenue, costs, and number of orders
+total_revenue = 0.0
+total_costs = 0.0
+total_orders_revenue = 0  # To track the total number of orders for which revenue is calculated
+total_orders_cost = 0     # To track the total number of orders for which costs are calculated
+
+# Aggregate sales data from Shopify
+for entry in shopify_data:
+    try:
+        if entry.get('official_sku') == 'SC-001-BRO':
+            total_revenue += entry.get('gross_sales', 0.0)
+            total_orders_revenue += entry.get('ordered_quantity', 0)  # Track total orders for revenue
+    except Exception as e:
+        print(f"Error processing transaction data: {e}")
+
+# Aggregate sales data from Amazon, data is MISSING the price of each sale
+amazon_selling_price = 69.99  # Assume an average selling price for Amazon
+
+for entry in amazon_data:
+    try:
+        ordered_quantity = entry.get('ordered_quantity', 0)
+        total_revenue += ordered_quantity * amazon_selling_price
+        total_orders_revenue += ordered_quantity  # Track total orders for revenue
+    except Exception as e:
+        print(f"Error processing Amazon data: {e}")
+
+# Aggregate sales data from Walmart
+for entry in walmart_data:
+    try:
+        if entry.get('ordered_quantity') and entry.get('gross_sales'):
+            total_revenue += entry.get('gross_sales', 0.0)
+            total_orders_revenue += entry.get('ordered_quantity', 0)  # Track total orders for revenue
+    except Exception as e:
+        print(f"Error processing Walmart data: {e}")
+
+# Aggregate cost data
+for entry in cost_data:
+    try:
+        fob_costs = entry.get('fob_costs', 0.0)
+        costs_to_landed = entry.get('costs_to_landed', 0.0)
+        total_costs += fob_costs + costs_to_landed
+        total_orders_cost += 1  # Assume each cost entry corresponds to 1 order
+    except Exception as e:
+        print(f"Error processing cost data: {e}")
+
+# Adjust revenue and cost based on the difference between orders
+if total_orders_revenue > total_orders_cost:
+    # More orders with revenue than cost, adjust revenue downward
+    adjustment_factor = total_orders_cost / total_orders_revenue
+    adjusted_revenue = total_revenue * adjustment_factor
+    print(f"Adjusting revenue downward by factor {adjustment_factor}")
+else:
+    adjusted_revenue = total_revenue
+
+if total_orders_cost > total_orders_revenue:
+    # More cost entries than revenue, adjust costs downward
+    adjustment_factor = total_orders_revenue / total_orders_cost
+    adjusted_costs = total_costs * adjustment_factor
+    print(f"Adjusting costs downward by factor {adjustment_factor}")
+else:
+    adjusted_costs = total_costs
+
+# Store the result in a dictionary
+result = {
+    "total_adjusted_revenue": adjusted_revenue,
+    "total_adjusted_costs": adjusted_costs,
+    "total_orders_revenue": total_orders_revenue,  # Total orders we calculated revenue for
+    "total_orders_cost": total_orders_cost         # Total orders we calculated costs for
+}
+
 ```
