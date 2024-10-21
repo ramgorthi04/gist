@@ -865,7 +865,7 @@ for entry in shopify_data:
         print(f"Error processing transaction data: {e}")
 
 # Aggregate sales data from Amazon, data is MISSING the price of each sale
-amazon_selling_price = 69.99  # Assume an average selling price for Amazon
+amazon_selling_price = <INSERT PRICE>  # Assume an average selling price for Amazon based on the data
 
 for entry in amazon_data:
     try:
