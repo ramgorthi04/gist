@@ -1,3 +1,39 @@
+non_channels_ppc.non_channels_ppcmetrics:  
+  Month: DATE  
+  Year_US_Week: INTEGER  
+  US_Week: INTEGER  
+  brand: STRING  
+  country: STRING  
+  channel: STRING  
+  campaign_name: STRING  
+  ppc_spend: FLOAT  
+  ppc_sales: FLOAT  
+  ppc_clicks: INTEGER  
+  ppc_impressions: INTEGER  
+  ppc_orders: INTEGER  
+
+google_ads.gads_campaign_report:  
+  date: DATE  
+  brand: STRING  
+  country: STRING  
+  channel: STRING  
+  campaign_name: STRING  
+  spend: FLOAT  
+  conversions_value: FLOAT  
+  clicks: INTEGER  
+  impressions: INTEGER  
+  conversions: INTEGER  
+
+amazon_advertising.amz_ads_metrics_per_campaign_type:  
+  date: DATE  
+  campaign_type: STRING  
+  brand: STRING  
+  country: STRING  
+  channel: STRING  
+  official_sku: STRING  
+  ppc_spend: FLOAT  
+  ppc_sales: FLOAT  
+
 2020_salestraffic.allchannels_2020_reports_month:
   Year: INTEGER
   Month: INTEGER
