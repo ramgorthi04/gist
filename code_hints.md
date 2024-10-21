@@ -915,8 +915,8 @@ else:
 result = {
     "total_adjusted_revenue": adjusted_revenue,
     "total_adjusted_costs": adjusted_costs,
-    "total_orders_revenue": total_orders_revenue,  # Total orders we calculated revenue for
-    "total_orders_cost": total_orders_cost         # Total orders we calculated costs for
+    "num_revenue_data_exists": total_orders_revenue,  # Total orders we calculated revenue for
+    "num_cost_data_exists": total_orders_cost         # Total orders we calculated costs for
 }
 
 ```
