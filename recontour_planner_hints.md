@@ -368,15 +368,22 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "RequiresQuery": "True"
         },
         "4": {
-            "Request": "Aggregate sales data from Amazon, Walmart, and eBay to identify the best performing SKU this month.",
-            "DataNeeded": "1, 2, 3",
+            "Request": "Extract all sales data by SKU for this month.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify the best performing SKU this month.",
+            "DataNeeded": "1, 2, 3, 4",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         },
-        "5": {
+        "6": {
             "Request": "Retrieve the product name for the best performing SKU identified.",
-            "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 4",
+            "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -406,9 +413,15 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
-        "4": {
-            "Request": "Aggregate sales data from Amazon, Walmart, and eBay for SKU 'BC-001' over the last year and plot sales over time.",
-            "DataNeeded": "1, 2, 3",
+         "4": {
+            "Request": "Extract all sales data for SKU 'BC-001' from Shopify over the last year, including ordered quantity and sales revenue.",
+            "DataNeeded": "shopify.shopify_orders",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify for SKU 'BC-001' over the last year and plot sales over time.",
+            "DataNeeded": "1, 2, 3, 4",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
