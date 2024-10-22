@@ -17,3 +17,4 @@ WHERE return_date::DATE >= CURRENT_DATE - INTERVAL '1 year'
 ## Common Errors
 Catalog Error: Scalar Function with name curdate does not exist. 
 Binder Error: Cannot compare values of type VARCHAR and type TIMESTAMP - an explicit cast is required. 
+Logic Error: Using DATE_TRUNC('year', CURRENT_DATE) with an incorrect interval results in retrieving data for the previous calendar year rather than the last 12 months from today.
