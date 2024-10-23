@@ -920,3 +920,72 @@ result = {
 }
 
 ```
+
+
+### Using orders data, get the next likely order for all customers with SVD
+```
+import pandas as pd
+import numpy as np
+
+def preprocess_data(orders):
+    orders_list = []
+    for order in orders:
+        email = order['email']
+        for item in order['lineItems']['edges']:
+            product_title = item['node']['title']
+            quantity = item['node']['quantity']
+            orders_list.append({
+                'email': email,
+                'product_title': product_title,
+                'quantity': quantity
+            })
+    return pd.DataFrame(orders_list)
+
+def create_interaction_matrix(df):
+    return df.pivot_table(
+        index='email',
+        columns='product_title',
+        values='quantity',
+        aggfunc='sum',
+        fill_value=0
+    )
+
+def perform_svd(interaction_matrix, n_factors=50):
+    # Convert to numpy array and ensure it's float type
+    matrix = interaction_matrix.values.astype(float)
+
+    # Perform SVD using NumPy's linalg.svd
+    U, sigma, Vt = np.linalg.svd(matrix, full_matrices=False)
+
+    # Keep only the top n_factors singular values
+    U = U[:, :n_factors]
+    sigma = np.diag(sigma[:n_factors])
+    Vt = Vt[:n_factors, :]
+
+    # Reconstruct the matrix
+    predicted_ratings = pd.DataFrame(
+        np.dot(np.dot(U, sigma), Vt),
+        index=interaction_matrix.index,
+        columns=interaction_matrix.columns
+    )
+    
+    return predicted_ratings
+
+def get_recommendations(email, predicted_ratings, interaction_matrix, n_recommendations=5):
+    user_ratings = predicted_ratings.loc[email]
+    user_purchases = interaction_matrix.loc[email]
+    recommendations = user_ratings[user_purchases == 0]
+    return recommendations.sort_values(ascending=False).head(n_recommendations).index.tolist()
+
+# Preprocess data using the existing 'data_copy' variable
+df = preprocess_data(data_copy['orders'])
+interaction_matrix = create_interaction_matrix(df)
+
+# Perform SVD
+predicted_ratings = perform_svd(interaction_matrix)
+
+# Generate recommendations for each customer
+result = {}
+for email in interaction_matrix.index:
+    result[email] = get_recommendations(email, predicted_ratings, interaction_matrix)
+```
