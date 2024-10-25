@@ -3,33 +3,29 @@ Date last edited: 10/21/2024 at 2:29pm ET
 
 ## Available datasets and tables, in the format dataset.table:
 
-## amz_salestraffic.amz_salestraffic_date
-Collection of sales and feedback data for Amazon sellers across countries and dates. Key columns include:
+## amazon_orders.amz_orders_wbr
+Data on Amazon orders, covering order dates, locations, channels, products, and financial details. Key columns:
 
-- **Date**: Time-series tracking.
-- **Account**: Seller's name.
-- **Country**: Geographic performance.
-- **FeedbackReceived**: Total feedback entries.
-- **NegativeFeedbackReceived**: Negative feedback entries.
-
-**Potential Insights**:
-- Identify feedback and geographical trends.
-- Compare seller accounts and negative feedback impact.
-
----
-
-## amazon_orders.amz_numberorders_per_datesku
-Data on product orders, segmented by date, brand, country, and SKU. Key columns:
-
-- **Date**: Order date for trend analysis.
-- **Brand**: Brand-specific performance.
-- **Country**: Geographic insights.
-- **Official SKU**: Product-specific tracking.
-- **Ordered Quantity**: Sales volume.
+- **purchase_date_PST**: Date of purchase in PST for timing analysis.
+- **country**: Geographic insights, supporting regional sales analysis.
+- **channel**: Sales channel for identifying market reach (e.g., Amazon, eBay).
+- **account**: Differentiates orders by Amazon account for account-specific analysis.
+- **brand**: Provides insights into brand performance.
+- **official_sku**: Product tracking through official SKU for detailed inventory and product analysis.
+- **asin**: Amazon Standard Identification Number (ASIN) for tracking individual products.
+- **order_status**: Order status (e.g., Shipped, Delivered) to monitor fulfillment and identify delays.
+- **amazon_order_id**: Unique identifier for each order.
+- **ordered_quantity**: Total quantity of each product ordered, enabling sales volume tracking.
+- **gross_sales_including_vat**: Total sales value including VAT for revenue analysis.
 
 **Potential Insights**:
-- Analyze sales trends, brand performance, and market expansion.
-- Improve inventory management and promotional impact.
+- Analyze geographic sales distribution, brand performance, and channel effectiveness.
+- Ensure tax compliance and calculate revenue with and without VAT.
+- Track order statuses for logistics and customer service improvements.
+
+--- 
+
+This structured approach enhances usability, aligning with analysis goals like sales trends, market expansion, and financial reporting.
 
 ---
 
@@ -348,7 +344,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     "Plan": {
         "1": {
             "Request": "Extract all sales data by SKU for this month.",
-            "DataNeeded": "amazon_orders.amz_numberorders_per_datesku",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -397,7 +393,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     "Plan": {
         "1": {
             "Request": "Extract all sales data for SKU 'BC-001' from Amazon over the last year, including ordered quantity.",
-            "DataNeeded": "amazon_orders.amz_numberorders_per_datesku",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
