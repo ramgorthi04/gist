@@ -162,18 +162,20 @@ Sales transactions from eBay stores. Key columns:
 
 ---
 
-## COGS.cogs_all_brands
-Cost data for products sold on Amazon. Key columns:
+## COGS.cin7_stockvaluation_cogs_output
+Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent information available.
 
-- **brand**: Product brand.
-- **skus**: Product identifier.
-- **fob_costs**: Base cost of the product.
-- **costs_to_landed**: Shipping and additional costs.
+- **months_year**: The month and year of the data record.
+- **date**: The specific date of the COGS entry.
+- **brand**: The brand associated with the product.
+- **official_sku**: The stock-keeping unit identifier for the product.
+- **country**: The country where the cost data is relevant.
+- **cogs**: The calculated cost of goods sold for the product.
 
 **Potential Insights**:
-- Analyze product cost structure and optimize pricing.
-- Compare regional costs and supply chain efficiency.
-
+- Track COGS trends over time for recent data.
+- Assess brand-specific cost performance by region.
+- Identify opportunities to reduce costs across supply chains.
 ---
 
 ## Etsy.etsy_sales
@@ -428,4 +430,5 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 ## Plan Logic: 
 
 ### Return rates -- need return data and order data
+### Profitability -- use COGS.cin7_stockvaluation_cogs_output for cost of SKU and get most recent cost
 
