@@ -163,7 +163,7 @@ Sales transactions from eBay stores. Key columns:
 ---
 
 ## COGS.cin7_stockvaluation_cogs_output
-Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent information available.
+Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent information available PER UNIT. 
 
 - **months_year**: The month and year of the data record.
 - **date**: The specific date of the COGS entry.
@@ -430,5 +430,5 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 ## Plan Logic: 
 
 ### Return rates -- need return data and order data
-### Profitability -- use COGS.cin7_stockvaluation_cogs_output for cost of SKU and get most recent cost
+### Profitability -- use COGS.cin7_stockvaluation_cogs_output for cost of SKU per UNIT and get most recent cost.
 
