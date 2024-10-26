@@ -429,6 +429,6 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 --- 
 ## Plan Logic: 
 
-### Return rates -- need return data and order data
+### Return rates -- need return data and order data need Shopify, Walmart, and Amazon data
 ### Profitability -- use COGS.cin7_stockvaluation_cogs_output for cost of SKU per UNIT and get most recent cost.
 
