@@ -492,6 +492,76 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+
+### Return Rate of Particular SKU:
+
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve all order data for SKU 'BKG-000' from Amazon over the past year, including ordered quantity.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Retrieve all return data for SKU 'BKG-000' from Amazon over the past year, including return quantity.",
+            "DataNeeded": "amazon_orders.amz_returns_report",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Retrieve all order data for SKU 'BKG-000' from Walmart over the past year, including ordered quantity.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Retrieve all return data for SKU 'BKG-000' from Walmart over the past year, including return quantity.",
+            "DataNeeded": "walmart.walmart_returns",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Retrieve all order data for SKU 'BKG-000' from Shopify over the past year, including ordered quantity.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Retrieve all refund data for SKU 'BKG-000' from Shopify over the past year, including refund quantity.",
+            "DataNeeded": "shopify.shopify_refunds",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "7": {
+            "Request": "Calculate the total ordered quantity for SKU 'BKG-000' from all channels over the past year including cancelled/refunded orders.",
+            "DataNeeded": "1, 3, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "8": {
+            "Request": "Calculate the total returned quantity for SKU 'BKG-000' from all channels over the past year.",
+            "DataNeeded": "2, 4, 6",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "9": {
+            "Request": "Calculate the return rate for SKU 'BKG-000' by dividing the total returned quantity by the total ordered quantity.",
+            "DataNeeded": "7, 8",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
 --- 
 ## Plan Logic: 
 
