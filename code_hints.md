@@ -1,6 +1,51 @@
 Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
+### Total Cost Calculation 
+```
+import json
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data
+cogs_data = parse_json_if_string(data_copy.get('6', '[]'))
+sales_data = parse_json_if_string(data_copy.get('7', '{}'))
+
+# Initialize a dictionary to store the total cost for each product and to aggregate total quantities
+total_costs = {}
+aggregated_sales_data = {}
+
+# Create a dictionary for quick lookup of COGS per unit by SKU
+cogs_per_unit = {entry['official_sku']: entry['cogs_per_unit'] for entry in cogs_data if 'official_sku' in entry and 'cogs_per_unit' in entry}
+
+# Aggregate total quantities for each SKU in sales_data
+for sku, sales_info in sales_data.items():
+    total_quantity = sales_info.get('total_quantity', 0)
+    if sku in aggregated_sales_data:
+        aggregated_sales_data[sku] += total_quantity
+    else:
+        aggregated_sales_data[sku] = total_quantity
+
+# Calculate the total cost for each product
+for sku, total_quantity in aggregated_sales_data.items():
+    cogs = cogs_per_unit.get(sku)
+    
+    # Check if cogs value exists for the SKU, log missing values
+    if cogs is not None:
+        total_cost = cogs * total_quantity
+        total_costs[sku] = total_cost
+    
+
+# Store the result
+result = total_costs
+
+```
+
 
 ### Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.
 ```
