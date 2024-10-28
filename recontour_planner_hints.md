@@ -426,6 +426,75 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+### Profitability for a particular SKU
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve all sales data for product BKG-003 from Amazon, including gross sales and ordered quantity.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Retrieve all sales data for product BKG-003 from Walmart, including gross sales and ordered quantity.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Retrieve all sales data for product BKG-003 from eBay, including sales revenue and units sold.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Retrieve all sales data for product BKG-003 from Shopify, including gross sales and ordered quantity.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Retrieve all sales data for product BKG-003 from Etsy, including sales revenue and quantity sold.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Retrieve the cost of goods sold (COGS) per unit for product BKG-003.",
+            "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "7": {
+            "Request": "Calculate the total revenue for product BKG-003 by aggregating sales data from all channels and the total quantity sold.",
+            "DataNeeded": "1, 2, 3, 4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "8": {
+            "Request": "Calculate the total cost for product BKG-003 by multiplying the COGS per unit by the total quantity sold.",
+            "DataNeeded": "6, 7",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "9": {
+            "Request": "Calculate the profit for product BKG-003 by subtracting the total cost from the total revenue.",
+            "DataNeeded": "7, 8",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
 --- 
 ## Plan Logic: 
 
