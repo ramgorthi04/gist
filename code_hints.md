@@ -4,7 +4,6 @@ Date last edited: 10/20/2024 at 6:03PM
 
 ### Counting All Ordered Quantity
 ```
-#IF IT IS ONLY COUNTING THE NUMBER OF ORDER QUANTITY COUNT ALL STATUSES AS SEEN BELOW
 import json
 from datetime import datetime, timedelta
 
@@ -32,13 +31,16 @@ for order in orders_data:
         
         # Check if the order is within the past year and has the correct SKU 
         if purchase_date >= one_year_ago and order.get('official_sku') == 'BKG-000':
-            total_ordered_quantity += order.get('ordered_quantity', 0)
+            # Count each order as at least 1, even if ordered_quantity is 0
+            ordered_quantity = order.get('ordered_quantity', 0)
+            total_ordered_quantity += max(ordered_quantity, 1)
     except (ValueError, TypeError):
         # Handle any parsing errors or missing data
         continue
 
 # Store the result
 result = total_ordered_quantity
+
 ```
 
 ### Total Cost Calculation 
