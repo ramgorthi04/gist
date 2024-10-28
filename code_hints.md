@@ -4,6 +4,7 @@ Date last edited: 10/20/2024 at 6:03PM
 
 ### Counting All Ordered Quantity
 ```
+#IF IT IS ONLY COUNTING THE NUMBER OF ORDER QUANTITY COUNT ALL STATUSES AS SEEN BELOW
 import json
 from datetime import datetime, timedelta
 
@@ -29,7 +30,7 @@ for order in orders_data:
         # Parse the purchase date
         purchase_date = datetime.strptime(order.get('purchase_date_PST', ''), '%Y-%m-%d')
         
-        # Check if the order is within the past year and has the correct SKU and status
+        # Check if the order is within the past year and has the correct SKU 
         if purchase_date >= one_year_ago and order.get('official_sku') == 'BKG-000':
             total_ordered_quantity += order.get('ordered_quantity', 0)
     except (ValueError, TypeError):
