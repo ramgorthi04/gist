@@ -2,7 +2,7 @@ Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
 
-### Counting All Ordered Quantity
+### Counting All Ordered Quantity Including Cancelled/Refunds
 ```
 import json
 from datetime import datetime, timedelta
