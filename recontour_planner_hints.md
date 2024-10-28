@@ -152,6 +152,7 @@ Sales transactions from eBay stores. Key columns:
 
 - **Date**: Transaction date.
 - **Brand**: Product brand.
+- **official_sku**: Official SKU.
 - **Item Title**: Product name.
 - **Sales**: Revenue generated.
 - **Units**: Number of units sold.
