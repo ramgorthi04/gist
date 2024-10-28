@@ -1,6 +1,45 @@
 Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
+
+### Counting All Ordered Quantity
+```
+import json
+from datetime import datetime, timedelta
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data
+orders_data = parse_json_if_string(data_copy.get('1', '[]'))
+
+# Initialize total ordered quantity for SKU 'BKG-000'
+total_ordered_quantity = 0
+
+# Define the date one year ago from today
+one_year_ago = datetime.now() - timedelta(days=365)
+
+# Iterate over the orders to calculate the total ordered quantity for SKU 'BKG-000'
+for order in orders_data:
+    try:
+        # Parse the purchase date
+        purchase_date = datetime.strptime(order.get('purchase_date_PST', ''), '%Y-%m-%d')
+        
+        # Check if the order is within the past year and has the correct SKU and status
+        if purchase_date >= one_year_ago and order.get('official_sku') == 'BKG-000':
+            total_ordered_quantity += order.get('ordered_quantity', 0)
+    except (ValueError, TypeError):
+        # Handle any parsing errors or missing data
+        continue
+
+# Store the result
+result = total_ordered_quantity
+```
+
 ### Total Cost Calculation 
 ```
 import json
