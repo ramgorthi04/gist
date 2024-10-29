@@ -11,10 +11,6 @@ from datetime import datetime, timedelta
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Function to remove SKU variations
-def remove_after_second_dash(sku):
-    import re
-    return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
 
 # Copy the data dictionary
 data_copy = data.copy()
@@ -44,7 +40,7 @@ def aggregate_quantities(data, date_key, quantity_key, sku_key, is_return=False)
             
             # Check if the entry is within the past year
             if date >= one_year_ago:
-                sku = remove_after_second_dash(entry.get(sku_key, ''))
+                sku = entry.get(sku_key, '')
                 quantity = abs(entry.get(quantity_key, 0))
                 
                 if is_return:
@@ -76,10 +72,6 @@ from datetime import datetime, timedelta
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Function to remove SKU variations
-def remove_after_second_dash(sku):
-    import re
-    return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
 
 # Copy the data dictionary
 data_copy = data.copy()
