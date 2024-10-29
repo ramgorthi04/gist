@@ -492,6 +492,76 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+### Total Profit in a Month 
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve all sales data for September 2024 from Amazon, including gross sales and ordered quantity.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Retrieve all sales data for September 2024 from Walmart, including gross sales and ordered quantity.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Retrieve all sales data for September 2024 from eBay, including sales revenue and units sold.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Retrieve all sales data for September 2024 from Shopify, including gross sales and ordered quantity.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Retrieve all sales data for September 2024 from Etsy, including sales revenue and quantity sold.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Retrieve the cost of goods sold (COGS) per unit for all products for September 2024.",
+            "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "7": {
+            "Request": "Calculate the total revenue for September 2024 by aggregating sales data from all channels.",
+            "DataNeeded": "1, 2, 3, 4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "8": {
+            "Request": "Calculate the total cost for September 2024 by multiplying the COGS per unit by the total quantity sold per SKU.",
+            "DataNeeded": "1, 2, 3, 4, 5, 6",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "9": {
+            "Request": "Calculate the total profit for September 2024 by subtracting the total cost from the total revenue.",
+            "DataNeeded": "7, 8",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    },
+    "Original user request": "Total profit Septemeber 2024  "
+}
+
 
 ### Return Rate of Particular SKU:
 
