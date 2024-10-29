@@ -2,6 +2,140 @@ Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
 
+### Count Total Ordered Quantity and Returns:
+```
+import json
+from datetime import datetime, timedelta
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Function to remove SKU variations
+def remove_after_second_dash(sku):
+    import re
+    return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data
+amazon_orders = parse_json_if_string(data_copy.get('1', '[]'))
+amazon_returns = parse_json_if_string(data_copy.get('2', '[]'))
+walmart_orders = parse_json_if_string(data_copy.get('3', '[]'))
+walmart_returns = parse_json_if_string(data_copy.get('4', '[]'))
+shopify_orders = parse_json_if_string(data_copy.get('5', '[]'))
+shopify_refunds = parse_json_if_string(data_copy.get('6', '[]'))
+
+# Define the date one year ago from today
+one_year_ago = datetime.now() - timedelta(days=365)
+
+# Initialize dictionaries to store aggregated quantities
+total_ordered = {}
+total_returned = {}
+
+# Helper function to aggregate quantities
+def aggregate_quantities(data, date_key, quantity_key, sku_key, is_return=False):
+    for entry in data:
+        try:
+            # Parse the date
+            date_str = entry.get(date_key, '')
+            date = datetime.strptime(date_str.split(' ')[0], '%Y-%m-%d')
+            
+            # Check if the entry is within the past year
+            if date >= one_year_ago:
+                sku = remove_after_second_dash(entry.get(sku_key, ''))
+                quantity = abs(entry.get(quantity_key, 0))
+                
+                if is_return:
+                    total_returned[sku] = total_returned.get(sku, 0) + quantity
+                else:
+                    total_ordered[sku] = total_ordered.get(sku, 0) + max(quantity, 1)
+        except (ValueError, TypeError):
+            continue
+
+# Aggregate ordered quantities
+aggregate_quantities(amazon_orders, 'purchase_date_PST', 'ordered_quantity', 'official_sku')
+aggregate_quantities(walmart_orders, 'date', 'ordered_quantity', 'official_sku')
+aggregate_quantities(shopify_orders, 'process_date', 'ordered_quantity', 'official_sku')
+
+# Aggregate returned quantities
+aggregate_quantities(amazon_returns, 'return_date', 'return_quantity', 'official_sku', is_return=True)
+aggregate_quantities(walmart_returns, 'return_date', 'return_quantity', 'official_sku', is_return=True)
+aggregate_quantities(shopify_refunds, 'refund_date', 'quantity', 'official_sku', is_return=True)
+
+# Combine results into a single dictionary
+result = {
+    'total_ordered': total_ordered,
+    'total_returned': total_returned
+}
+import json
+from datetime import datetime, timedelta
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Function to remove SKU variations
+def remove_after_second_dash(sku):
+    import re
+    return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data
+amazon_orders = parse_json_if_string(data_copy.get('1', '[]'))
+amazon_returns = parse_json_if_string(data_copy.get('2', '[]'))
+walmart_orders = parse_json_if_string(data_copy.get('3', '[]'))
+walmart_returns = parse_json_if_string(data_copy.get('4', '[]'))
+shopify_orders = parse_json_if_string(data_copy.get('5', '[]'))
+shopify_refunds = parse_json_if_string(data_copy.get('6', '[]'))
+
+# Define the date one year ago from today
+one_year_ago = datetime.now() - timedelta(days=365)
+
+# Initialize dictionaries to store aggregated quantities
+total_ordered = {}
+total_returned = {}
+
+# Helper function to aggregate quantities
+def aggregate_quantities(data, date_key, quantity_key, sku_key, is_return=False):
+    for entry in data:
+        try:
+            # Parse the date
+            date_str = entry.get(date_key, '')
+            date = datetime.strptime(date_str.split(' ')[0], '%Y-%m-%d')
+            
+            # Check if the entry is within the past year
+            if date >= one_year_ago:
+                sku = remove_after_second_dash(entry.get(sku_key, ''))
+                quantity = abs(entry.get(quantity_key, 0))
+                
+                if is_return:
+                    total_returned[sku] = total_returned.get(sku, 0) + quantity
+                else:
+                    total_ordered[sku] = total_ordered.get(sku, 0) + max(quantity, 1)
+        except (ValueError, TypeError):
+            continue
+
+# Aggregate ordered quantities
+aggregate_quantities(amazon_orders, 'purchase_date_PST', 'ordered_quantity', 'official_sku')
+aggregate_quantities(walmart_orders, 'date', 'ordered_quantity', 'official_sku')
+aggregate_quantities(shopify_orders, 'process_date', 'ordered_quantity', 'official_sku')
+
+# Aggregate returned quantities
+aggregate_quantities(amazon_returns, 'return_date', 'return_quantity', 'official_sku', is_return=True)
+aggregate_quantities(walmart_returns, 'return_date', 'return_quantity', 'official_sku', is_return=True)
+aggregate_quantities(shopify_refunds, 'refund_date', 'quantity', 'official_sku', is_return=True)
+
+# Combine results into a single dictionary
+result = {
+    'total_ordered': total_ordered,
+    'total_returned': total_returned
+}
+```
+
 ### Counting All Ordered Quantity Including Cancelled/Refunds
 ```
 import json
