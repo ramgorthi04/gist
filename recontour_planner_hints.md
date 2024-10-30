@@ -531,7 +531,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "RequiresQuery": "True"
         },
         "6": {
-            "Request": "Retrieve the cost of goods sold (COGS) per unit for all products for September 2024.",
+            "Request": "Retrieve most recent cost of goods sold (COGS) per unit for all products.",
             "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
