@@ -2,6 +2,49 @@ Date last edited: 10/20/2024 at 6:03PM
 
 # Successful Code Logics
 
+### Calculate Core Cost for Product
+```
+import json
+import re
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Function to extract the core SKU
+def remove_after_second_dash(sku):
+    return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data
+cogs_data = parse_json_if_string(data_copy.get('6', '[]'))
+sales_data = parse_json_if_string(data_copy.get('7', '{}'))
+
+# Initialize a dictionary to store the total cost for each product
+total_costs = {}
+
+# Create a dictionary for quick lookup of COGS per unit by Core SKU
+cogs_per_unit = {remove_after_second_dash(entry['official_sku']): entry['cogs'] 
+                 for entry in cogs_data if 'official_sku' in entry and 'cogs' in entry}
+
+# Calculate the total cost for each product
+for sku, sales_info in sales_data.items():
+    total_quantity = sales_info.get('total_quantity', 0)
+    core_sku = remove_after_second_dash(sku)
+    cogs = cogs_per_unit.get(core_sku)
+    
+    # Check if COGS value exists for the Core SKU
+    if cogs is not None:
+        total_cost = cogs * total_quantity
+        total_costs[sku] = total_cost  # Store using full SKU
+
+# Store the result
+result = total_costs
+```
+
+
 ### Count Total Ordered Quantity and Returns:
 ```
 import json
