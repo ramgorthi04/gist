@@ -637,5 +637,5 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 ### FOR EVERY SINGLE QUERY TO DO WITH PROFITABILITY MAKE SURE EVERY FUCKING STEP INCLUDES DATA ON ORDERED QUANTITY AND THE COGS*QUANTITY HAS DATA FOR EVERY SKU QUANTITY NEEDED
 ### Return rates -- need return data and order data need Shopify, Walmart, and Amazon data and fields of official_sku, return quantities, and reasons among others needed. 
 ### Profitability -- use COGS.cin7_stockvaluation_cogs_output for cost of SKU per UNIT and get most recent cost. To calculate total cost for a product remember to include quantity of sales.
-### EVERY TIME YOU CALCULATE REVENUE -- INCLUDE THE FACT THAT YOU PROVIDE ORDERED QUANTITY ALSO IN THE PLAN
+
 
