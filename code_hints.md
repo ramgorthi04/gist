@@ -11,7 +11,7 @@ import re
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
-# Function to extract the core SKU
+# Function to extract the core SKU -- IF PRODUCT EXTENSIONS MENTIONED IN ORIGINAL REQUEST DON'T USE
 def remove_after_second_dash(sku):
     return re.sub(r'^([^-\s]*-[^-\s]*)-.*$', r'\1', sku)
 
