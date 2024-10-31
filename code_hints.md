@@ -1,4 +1,4 @@
-Date last edited: 10/20/2024 at 6:03PM
+Date last edited: 10/30/2024 at 10:05PM
 
 # Successful Code Logics
 
@@ -1245,3 +1245,20 @@ result = {}
 for email in interaction_matrix.index:
     result[email] = get_recommendations(email, predicted_ratings, interaction_matrix)
 ```
+
+### Calculate sales dollar and unit lift using discount rates and sales data from multiple months
+Create a data structure to store each SKU with a record of discount rate, sales dollars, and units sold for each month over the past 4 months. For each SKU, run a loop over the past 4 months. For each pair of consecutive months, calculate the difference (delta) in the discount rate, sales dollars, and units sold. Then, calculate the sales dollar and unit uplift per discount data using the formulas below and store these values for each SKU.
+Calculate Sales Dollar Lift per Discount Delta:
+```
+Sales Dollar Lift per Discount Delta = ((Sales Dollars in new month - Sales Dollars in previous month) / Sales Dollars in previous month) 
+/ (Discount Rate in new month - Discount Rate in previous month) 
+* 100
+```
+Calculate Unit Lift per Discount Delta:
+```
+Unit Lift per Discount Delta = ((Units Sold in new month - Units Sold in previous month) / Units Sold in previous month) 
+/ (Discount Rate in new month - Discount Rate in previous month) 
+* 100
+```
+Store both these monthly metrics in a data structure.
+Finally, use the monthly metrics to come up with cumulative scores for each SKU.
