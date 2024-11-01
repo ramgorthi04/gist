@@ -1320,21 +1320,33 @@ Finally, use the monthly metrics to come up with cumulative scores for each SKU.
 
 Example code
 ```
+import json
+from datetime import datetime, date
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Copy the data dictionary
+data_copy = data.copy()
+
 # Parse the necessary data
-july_discounts = parse_json_if_string(data.get('1', '[]'))
-august_discounts = parse_json_if_string(data.get('2', '[]'))
-september_discounts = parse_json_if_string(data.get('3', '[]'))
-october_discounts = parse_json_if_string(data.get('4', '[]'))
-sales_data = parse_json_if_string(data.get('5', '[]'))
+july_discounts = parse_json_if_string(data_copy.get('1', '[]'))
+august_discounts = parse_json_if_string(data_copy.get('2', '[]'))
+september_discounts = parse_json_if_string(data_copy.get('3', '[]'))
+october_discounts = parse_json_if_string(data_copy.get('4', '[]'))
+sales_data = parse_json_if_string(data_copy.get('5', '[]'))
 
 # Helper function to extract discount rates by SKU
-def extract_discounts(discount_data, key_name, month_name):
+def extract_discounts(discount_data, key_name):
     discounts = {}
     for entry in discount_data:
         sku = entry.get(key_name)
         if sku:
             try:
                 discount = float(entry.get('Discount_', entry.get('Discount', entry.get('discount_rate', '0'))))
+                if discount > 1:
+                    discount /= 100  # Convert percentage to decimal
             except ValueError:
                 discount = 0.0
             discounts[sku] = discount
@@ -1342,31 +1354,38 @@ def extract_discounts(discount_data, key_name, month_name):
 
 # Extract discounts for each month
 discounts_per_month = {
-    'July': extract_discounts(july_discounts, 'SKU', 'July'),
-    'August': extract_discounts(august_discounts, 'ManufacturerSKU', 'August'),
-    'September': extract_discounts(september_discounts, 'product_code', 'September'),
-    'October': extract_discounts(october_discounts, 'product_code', 'October'),
+    'July': extract_discounts(july_discounts, 'SKU'),
+    'August': extract_discounts(august_discounts, 'ManufacturerSKU'),
+    'September': extract_discounts(september_discounts, 'product_code'),
+    'October': extract_discounts(october_discounts, 'product_code'),
 }
 
-# Helper function to normalize SKUs
-def normalize_sku(sku):
-    return sku.split('-')[0] if sku else sku
-
 # Aggregate sales data per SKU per month
-sku_sales = defaultdict(lambda: defaultdict(lambda: {'sales_dollars': 0.0, 'units_sold': 0}))
-
+sku_sales = {}
 for entry in sales_data:
-    sku = normalize_sku(entry.get('ProductSKU'))
-    order_date_str = entry.get('Order Date')
-    if not sku or not order_date_str:
+    sku = entry.get('ProductSKU')
+    order_date_value = entry.get('Order Date')
+    if not sku or not order_date_value:
         continue
     # Parse the order date to get the month name
-    order_date = datetime.strptime(order_date_str, '%Y-%m-%d')
-    month_name = order_date.strftime('%B')
+    try:
+        if isinstance(order_date_value, str):
+            order_date = datetime.strptime(order_date_value, '%Y-%m-%d')
+        elif isinstance(order_date_value, datetime.date):
+            order_date = order_date_value
+        else:
+            continue  # Skip if date format is unexpected
+        month_name = order_date.strftime('%B')
+    except (ValueError, TypeError):
+        continue
     if month_name not in ['July', 'August', 'September', 'October']:
         continue  # Only interested in these months
     sales_dollars = float(entry.get('Total', 0.0))
     units_sold = int(entry.get('QTY', 0))
+    if sku not in sku_sales:
+        sku_sales[sku] = {}
+    if month_name not in sku_sales[sku]:
+        sku_sales[sku][month_name] = {'sales_dollars': 0.0, 'units_sold': 0}
     sku_sales[sku][month_name]['sales_dollars'] += sales_dollars
     sku_sales[sku][month_name]['units_sold'] += units_sold
 
@@ -1417,6 +1436,9 @@ for sku, months_data in sku_data.items():
                 'unit_lift_per_discount_delta': lift_units_sold,
             }
         previous_month = month
+
+# Store the result
+result = lift_metrics
 
 # Now, you can use `lift_metrics` to analyze the lift for each SKU
 ```
