@@ -212,6 +212,99 @@ result = total_ordered_quantity
 
 ```
 
+### Combine the consolidated dataset from Step 11 with sales and inventory data from Steps 9 and 10, ensuring data is aggregated per SKU per month.
+```
+import json
+from collections import defaultdict
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+data_copy = data.copy()
+
+# Initialize an empty list to hold all combined data entries
+combined_data = []
+
+# Process discount rates from Steps 1-7
+for step in ['1', '2', '3', '4', '5', '6', '7']:
+    month_data = parse_json_if_string(data_copy.get(step, '[]'))
+    month_name = {
+        '1': '2024-04',
+        '2': '2024-05',
+        '3': '2024-06',
+        '4': '2024-07',
+        '5': '2024-08',
+        '6': '2024-09',
+        '7': '2024-10'
+    }[step]
+    
+    for entry in month_data:
+        sku = entry.get('SKU') or entry.get('ManufacturerSKU') or entry.get('Product Code (Unnamed: 0)')
+        discount_rate = float(entry.get('Discount') or entry.get('Value') or 0)
+        
+        combined_data.append({
+            'SKU': sku,
+            'Month': month_name,
+            'Discount_Rate': discount_rate
+        })
+
+# Process sales data from Step 9 (ensure 'OrderCreateDate' is included in your data)
+sales_data = parse_json_if_string(data_copy.get('9', '[]'))
+for entry in sales_data:
+    sku = entry.get('ProductSKU')
+    order_date = entry.get('OrderCreateDate')  # Update your data retrieval to include this field
+    if not sku or not order_date:
+        continue
+    order_month = order_date[:7]  # Extract 'YYYY-MM'
+    sales_dollars = float(entry.get('SalesDollars', 0.0))
+    units_sold = int(entry.get('UnitsSold', 0))
+    
+    combined_data.append({
+        'SKU': sku,
+        'Month': order_month,
+        'SalesDollars': sales_dollars,
+        'UnitsSold': units_sold
+    })
+
+# Merge discount rates and sales data per SKU per month
+sku_month_data = defaultdict(lambda: {'Discount_Rate': None, 'SalesDollars': 0.0, 'UnitsSold': 0})
+
+for entry in combined_data:
+    sku = entry.get('SKU')
+    month = entry.get('Month')
+    
+    if not sku or not month:
+        continue
+    
+    key = (sku, month)
+    
+    if 'Discount_Rate' in entry:
+        sku_month_data[key]['Discount_Rate'] = entry['Discount_Rate']
+    if 'SalesDollars' in entry:
+        sku_month_data[key]['SalesDollars'] += entry['SalesDollars']
+    if 'UnitsSold' in entry:
+        sku_month_data[key]['UnitsSold'] += entry['UnitsSold']
+
+# Convert sku_month_data to a list for further processing
+final_data = []
+for (sku, month), data in sku_month_data.items():
+    final_data.append({
+        'SKU': sku,
+        'Month': month,
+        'Discount_Rate': data.get('Discount_Rate'),
+        'SalesDollars': data.get('SalesDollars', 0.0),
+        'UnitsSold': data.get('UnitsSold', 0)
+    })
+
+# Store the result
+result = final_data
+
+
+```
+
+
+
 ### Total Cost Calculation 
 ```
 import json
