@@ -256,7 +256,7 @@ for entry in sales_data:
     order_date = entry.get('OrderCreateDate')  # Update your data retrieval to include this field
     if not sku or not order_date:
         continue
-    order_month = order_date[:7]  # Extract 'YYYY-MM'
+    order_month = order_date.strftime('%Y-%m')
     sales_dollars = float(entry.get('SalesDollars', 0.0))
     units_sold = int(entry.get('UnitsSold', 0))
     
