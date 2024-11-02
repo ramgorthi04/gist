@@ -1385,3 +1385,33 @@ result = lift_metrics
 
 # Now, you can use `lift_metrics` to analyze the lift for each SKU
 ```
+
+### Calculate sales dollar and unit lift using discount rates and sales data from multiple months
+This error (Error executing generated code: 'datetime.datetime' object has no attribute 'split') occurs when the code attempts to call the .split() method on a datetime.datetime object, which doesn't have this method because it's not a string. To address this, you need to modify your code to handle both cases where OrderCreateDate can be either a string or a datetime object. Here's how you can adjust your code:
+```
+for entry in sales_data:
+    try:
+        order_date_value = entry.get('OrderCreateDate', '')
+        if not order_date_value:
+            continue  # Skip entries without a date
+
+        if isinstance(order_date_value, datetime):
+            order_date = order_date_value
+        elif isinstance(order_date_value, str):
+            # Split the string if it contains a 'T' (ISO format)
+            order_date_str = order_date_value.split('T')[0] if 'T' in order_date_value else order_date_value
+            order_date = datetime.strptime(order_date_str, '%Y-%m-%d')
+        else:
+            continue  # Skip if date format is unexpected
+
+        if datetime(2024, 1, 1) <= order_date <= datetime(2024, 9, 30):
+            if entry.get('ProductBrandName', '') == 'Fresca':
+                filtered_sales_data.append({
+                    'SKU': entry.get('ProductSKU', ''),
+                    'OrderDate': order_date,
+                    'Total': float(entry.get('Total', 0)),
+                    'QTY': int(entry.get('QTY', 0))
+                })
+    except (ValueError, TypeError):
+        continue
+```
