@@ -458,63 +458,6 @@ result = {
     "time_since_last_interaction": time_since_last_interaction
 }
 ```
-
-### Aggregate data on discount rates and sales dollars from each SKU across months
-```
-import json
-
-# Function to parse JSON if the input is a string
-def parse_json_if_string(value):
-    return json.loads(value) if isinstance(value, str) else value
-
-# Copy the data dictionary
-data_copy = data.copy()
-
-# Parse the necessary data
-july_discounts = parse_json_if_string(data_copy.get('1', '[]'))
-august_discounts = parse_json_if_string(data_copy.get('2', '[]'))
-september_discounts = parse_json_if_string(data_copy.get('3', '[]'))
-october_discounts = parse_json_if_string(data_copy.get('4', '[]'))
-
-# Helper function to extract discount rates by SKU
-def extract_discounts(discount_data, key_name):
-    discounts = {}
-    for entry in discount_data:
-        sku = entry.get(key_name)
-        if sku:
-            discount_str = entry.get('Discount_', entry.get('Discount', entry.get('discount_rate', '0')))
-            try:
-                discount = float(discount_str)
-                if discount > 1:
-                    discount /= 100  # Convert percentage to decimal
-            except ValueError:
-                discount = 0.0
-            discounts[sku] = discount
-    return discounts
-
-# Extract discounts for each month
-discounts_per_month = {
-    'July': extract_discounts(july_discounts, 'SKU'),
-    'August': extract_discounts(august_discounts, 'ManufacturerSKU'),
-    'September': extract_discounts(september_discounts, 'product_code'),
-    'October': extract_discounts(october_discounts, 'product_code'),
-}
-
-# Initialize result dictionary
-result = {}
-
-# Aggregate discount rates for each SKU across the months
-for month, discounts in discounts_per_month.items():
-    for sku, discount in discounts.items():
-        if sku not in result:
-            result[sku] = {}
-        result[sku][month] = discount
-
-# The result now contains aggregated discount rates for each SKU across all specified months
-```
-
-
-
 ### Analyze purchase frequency trends to identify customers with declining activity
 ```
 import json
