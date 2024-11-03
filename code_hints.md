@@ -1411,7 +1411,7 @@ total_data = {
 result_data.insert(0, total_data)
 ```
 
-### Code to Fix Error with datetime splitting
+### Code to Fix Error: 'datetime.datetime' object has no attribute 'split'
 This error (Error executing generated code: 'datetime.datetime' object has no attribute 'split') occurs when the code attempts to call the .split() method on a datetime.datetime object, which doesn't have this method because it's not a string. To address this, you need to modify your code to handle both cases where OrderCreateDate can be either a string or a datetime object. Here's how you can adjust your code:
 ```
 for entry in sales_data:
