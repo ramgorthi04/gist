@@ -1269,13 +1269,17 @@ def create_discount_rate_dicts(discount_data):
             elif key == '3':
                 discount_rate = item.get('discount_rate', '0')
                 # Make sure discount_rate is a DIGIT before CONVERTING. 
-                if discount_rate.isdigit():
+                if discount_rate.isdigit(): # Divide this discount by 100 because it's in percentage form
                     discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = int(discount_rate) / 100
                 else:
                     discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = 0.0
             elif key == '4':
-                discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = item.get('discount_rate', 0.0)
-    
+                discount_rate = item.get('discount_rate', '0')
+                # Make sure discount_rate is a DIGIT
+                if discount_rate.isdigit():
+                    discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = item.get('discount_rate', 0.0)
+                else:
+                    discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = 0.0
     return discount_rate_dicts
 
 def count_products_and_discounts_by_sku_and_month(file_path):
