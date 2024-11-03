@@ -1245,7 +1245,7 @@ for email in interaction_matrix.index:
 ```
 
 ### Calculate sales dollar and unit lift for every relevant SKU using discount rates and sales data from multiple months. 
-THIS IS A HIGHLY COMPLEX TASK. USE THIS CODE TO MAKE SURE YOU DON'T MISS ANYTHING:
+THIS IS A HIGHLY COMPLEX TASK. FUCKING USE THIS CODE TO MAKE SURE YOU DON'T FUCKING MISS ANYTHING:
 ```
 import json
 from datetime import datetime
