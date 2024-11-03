@@ -1245,6 +1245,7 @@ for email in interaction_matrix.index:
 ```
 
 ### Calculate sales dollar and unit lift for every relevant SKU using discount rates and sales data from multiple months. 
+THIS IS A HIGHLY COMPLEX TASK. USE THIS CODE TO MAKE SURE YOU DON'T MISS ANYTHING:
 ```
 import json
 from datetime import datetime
@@ -1282,10 +1283,7 @@ def create_discount_rate_dicts(discount_data):
                     discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = 0.0
     return discount_rate_dicts
 
-def count_products_and_discounts_by_sku_and_month(file_path):
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-    
+def count_products_and_discounts_by_sku_and_month(data):
     discount_rate_dicts = create_discount_rate_dicts(data)
     products_by_sku_and_month = {}
     discount_rates_by_sku_and_month = {}
@@ -1376,7 +1374,7 @@ def calculate_unit_and_sales_uplift(filtered_products, filtered_discount_rates, 
     return unit_uplift, sales_uplift
 
 # Example usage
-file_path = 'test.json'
+data = data.copy()
 products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, product_names_by_sku = count_products_and_discounts_by_sku_and_month(file_path)
 
 skus_with_discount_increase = find_skus_with_discount_increase(discount_rates_by_sku_and_month)
