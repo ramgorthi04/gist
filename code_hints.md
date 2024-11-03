@@ -1244,7 +1244,7 @@ for email in interaction_matrix.index:
     result[email] = get_recommendations(email, predicted_ratings, interaction_matrix)
 ```
 
-### Calculate sales dollar and unit lift using discount rates and sales data from multiple months
+### Calculate sales dollar and unit lift for every relevant SKU using discount rates and sales data from multiple months. 
 ```
 import json
 from datetime import datetime
@@ -1268,6 +1268,7 @@ def create_discount_rate_dicts(discount_data):
                 discount_rate_dicts['2024-08'][normalize_sku(item.get('product_code'))] = item.get('Discount', 0.0)
             elif key == '3':
                 discount_rate = item.get('discount_rate', '0')
+                # Make sure discount_rate is a DIGIT before CONVERTING. 
                 if discount_rate.isdigit():
                     discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = int(discount_rate) / 100
                 else:
