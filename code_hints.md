@@ -1266,19 +1266,21 @@ def create_discount_rate_dicts(discount_data):
             if key == '1':
                 discount_rate_dicts['2024-07'][normalize_sku(item.get('SKU'))] = item.get('Discount_', 0.0)
             elif key == '2':
-                discount_rate_dicts['2024-08'][normalize_sku(item.get('product_code'))] = item.get('Discount', 0.0)
+                discount_rate_dicts['2024-08'][normalize_sku(item.get('ManufacturerSKU'))] = item.get('Discount', 0.0)
             elif key == '3':
                 discount_rate = item.get('discount_rate', '0')
-                # Make sure discount_rate is a DIGIT before CONVERTING. 
-                if discount_rate.isdigit(): # Divide this discount by 100 because it's in percentage form
+                if isinstance(discount_rate, (int, float)):
+                    discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = discount_rate
+                elif isinstance(discount_rate, str) and discount_rate.isdigit():
                     discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = int(discount_rate) / 100
                 else:
                     discount_rate_dicts['2024-09'][normalize_sku(item.get('product_code'))] = 0.0
             elif key == '4':
                 discount_rate = item.get('discount_rate', '0')
-                # Make sure discount_rate is a DIGIT
-                if discount_rate.isdigit():
-                    discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = item.get('discount_rate', 0.0)
+                if isinstance(discount_rate, (int, float)):
+                    discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = discount_rate
+                elif isinstance(discount_rate, str) and discount_rate.isdigit():
+                    discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = int(discount_rate) / 100
                 else:
                     discount_rate_dicts['2024-10'][normalize_sku(item.get('product_code'))] = 0.0
     return discount_rate_dicts
@@ -1301,9 +1303,7 @@ def count_products_and_discounts_by_sku_and_month(data):
             month = datetime.strptime(order_date, "%Y-%m-%d %H:%M:%S.%f").strftime("%Y-%m")
             discount_rate = discount_rate_dicts.get(month, {}).get(sku, 0.0)
             
-            if discount_rate == 0.0 and total_without_discount != 0.0:
-                continue
-            
+            # No longer skipping items with zero discount rate
             if sku not in products_by_sku_and_month:
                 products_by_sku_and_month[sku] = {}
             if month not in products_by_sku_and_month[sku]:
@@ -1316,102 +1316,88 @@ def count_products_and_discounts_by_sku_and_month(data):
             
             if sku not in total_without_discount_by_sku or total_without_discount_by_sku[sku] == 0.0:
                 total_without_discount_by_sku[sku] = total_without_discount
-            
+                
             product_names_by_sku[sku] = product_name
-    
+        
     return products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, product_names_by_sku
 
-def find_skus_with_discount_increase(discount_rates_by_sku_and_month):
-    skus_with_increase = []
-    months = ['2024-07', '2024-08', '2024-09', '2024-10']
-    
-    for sku, month_data in discount_rates_by_sku_and_month.items():
-        for i in range(len(months) - 1):
-            current_month = months[i]
-            next_month = months[i + 1]
-            if month_data.get(current_month, 0.0) == 0.0 and month_data.get(next_month, 0.0) > 0.0:
-                skus_with_increase.append(sku)
-                break
-    
-    return skus_with_increase
-
-def filter_skus_with_discount_increase(products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, skus_with_increase):
-    filtered_products = {sku: products_by_sku_and_month[sku] for sku in skus_with_increase}
-    filtered_discount_rates = {sku: discount_rates_by_sku_and_month[sku] for sku in skus_with_increase}
-    filtered_totals = {sku: total_without_discount_by_sku[sku] for sku in skus_with_increase}
-    return filtered_products, filtered_discount_rates, filtered_totals
-
-def calculate_unit_and_sales_uplift(filtered_products, filtered_discount_rates, filtered_totals):
+def calculate_uplift_for_discount_changes(products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku):
     unit_uplift = {}
     sales_uplift = {}
     months = ['2024-07', '2024-08', '2024-09', '2024-10']
     
-    for sku, month_data in filtered_products.items():
-        if sku not in unit_uplift:
-            unit_uplift[sku] = {}
-        if sku not in sales_uplift:
-            sales_uplift[sku] = {}
-        for i in range(len(months) - 1):
+    for sku in products_by_sku_and_month.keys():
+        unit_uplift[sku] = {}
+        sales_uplift[sku] = {}
+        month_data_products = products_by_sku_and_month[sku]
+        month_data_discounts = discount_rates_by_sku_and_month.get(sku, {})
+        total_without_discount = total_without_discount_by_sku.get(sku, 0.0)
+        
+        for i in range(len(months) -1):
             current_month = months[i]
             next_month = months[i + 1]
-            if current_month in month_data and next_month in month_data:
-                current_qty = month_data[current_month]
-                next_qty = month_data[next_month]
-                current_discount = filtered_discount_rates[sku].get(current_month, 0.0)
-                next_discount = filtered_discount_rates[sku].get(next_month, 0.0)
+            current_discount = month_data_discounts.get(current_month, 0.0)
+            next_discount = month_data_discounts.get(next_month, 0.0)
+            discount_change = next_discount - current_discount
+            
+            if discount_change != 0.0:
+                # There is a discount change
+                current_qty = month_data_products.get(current_month, 0)
+                next_qty = month_data_products.get(next_month, 0)
+                current_gross_sales = current_qty * (total_without_discount * (1 - current_discount))
+                next_gross_sales = next_qty * (total_without_discount * (1 - next_discount))
                 
-                if current_discount != next_discount:
-                    uplift = next_qty - current_qty
-                    if current_discount > 0.0 and next_discount == 0.0:
-                        uplift *= -1
-                    unit_uplift[sku][next_month] = uplift
-
-                    # Calculate sales uplift
-                    current_gross_sales = current_qty * (filtered_totals[sku] * (1 - current_discount))
-                    next_gross_sales = next_qty * (filtered_totals[sku] * (1 - next_discount))
-                    sales_uplift[sku][next_month] = next_gross_sales - current_gross_sales
-    
+                unit_diff = next_qty - current_qty
+                sales_diff = next_gross_sales - current_gross_sales
+                
+                if discount_change < 0:
+                    # Discount decreased
+                    unit_diff *= -1
+                    sales_diff *= -1
+                
+                unit_uplift[sku][f"{current_month}->{next_month}"] = unit_diff
+                sales_uplift[sku][f"{current_month}->{next_month}"] = sales_diff
+                
     return unit_uplift, sales_uplift
 
 # Example usage
-data = data.copy()
-products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, product_names_by_sku = count_products_and_discounts_by_sku_and_month(file_path)
+data_copy = date.copy()
 
-skus_with_discount_increase = find_skus_with_discount_increase(discount_rates_by_sku_and_month)
+products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, product_names_by_sku = count_products_and_discounts_by_sku_and_month(data_copy)
 
-filtered_products, filtered_discount_rates, filtered_totals = filter_skus_with_discount_increase(
-    products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku, skus_with_discount_increase
-)
-
-unit_uplift, sales_uplift = calculate_unit_and_sales_uplift(filtered_products, filtered_discount_rates, filtered_totals)
+unit_uplift, sales_uplift = calculate_uplift_for_discount_changes(products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku)
 
 # Create result data structure
 result_data = []
 total_unit_uplift = 0
 total_sales_uplift = 0.0
 
-for sku in sorted(filtered_products.keys()):
+for sku in sorted(unit_uplift.keys()):
     product_name = product_names_by_sku.get(sku, 'Unknown')
-    sku_unit_uplift = sum(unit_uplift[sku].values())
-    sku_sales_uplift = sum(sales_uplift[sku].values())
-    sku_data = {
-        'SKU': sku,
-        'Product Name': product_name,
-        'Unit Uplift': sku_unit_uplift,
-        'Sales Uplift': sku_sales_uplift
-    }
-    result_data.append(sku_data)
-    total_unit_uplift += sku_unit_uplift
-    total_sales_uplift += sku_sales_uplift
+    for period in unit_uplift[sku]:
+        unit_uplift_value = unit_uplift[sku][period]
+        sales_uplift_value = sales_uplift[sku][period]
+        sku_data = {
+            'SKU': sku,
+            'Product Name': product_name,
+            'Period': period,
+            'Unit Uplift': unit_uplift_value,
+            'Sales Uplift': sales_uplift_value
+        }
+        result_data.append(sku_data)
+        total_unit_uplift += unit_uplift_value
+        total_sales_uplift += sales_uplift_value
 
 # Add total numbers at the top
 total_data = {
     'SKU': 'TOTAL',
     'Product Name': 'All Products',
+    'Period': '',
     'Unit Uplift': total_unit_uplift,
     'Sales Uplift': total_sales_uplift
 }
 result_data.insert(0, total_data)
+print(result_data)
 ```
 
 ### Code to Fix Error: 'datetime.datetime' object has no attribute 'split'
