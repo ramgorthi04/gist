@@ -1296,7 +1296,7 @@ def count_products_and_discounts_by_sku_and_month(data):
         sku = normalize_sku(item.get('ProductSKU'))
         order_date = item.get('OrderCreateDate')
         qty = item.get('QTY', 0)
-        total_without_discount = item.get('TotalWithoutDiscount', 0.0)
+        total_without_discount = item.get('TotalWithoutDiscount', 0.0) / qty if qty else 0.0
         product_name = item.get('ProductName', 'Unknown')
         
         if sku and order_date:
