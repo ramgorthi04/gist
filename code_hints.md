@@ -1324,7 +1324,7 @@ def count_products_and_discounts_by_sku_and_month(data):
 def calculate_uplift_for_discount_changes(products_by_sku_and_month, discount_rates_by_sku_and_month, total_without_discount_by_sku):
     unit_uplift = {}
     sales_uplift = {}
-    months = ['2024-07', '2024-08', '2024-09', '2024-10']
+    months = ['2024-07', '2024-08', '2024-09'] # Don't include October because we have incomplete sales data for October
     
     for sku in products_by_sku_and_month.keys():
         unit_uplift[sku] = {}
