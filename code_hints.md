@@ -1397,7 +1397,10 @@ total_data = {
     'Sales Uplift': total_sales_uplift
 }
 result_data.insert(0, total_data)
-print(result_data)
+result = {
+    "Totals": total_data
+    "Data_by_SKU": result_data
+}
 ```
 
 ### Code to Fix Error: 'datetime.datetime' object has no attribute 'split'
