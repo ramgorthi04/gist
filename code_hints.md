@@ -1396,12 +1396,19 @@ total_data = {
     'Unit Uplift': total_unit_uplift,
     'Sales Uplift': total_sales_uplift
 }
-result_data.insert(0, total_data)
 result = {
     "Totals": total_data
     "Data_by_SKU": result_data
 }
 ```
+
+### Given sales and unit uplift data per SKU, identify products with the most significant positive sales dollar or unit lift. 
+The data has two keys, 'Totals' and 'Data_by_SKU'. Access the 'Data_by_SKU' key and get the top 100 products with the LARGEST sales dollar and unit lift.
+Calculate the total amount of sales dollar uplift (if applicable) as a result of these products.
+
+### Given sales and unit uplift data per SKU, identify products with the most significant negative sales dollar or unit lift. 
+The data has two keys, 'Totals' and 'Data_by_SKU'. Access the 'Data_by_SKU' key and get the top 100 products with the LARGEST NEGATIVE sales dollar and unit lift.
+Calculate the total amount of sales dollar loss (if applicable) as a result of these products, if they exist.
 
 ### Code to Fix Error: 'datetime.datetime' object has no attribute 'split'
 This error (Error executing generated code: 'datetime.datetime' object has no attribute 'split') occurs when the code attempts to call the .split() method on a datetime.datetime object, which doesn't have this method because it's not a string. To address this, you need to modify your code to handle both cases where OrderCreateDate can be either a string or a datetime object. Here's how you can adjust your code:
