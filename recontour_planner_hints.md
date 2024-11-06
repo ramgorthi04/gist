@@ -769,6 +769,47 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+### Popular Product Variation/Extension of SKU for Month: 
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract all sales data for variations of SKU LB-006 for October 2023.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify the most popular variation of SKU LB-006 in October 2023.",
+            "DataNeeded": "1, 2, 3, 4",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
 
 
 
