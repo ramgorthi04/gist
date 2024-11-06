@@ -495,6 +495,61 @@ result = {
     "time_since_last_interaction": time_since_last_interaction
 }
 ```
+
+### Get Most Popular SKU Extension/Variation
+```
+import json
+from datetime import datetime
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+def extract_sales_data(data):
+    sales_data = []
+    for key in ['1', '2', '3', '4']:
+        try:
+            items = parse_json_if_string(data.get(key, '[]'))
+            for item in items:
+                purchase_date = item.get('purchase_date_PST') or item.get('process_date')
+                if purchase_date and purchase_date.startswith('2024-10'):
+                    sku = item.get('official_sku')
+                    if sku and sku.startswith('LB-006'):
+                        ordered_quantity = item.get('ordered_quantity', 0)
+                        sales = item.get('gross_sales_including_vat') or item.get('gross_sales', 0.0)
+                        sales_data.append((sku, ordered_quantity, sales))
+        except Exception as e:
+            print(f"Error processing key {key}: {e}")
+    return sales_data
+
+def aggregate_sales_data(sales_data):
+    sku_sales = {}
+    for sku, quantity, sales in sales_data:
+        if sku not in sku_sales:
+            sku_sales[sku] = {'quantity': 0, 'sales': 0.0}
+        sku_sales[sku]['quantity'] += quantity
+        sku_sales[sku]['sales'] += sales
+    return sku_sales
+
+def find_most_popular_sku(sku_sales):
+    most_popular_sku = None
+    max_quantity = 0
+    for sku, data in sku_sales.items():
+        if data['quantity'] > max_quantity:
+            max_quantity = data['quantity']
+            most_popular_sku = sku
+    return most_popular_sku
+
+# Main execution
+data_copy = data.copy()
+sales_data = extract_sales_data(data_copy)
+sku_sales = aggregate_sales_data(sales_data)
+most_popular_sku = find_most_popular_sku(sku_sales)
+
+result = {
+    "most_popular_sku": most_popular_sku,
+    "sku_sales": sku_sales
+}
+```
 ### Analyze purchase frequency trends to identify customers with declining activity
 ```
 import json
