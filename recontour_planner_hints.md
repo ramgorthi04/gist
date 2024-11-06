@@ -258,8 +258,6 @@ Customer order data from Shopify. Key columns:
 - Analyze customer behavior and sales trends.
 - Optimize marketing and sales strategies.
 
-Here is the dataset description format for the three screenshots you provided:
-
 ---
 
 ## amazon_advertising.amz_ads_metrics_per_campaign_type
