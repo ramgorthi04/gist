@@ -1,4 +1,4 @@
-Date last edited: 11/1/2024 at 10:05PM
+Date last edited: 11/6/2024 at 10:35PM
 
 # Successful Code Logics
 
@@ -1532,4 +1532,93 @@ for entry in sales_data:
                 })
     except (ValueError, TypeError):
         continue
+```
+
+
+### Merge discount data with sales data based on SKU and corresponding dates
+
+```
+import json
+from datetime import datetime
+
+with open('test_data.json', 'r') as file:
+    data_copy = json.load(file)
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+def normalize_sku(sku):
+    return sku.replace('-', '').upper() if sku else sku
+
+def extract_discount_data(discount_data):
+    discount_dict = {}
+    for item in discount_data:
+        sku = normalize_sku(item.get('VendorSKU'))
+        for key, value in item.items():
+            if 'Discount_' in key and value not in [None, '', ' ']:
+                try:
+                    # Extract date range from the key
+                    date_range = key.split('Discount_')[1]
+                    discount_dict.setdefault(sku, {})[date_range] = float(value)
+                except (ValueError, IndexError):
+                    continue
+    return discount_dict
+
+def extract_sales_data(sales_data):
+    sales_dict = {}
+    for item in sales_data:
+        sku = normalize_sku(item.get('SKU'))
+        for key, value in item.items():
+            if 'Extended_Price' in key and value not in [None, '', ' ']:
+                try:
+                    # Extract month and year from the key
+                    month_name = key.split('_')[0]
+                    # Map month name to month number
+                    month_num = datetime.strptime(month_name, '%b').month
+                    # Determine the year (you need to adjust this logic based on your data)
+                    year = 2023 if month_name in ['Aug', 'Sep', 'Oct', 'Nov', 'Dec'] else 2024
+                    month_str = f"{year}-{month_num:02d}"
+                    sales_dict.setdefault(sku, {})[month_str] = float(value)
+                except ValueError:
+                    continue
+    return sales_dict
+
+def merge_data(discount_dict, sales_dict):
+    merged_data = []
+    for sku, discounts in discount_dict.items():
+        sales = sales_dict.get(sku, {})
+        if not sales:
+            # No sales data for this SKU
+            continue
+        for date_range, discount in discounts.items():
+            try:
+                start_date_str, end_date_str = date_range.split('_to_')
+                start_date = datetime.strptime(start_date_str, "%m_%d_%Y")
+                end_date = datetime.strptime(end_date_str, "%m_%d_%Y")
+                for sales_month_str, sales_value in sales.items():
+                    sales_month_date = datetime.strptime(sales_month_str, "%Y-%m")
+                    if start_date <= sales_month_date <= end_date:
+                        merged_data.append({
+                            'SKU': sku,
+                            'Date Range': date_range,
+                            'Discount': discount,
+                            'Sales Month': sales_month_str,
+                            'Sales Value': sales_value
+                        })
+            except ValueError:
+                continue
+    return merged_data
+
+# Parse the JSON data
+discount_data = parse_json_if_string(data_copy.get('1', '[]'))
+sales_data = parse_json_if_string(data_copy.get('2', '[]'))
+
+# Extract relevant data
+discount_dict = extract_discount_data(discount_data)
+sales_dict = extract_sales_data(sales_data)
+
+# Merge the data
+result = merge_data(discount_dict, sales_dict)
+
+print(result)
 ```
