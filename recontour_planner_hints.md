@@ -859,4 +859,52 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 }
 
 
+### Group Sales By Reigon/Country: 
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve all order data for October 2024 from Amazon, including purchase date and country.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Retrieve all order data for October 2024 from Walmart, including order date and country.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Retrieve all order data for October 2024 from eBay, including transaction date and country.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Retrieve all order data for October 2024 from Shopify, including process date and country.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Retrieve all order data for October 2024 from Etsy, including sale date and country.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Aggregate the number of orders from each region for October 2024 across all sales channels.",
+            "DataNeeded": "1, 2, 3, 4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
 
