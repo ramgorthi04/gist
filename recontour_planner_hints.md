@@ -810,6 +810,53 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+### Chart Product Extensions/Variations for SKU: 
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Amazon for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Walmart for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "walmart.walmart_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Extract all sales data for product extensions of SKU 'LB-006' from eBay for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Shopify for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Etsy for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, Shopify, and Etsy for product extensions of SKU 'LB-006' and divide by month, then chart over 2024.",
+            "DataNeeded": "1, 2, 3, 4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
 
 
 
