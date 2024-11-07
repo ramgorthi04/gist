@@ -1,4 +1,4 @@
-Date last edited: 11/6/2024 at 10:35PM
+Date last edited: 11/7/2024 at 5:35PM
 
 # Successful Code Logics
 
@@ -1617,6 +1617,7 @@ for entry in sales_data:
 
 
 ### Merge discount data with sales data based on SKU and corresponding dates
+ALWAYS VERIFY THAT THE DATE FORMATS IN DATASETS THAT ARE BEING MERGED ARE ALIGNED SUCH THAT THEY ARE ALL EITHER FORMATTED AS FULL DATES LIKE "2023-09-30" OR AS "2023-09" IF RELEVANT.
 
 ```
 import json
