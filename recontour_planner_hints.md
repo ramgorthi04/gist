@@ -907,4 +907,52 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+###
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract all sales data by SKU for the year 2024 from Amazon, including ordered quantity and sales revenue.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Extract all sales data by SKU for the year 2024 from Walmart, including ordered quantity and sales revenue.",
+            "DataNeeded": "walmart.walmart_orders",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Extract all sales data by SKU for the year 2024 from eBay, including ordered quantity and sales revenue.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Extract all sales data by SKU for the year 2024 from Shopify, including ordered quantity and sales revenue.",
+            "DataNeeded": "shopify.shopify_orders",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify the top 2 SKUs for the year 2024 based on total sales revenue.",
+            "DataNeeded": "1, 2, 3, 4",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "6": {
+            "Request": "Retrieve the product names for the top 2 SKUs identified.",
+            "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 5",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "7": {
+            "Request": "Plot the sales data over time for the top 2 SKUs identified, divided by time and plotted over time.",
+            "DataNeeded": "1,2,3,4,5",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        }
+    }
+}
+
 
