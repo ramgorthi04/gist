@@ -1,4 +1,4 @@
-Date last edited: 11/7/2024 at 5:35PM
+Date last edited: 11/7/2024 at 10:05PM
 
 # Successful Code Logics
 
@@ -1704,3 +1704,71 @@ result = merge_data(discount_dict, sales_dict)
 
 print(result)
 ```
+
+### Merge data with in stock and product attributes data
+
+```
+import json
+from datetime import datetime
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+def merge_data_with_in_stock_and_attributes(data):
+    # Parse the JSON data
+    sales_data = parse_json_if_string(data.get('6', '[]'))
+    in_stock_data = parse_json_if_string(data.get('3', '[]'))
+    product_attributes = parse_json_if_string(data.get('4', '[]'))
+
+    # Create a dictionary for product attributes
+    attributes_dict = {item['Selling_SKU']: item for item in product_attributes}
+
+    # Create a nested dictionary for in-stock data with 'YYYY-MM' keys
+    in_stock_dict = {}
+    for item in in_stock_data:
+        sku = item['SKU']
+        sku_in_stock = {}
+        for date_str, value in item.items():
+            if date_str == 'SKU':
+                continue
+            # Convert date to 'YYYY-MM' format
+            try:
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                month_str = date_obj.strftime('%Y-%m')
+            except ValueError:
+                # Skip if date format is incorrect
+                continue
+            sku_in_stock[month_str] = value
+        in_stock_dict[sku] = sku_in_stock
+
+    # Prepare the merged result
+    merged_result = []
+
+    for sale in sales_data:
+        sku = sale.get('SKU')
+        sales_month = sale.get('Sales Month')  # e.g., '2024-09'
+
+        # Get in-stock flag for the sales month
+        in_stock_flag = in_stock_dict.get(sku, {}).get(sales_month, '0')
+
+        # Get product attributes
+        attributes = attributes_dict.get(sku, {})
+        collection = attributes.get('Collection', 'Unknown')
+        style = attributes.get('Style', 'Unknown')
+
+        # Merge the data
+        merged_entry = {
+            'SKU': sku,
+            'Date Range': sale.get('Date Range'),
+            'Discount': sale.get('Discount'),
+            'Sales Month': sales_month,
+            'Sales Value': sale.get('Sales Value'),
+            'In Stock': in_stock_flag,
+            'Collection': collection,
+            'Style': style
+        }
+        merged_result.append(merged_entry)
+
+    return merged_result
+```
+
