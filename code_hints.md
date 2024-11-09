@@ -1743,3 +1743,82 @@ results.to_csv('discounts_results.csv', index=False)
 # Convert the results to a JSON file
 results.to_json('discounts_results.json', orient='records', indent=4)
 ```
+
+### Extract insights on sales and unit uplift for each SKU
+```
+import pandas as pd
+import numpy as np
+import json
+
+# Make a copy of the data
+data_copy = data.copy()
+
+# Convert data to DataFrame
+df = pd.DataFrame(data_copy)
+
+# Convert 'Month' to datetime format
+df["Month"] = pd.to_datetime(df["Month"])
+
+# Sort data by SKU and Month
+df = df.sort_values(by=["SKU", "Month"])
+
+# Initialize a list to store results for each SKU
+results = []
+
+# Group the data by SKU and perform analysis for each SKU
+for sku, group in df.groupby("SKU"):
+    # Calculate cumulative uplift for sales and units
+    cumulative_sales_lift = group["sales_dollars_lift"].sum()
+    cumulative_units_lift = group["units_sold_lift"].sum()
+
+    # Calculate the average monthly uplift
+    months_count = len(group)
+    average_sales_uplift = cumulative_sales_lift / months_count
+    average_units_uplift = cumulative_units_lift / months_count
+
+    # Convert 'Month' to numerical value (days since the start date) for trend analysis
+    group["Days_Since_Start"] = (group["Month"] - group["Month"].min()).dt.days
+
+    # Calculate necessary sums for the least squares method
+    n = len(group)
+    sum_x = group["Days_Since_Start"].sum()
+    sum_y_sales = group["sales_dollars_lift"].sum()
+    sum_y_units = group["units_sold_lift"].sum()
+    sum_x_squared = (group["Days_Since_Start"] ** 2).sum()
+    sum_xy_sales = (group["Days_Since_Start"] * group["sales_dollars_lift"]).sum()
+    sum_xy_units = (group["Days_Since_Start"] * group["units_sold_lift"]).sum()
+
+    # Calculate the slope (trend) for sales and units
+    sales_trend = (n * sum_xy_sales - sum_x * sum_y_sales) / (n * sum_x_squared - sum_x ** 2) if n > 1 else 0
+    units_trend = (n * sum_xy_units - sum_x * sum_y_units) / (n * sum_x_squared - sum_x ** 2) if n > 1 else 0
+
+    # Append the result for this SKU
+    results.append({
+        "SKU": sku,
+        "Total_Sales_Uplift": cumulative_sales_lift,
+        "Total_Units_Uplift": cumulative_units_lift,
+        "Average_Monthly_Sales_Uplift": average_sales_uplift,
+        "Average_Monthly_Units_Uplift": average_units_uplift,
+        "Sales_Uplift_Trend": sales_trend,
+        "Units_Sold_Uplift_Trend": units_trend
+    })
+
+# Create a DataFrame for the summarized results
+results_df = pd.DataFrame(results)
+
+# Save the summarized results to a CSV file for the user to examine
+output_csv_filename = "query_csv.csv"
+results_df.to_csv(output_csv_filename, index=False)
+
+# Convert the df to a JSON for data storage
+result_json = results_df.to_json(orient='records')
+
+# Add the output CSV file path to the result JSON
+result = {
+    "uplift_results": json.loads(result_json),
+    "output_csv_filepath": output_csv_filename
+}
+
+# Convert the updated result to JSON format
+result = json.dumps(result, indent=4)
+```
