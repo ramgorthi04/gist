@@ -1738,4 +1738,7 @@ results = df_discount[['SKU', 'Month', 'selling_price', 'prev_selling_price', 'p
 
 # Output the results to a new CSV file
 results.to_csv('discounts_results.csv', index=False)
+
+# Convert the results to a JSON file
+results.to_json('discounts_results.json', orient='records', indent=4)
 ```
