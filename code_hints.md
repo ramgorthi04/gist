@@ -1667,6 +1667,7 @@ if len(result_keys) > 2:
 
 
 ### Calculate sales dollar and unit lift for each SKU where relevant data exists. Save a CSV of discount results.
+Sales and unit lift should only be calculated when the selling price of a product decreases from one month to the next. If the selling price increases, it implies the discount was removed, and no lift should be calculated.
 ```
 import pandas as pd
 import numpy as np
@@ -1718,11 +1719,11 @@ df['discount_applied'] = df['price_change'] < 0
 # Keep track of months where stock at the end is zero or negative
 df['stock_zero'] = df['stock'] <= 0
 
-# Filter to only rows where a discount was applied and stock was available
+# Filter to only rows where a discount was applied (price goes DOWN) and stock was available
 # Use .copy() to avoid unintended side effects where changes to df_discount might also alter df
 df_discount = df[(df['discount_applied']) & (~df['stock_zero'])].copy()
 
-# Adjust for external factors (optional)
+# Adjust for external factors
 # Calculate average units sold change percentage among products without price changes and with stock available
 avg_units_sold_change_no_price_change = df[
     (df['price_change'] == 0) & (~df['stock_zero'])
