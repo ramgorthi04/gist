@@ -1815,8 +1815,8 @@ result_json = results_df.to_json(orient='records')
 
 # Add the output CSV file path to the result JSON
 result = {
-    "uplift_results": json.loads(result_json),
     "output_csv_filepath": output_csv_filename
+    "uplift_results": json.loads(result_json),
 }
 
 # Convert the updated result to JSON format
