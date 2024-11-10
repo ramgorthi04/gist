@@ -1806,6 +1806,7 @@ for sku, group in df.groupby("SKU"):
 results_df = pd.DataFrame(results)
 
 # Save the summarized results to a CSV file for the user to examine
+# The CSV FILENAME MUST BE 'query_csv.csv' ALWAYS
 output_csv_filename = "query_csv.csv"
 results_df.to_csv(output_csv_filename, index=False)
 
