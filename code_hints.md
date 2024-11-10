@@ -1824,3 +1824,6 @@ result = {
 # Convert the updated result to JSON format
 result = json.dumps(result, indent=4)
 ```
+
+### Remove unnecessary data and return only the necessary data
+A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. 
