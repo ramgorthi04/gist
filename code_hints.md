@@ -1614,6 +1614,7 @@ data_copy = data.copy()
 <read + convert data to CSV>
 
 # Define the list of months
+# DEFINE ALL OF THESE MONTHS EVEN IF YOUR DATA ONLY HAS A FEW. YOU MAY HAVE ONLY BEEN PASSED THE HEAD OF THE DATA
 months = ['2023-08', '2023-09', '2023-10', '2023-11', '2023-12',
           '2024-01', '2024-02', '2024-03', '2024-04', '2024-05',
           '2024-06', '2024-07', '2024-08', '2024-09']
