@@ -860,10 +860,7 @@ def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
 # Copy the data dictionary
-data_copy = {}
-# Read the data from the JSON file orders.json
-with open("orders.json", "r") as f:
-    data_copy['orders'] = json.load(f)
+data_copy = date.copy()
 
 # Parse the orders JSON data
 orders_json_string = data_copy.get('orders', '{}')
@@ -1455,8 +1452,7 @@ ALWAYS VERIFY THAT THE DATE FORMATS IN DATASETS THAT ARE BEING MERGED ARE ALIGNE
 import json
 from datetime import datetime
 
-with open('test_data.json', 'r') as file:
-    data_copy = json.load(file)
+data_copy = data.copy()
 
 def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
