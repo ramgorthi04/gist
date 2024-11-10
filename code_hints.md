@@ -1668,7 +1668,7 @@ if len(result_keys) > 2:
 ```
 
 
-### Calculate sales dollar and unit lift for each SKU where relevant data exists. Save a CSV of discount results.
+### Calculate sales dollar and unit lift for each SKU where relevant data exists.
 Sales and unit lift should only be calculated when the selling price of a product decreases from one month to the next. If the selling price increases, it implies the discount was removed, and no lift should be calculated.
 ```
 import pandas as pd
