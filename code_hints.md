@@ -1604,7 +1604,7 @@ def merge_data_with_in_stock_and_attributes(data):
     return merged_result
 ```
 
-### Map each SKU in a CSV to its sales dollars, units sold, selling prices, and in stock quantity. Create a result JSON.
+### Map each SKU to its sales dollars, units sold, selling prices, and in stock quantity. Create a result JSON.
 ```
 import pandas as pd
 
@@ -1663,6 +1663,8 @@ result_keys = list(result.keys())
 if len(result_keys) > 2:
     for key in result_keys[:2]:
         del result[key]
+
+# Return just this result
 ```
 
 
