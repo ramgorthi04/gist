@@ -1728,7 +1728,7 @@ avg_units_sold_change_no_price_change = df[
     (df['price_change'] == 0) & (~df['stock_zero'])
 ]['units_sold_change_pct'].mean()
 
-# Adjust units sold change percentage for external factors
+# IMPORTANT: Adjust units sold change percentage for external factors
 df_discount['adjusted_units_sold_change_pct'] = df_discount['units_sold_change_pct'] - avg_units_sold_change_no_price_change
 
 # Output the results
