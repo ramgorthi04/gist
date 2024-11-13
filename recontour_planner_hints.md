@@ -956,3 +956,50 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 }
 
 
+### Get the top 50 SKUs on a downward trajectory
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract monthly sales data by SKU for each of the last three months (July, August, September 2024) from Amazon, including ordered quantity and order dates.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Extract sales data by SKU for the last three months (July, August, September 2024) from Walmart, including ordered quantity and order dates.",
+            "DataNeeded": "walmart.walmart_orders",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Extract sales data by SKU for the last three months (July, August, September 2024) from eBay, including ordered quantity and order dates.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Extract sales data by SKU for the last three months (July, August, September 2024) from Shopify, including ordered quantity and order dates.",
+            "DataNeeded": "shopify.shopify_orders",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "5": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify SKUs with decreasing sales over the last three months (July, August, September 2024).",
+            "DataNeeded": "1, 2, 3, 4",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "6": {
+            "Request": "Identify the top 50 SKUs on a downward trajectory based on the aggregated sales data.",
+            "DataNeeded": "5",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "7": {
+            "Request": "Retrieve the full names of the top 50 SKUs identified as being on a downward trajectory.",
+            "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 6",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        }
+    }
+}
