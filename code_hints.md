@@ -1666,15 +1666,21 @@ if len(result_keys) > 2:
 
 
 ### Calculate sales dollar and unit lift for each SKU where relevant data exists.
-Sales and unit lift should only be calculated when the selling price of a product decreases from one month to the next. If the selling price increases, it implies the discount was removed, and no lift should be calculated.
+There are two times when sales dollar and unit lift should be calculated:
+1. Discount went DOWN, for example: 15% -> 10%
+- discount went DOWN (5% discount was removed)
+- whatever the impact was on sales or units sold needs to be INVERSED to determine sales/unit 'lift'
+- ie, if there was a +5 units sold and a -100 sales dollars, this should be treated as a -5 unit lift and a +100 sales lift
+2. Discount went UP, for example: 10% -> 15%
+- discount went UP (5% discount was added)
+- ie, if there was a +5 units sold and a -100 sales dollars, this should be treated as a +5 unit lift and a -100 sales lift
 ```
 import pandas as pd
 import numpy as np
 import json
 
+# Assuming 'data' is already loaded as per your initial code
 data_copy = data.copy()
-# Load data from the appropriate data key as a JSON
-data = ...
 
 # Flatten the data into a list of records
 records = []
@@ -1712,15 +1718,21 @@ df['units_sold_change_pct'] = (df['units_sold_change'] / df['prev_units_sold']) 
 df['sales_dollars_change'] = df['sales_dollars'] - df['prev_sales_dollars']
 df['sales_dollars_change_pct'] = (df['sales_dollars_change'] / df['prev_sales_dollars']) * 100
 
-# Identify months where a discount was applied (price decreased)
-df['discount_applied'] = df['price_change'] < 0
+# Identify whether the discount went UP or DOWN
+df['discount_went_up'] = df['price_change'] < 0    # Discount increased (price decreased)
+df['discount_went_down'] = df['price_change'] > 0  # Discount decreased (price increased)
 
 # Keep track of months where stock at the end is zero or negative
 df['stock_zero'] = df['stock'] <= 0
 
-# Filter to only rows where a discount was applied (price goes DOWN) and stock was available
-# Use .copy() to avoid unintended side effects where changes to df_discount might also alter df
-df_discount = df[(df['discount_applied']) & (~df['stock_zero'])].copy()
+# Calculate units_sold_lift and sales_dollars_lift based on discount change
+df['units_sold_lift'] = np.where(df['discount_went_down'], -df['units_sold_change'], df['units_sold_change'])
+df['units_sold_lift_pct'] = np.where(df['discount_went_down'], -df['units_sold_change_pct'], df['units_sold_change_pct'])
+df['sales_dollars_lift'] = np.where(df['discount_went_down'], -df['sales_dollars_change'], df['sales_dollars_change'])
+df['sales_dollars_lift_pct'] = np.where(df['discount_went_down'], -df['sales_dollars_change_pct'], df['sales_dollars_change_pct'])
+
+# Filter to only rows where a discount changed and stock was available
+df_discount = df[(df['price_change'] != 0) & (~df['stock_zero'])].copy()
 
 # Adjust for external factors
 # Calculate average units sold change percentage among products without price changes and with stock available
@@ -1728,97 +1740,32 @@ avg_units_sold_change_no_price_change = df[
     (df['price_change'] == 0) & (~df['stock_zero'])
 ]['units_sold_change_pct'].mean()
 
-# IMPORTANT: Adjust units sold change percentage for external factors
-df_discount['adjusted_units_sold_change_pct'] = df_discount['units_sold_change_pct'] - avg_units_sold_change_no_price_change
+# Adjust units_sold_lift_pct for external factors
+df_discount['adjusted_units_sold_lift_pct'] = df_discount['units_sold_lift_pct'] - avg_units_sold_change_no_price_change
 
 # Output the results
 results = df_discount[['SKU', 'Month', 'selling_price', 'prev_selling_price', 'price_change_pct',
-                       'units_sold_change_pct', 'adjusted_units_sold_change_pct', 'sales_dollars_change_pct',
+                       'units_sold_lift_pct', 'adjusted_units_sold_lift_pct', 'sales_dollars_lift_pct',
                        'stock']]
 
 # Convert the results to a JSON file
 results.to_json('discounts_results.json', orient='records', indent=4)
 ```
 
-### Extract insights on sales and unit uplift for each SKU
+### Creating a CSV
 ```
-import pandas as pd
-import numpy as np
-import json
-
-# Make a copy of the data
-data_copy = data.copy()
-
-# Convert data to DataFrame
-df = pd.DataFrame(data_copy)
-
-# Convert 'Month' to datetime format
-df["Month"] = pd.to_datetime(df["Month"])
-
-# Sort data by SKU and Month
-df = df.sort_values(by=["SKU", "Month"])
-
-# Initialize a list to store results for each SKU
-results = []
-
-# Group the data by SKU and perform analysis for each SKU
-for sku, group in df.groupby("SKU"):
-    # Calculate cumulative uplift for sales and units
-    cumulative_sales_lift = group["sales_dollars_lift"].sum()
-    cumulative_units_lift = group["units_sold_lift"].sum()
-
-    # Calculate the average monthly uplift
-    months_count = len(group)
-    average_sales_uplift = cumulative_sales_lift / months_count
-    average_units_uplift = cumulative_units_lift / months_count
-
-    # Convert 'Month' to numerical value (days since the start date) for trend analysis
-    group["Days_Since_Start"] = (group["Month"] - group["Month"].min()).dt.days
-
-    # Calculate necessary sums for the least squares method
-    n = len(group)
-    sum_x = group["Days_Since_Start"].sum()
-    sum_y_sales = group["sales_dollars_lift"].sum()
-    sum_y_units = group["units_sold_lift"].sum()
-    sum_x_squared = (group["Days_Since_Start"] ** 2).sum()
-    sum_xy_sales = (group["Days_Since_Start"] * group["sales_dollars_lift"]).sum()
-    sum_xy_units = (group["Days_Since_Start"] * group["units_sold_lift"]).sum()
-
-    # Calculate the slope (trend) for sales and units
-    sales_trend = (n * sum_xy_sales - sum_x * sum_y_sales) / (n * sum_x_squared - sum_x ** 2) if n > 1 else 0
-    units_trend = (n * sum_xy_units - sum_x * sum_y_units) / (n * sum_x_squared - sum_x ** 2) if n > 1 else 0
-
-    # Append the result for this SKU
-    results.append({
-        "SKU": sku,
-        "Total_Sales_Uplift": cumulative_sales_lift,
-        "Total_Units_Uplift": cumulative_units_lift,
-        "Average_Monthly_Sales_Uplift": average_sales_uplift,
-        "Average_Monthly_Units_Uplift": average_units_uplift,
-        "Sales_Uplift_Trend": sales_trend,
-        "Units_Sold_Uplift_Trend": units_trend
-    })
-
-# Create a DataFrame for the summarized results
-results_df = pd.DataFrame(results)
-
-# Save the summarized results to a CSV file for the user to examine
+# Save the summarized results to a CSV file with an appropriate filename for the user to examine
 output_csv_filename = "query_csv.csv"
 results_df.to_csv(output_csv_filename, index=False)
 
-# Convert the df to a JSON for data storage
-result_json = results_df.to_json(orient='records')
+# You should not save the result as a JSON as it could be VERY large and cause memory overload
 
 # Add the output CSV file path to the result JSON
 # The CSV filepath key MUST BE 'output_csv_filepath' ALWAYS
 result = {
     "output_csv_filepath": output_csv_filename
-    "uplift_results": json.loads(result_json),
 }
-
-# Convert the updated result to JSON format
-result = json.dumps(result, indent=4)
 ```
 
 ### Remove unnecessary data and return only the necessary data
-A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. 
+A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. Alternatively, you can save the full data as a CSV, and in that case you don't need to reduce the data. 
