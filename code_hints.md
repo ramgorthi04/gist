@@ -1661,7 +1661,8 @@ if len(result_keys) > 2:
     for key in result_keys[:2]:
         del result[key]
 
-# Return just this result
+# The 'result' dictionary contains our final result, no need to return it
+result = result
 ```
 
 
