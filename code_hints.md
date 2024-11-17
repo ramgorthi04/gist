@@ -1761,5 +1761,99 @@ result = {
 }
 ```
 
+### Calculate Hypothetical Sales if No Discount Applied for SKU 
+```
+import json
+import pandas as pd
+
+# Copy the input data
+data_copy = data.copy()
+
+# Parse JSON safely
+def parse_json_if_string(value):
+    try:
+        return json.loads(value) if isinstance(value, str) else value
+    except json.JSONDecodeError:
+        return []
+
+# Parse the data from step 3
+step3_data = parse_json_if_string(data_copy.get('3', '[]'))
+
+# Filter and load data into a DataFrame
+results = [
+    {
+        'SKU': entry.get('SKU', ''),
+        'DateRange': entry.get('DateRange', ''),
+        'Discount': entry.get('DiscountPercentage', 0.0),
+        'TotalUnitsSold': entry.get('TotalUnitsSold', 0),
+        'TotalSalesDollars': entry.get('TotalSalesDollars', 0.0)
+    }
+    for entry in step3_data if entry.get('SKU') == 'FMC8013'
+]
+
+# Create DataFrame
+df = pd.DataFrame(results)
+
+# Handle missing data
+df.fillna({'Discount': 0.0, 'TotalUnitsSold': 0, 'TotalSalesDollars': 0.0}, inplace=True)
+
+# Extract and sort by start date
+df['Start Date'] = pd.to_datetime(
+    df['DateRange'].str.split('_to_').str[0], errors='coerce', format='%m_%d_%Y'
+)
+df.sort_values(by='Start Date', inplace=True)
+
+# Add shifted columns
+df['Prev Discount'] = df['Discount'].shift(fill_value=0.0)
+df['Prev Units Sold'] = df['TotalUnitsSold'].shift(fill_value=0)
+df['Prev Sales Dollars'] = df['TotalSalesDollars'].shift(fill_value=0.0)
+
+# Calculate changes
+df['Discount Change'] = df['Discount'] - df['Prev Discount']
+df['Units Sold Change'] = df['TotalUnitsSold'] - df['Prev Units Sold']
+df['Sales Dollars Change'] = df['TotalSalesDollars'] - df['Prev Sales Dollars']
+
+# Calculate percentage changes
+df['Percentage Unit Change'] = (
+    df['Units Sold Change'] / df['Prev Units Sold'].replace(0, pd.NA)
+) * 100
+df['Percentage Sales Change'] = (
+    df['Sales Dollars Change'] / df['Prev Sales Dollars'].replace(0, pd.NA)
+) * 100
+
+# Calculate hypothetical lifts
+df['HypotheticalUnitLift'] = df['Units Sold Change'].where(df['Discount Change'] >= 0, -df['Units Sold Change'])
+df['HypotheticalSalesDollarLift'] = df['Sales Dollars Change'].where(df['Discount Change'] >= 0, -df['Sales Dollars Change'])
+
+# Filter rows with non-zero discount change
+df_lift = df[df['Discount Change'] != 0]
+
+# Aggregated analytics
+total_sales = df['TotalSalesDollars'].sum()
+average_discount = df['Discount'].mean()
+average_lift_units = df['HypotheticalUnitLift'].mean()
+average_lift_sales = df['HypotheticalSalesDollarLift'].mean()
+
+# Group metrics by discount level
+grouped = df.groupby('Discount').agg({
+    'TotalSalesDollars': 'sum',
+    'TotalUnitsSold': 'sum'
+}).reset_index()
+grouped.columns = ['Discount', 'Total Sales Dollars', 'Total Units Sold']
+
+# Prepare the final result
+result = {
+    'Detailed Lift Data': df_lift[['DateRange', 'SKU', 'Discount Change', 'HypotheticalUnitLift', 'HypotheticalSalesDollarLift']].to_dict(orient='records'),
+    'Aggregate Metrics': {
+        'Total Sales': total_sales,
+        'Average Discount': average_discount,
+        'Average Hypothetical Unit Lift': average_lift_units,
+        'Average Hypothetical Sales Dollar Lift': average_lift_sales
+    },
+    'Group Metrics by Discount': grouped.to_dict(orient='records')
+}
+
+```
+
 ### Remove unnecessary data and return only the necessary data
 A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. Alternatively, you can save the full data as a CSV, and in that case you don't need to reduce the data. 
