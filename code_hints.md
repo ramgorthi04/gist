@@ -1856,4 +1856,4 @@ result = {
 ```
 
 ### Remove unnecessary data and return only the necessary data
-A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. Alternatively, you can save the full data as a CSV, and in that case you don't need to reduce the data. 
+A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. 
