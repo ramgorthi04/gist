@@ -1669,89 +1669,81 @@ result = result
 
 ### Calculate sales dollar and unit lift for each SKU where relevant data exists.
 There are two times when sales dollar and unit lift should be calculated:
-1. Discount went DOWN, for example: 15% -> 10%
-- discount went DOWN (5% discount was removed)
-- whatever the impact was on sales or units sold needs to be INVERSED to determine sales/unit 'lift'
-- ie, if there was a +5 units sold and a -100 sales dollars, this should be treated as a -5 unit lift and a +100 sales lift
-2. Discount went UP, for example: 10% -> 15%
-- discount went UP (5% discount was added)
-- ie, if there was a +5 units sold and a -100 sales dollars, this should be treated as a +5 unit lift and a -100 sales lift
+1. Discount went DOWN, for example: 15% -> 10% (5% discount was removed)
+- the impact on sales or units sold needs to be INVERSED to determine sales/unit 'lift'
+- e.g., if there was a +5 units sold and a -100 sales dollars, this should be treated as a -5 unit lift and a +100 sales lift
+2. Discount went UP, for example: 10% -> 15% (5% discount was added)
+- e.g., if there was a +5 units sold and a -100 sales dollars, this should be treated as a +5 unit lift and a -100 sales lift
 ```
-import pandas as pd
-import numpy as np
 import json
+import pandas as pd
 
-# Assuming 'data' is already loaded as per your initial code
+# Copy the input data
 data_copy = data.copy()
 
-# Flatten the data into a list of records
-records = []
-for sku, months in data.items():
-    for month, metrics in months.items():
-        record = {
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Parse the data from step 3
+step3_data = parse_json_if_string(data_copy.get('3', '{}'))
+
+# Initialize a list to store the results
+results = []
+
+# Iterate over each SKU in the data
+for date_range, skus in step3_data.items():
+    for sku, metrics in skus.items():
+        # Extract the necessary metrics
+        discount = metrics.get('Discount', 0.0)
+        total_units_sold = metrics.get('Total Units Sold', 0)
+        total_sales_dollars = metrics.get('Total Sales Dollars', 0.0)
+        
+        # Append the data to the results list
+        results.append({
             'SKU': sku,
-            'Month': month,
-            'sales_dollars': metrics.get('sales_dollars'),
-            'units_sold': metrics.get('units_sold'),
-            'selling_price': metrics.get('selling_price'),
-            'stock': metrics.get('stock')
-        }
-        records.append(record)
+            'Date Range': date_range,
+            'Discount': discount,
+            'Total Units Sold': total_units_sold,
+            'Total Sales Dollars': total_sales_dollars
+        })
 
-# Create a DataFrame
-df = pd.DataFrame(records)
+# Convert the results into a DataFrame
+df = pd.DataFrame(results)
 
-# Convert 'Month' to datetime
-df['Month'] = pd.to_datetime(df['Month'])
+# Function to extract start date from the 'Date Range' string
+def extract_start_date(date_range):
+    start_date_str = date_range.split('_to_')[0]
+    return pd.to_datetime(start_date_str, format='%m_%d_%Y')
 
-# Sort the DataFrame by SKU and Month
-df = df.sort_values(by=['SKU', 'Month']).reset_index(drop=True)
+# Create a 'Start Date' column
+df['Start Date'] = df['Date Range'].apply(extract_start_date)
 
-# Calculate previous month's selling price, units sold, and sales dollars for each SKU
-df['prev_selling_price'] = df.groupby('SKU')['selling_price'].shift(1)
-df['prev_units_sold'] = df.groupby('SKU')['units_sold'].shift(1)
-df['prev_sales_dollars'] = df.groupby('SKU')['sales_dollars'].shift(1)
+# Sort the DataFrame by SKU and Start Date
+# IMPORTANT: when sorting by 'Start Date', make sure the 'Start Date' is a datetime object, otherwise it will sort lexicographically. Use 'extract_start_date()'.
+df = df.sort_values(by=['SKU', 'Start Date']).reset_index(drop=True)
 
-# Calculate month-over-month changes
-df['price_change'] = df['selling_price'] - df['prev_selling_price']
-df['price_change_pct'] = (df['price_change'] / df['prev_selling_price']) * 100
-df['units_sold_change'] = df['units_sold'] - df['prev_units_sold']
-df['units_sold_change_pct'] = (df['units_sold_change'] / df['prev_units_sold']) * 100
-df['sales_dollars_change'] = df['sales_dollars'] - df['prev_sales_dollars']
-df['sales_dollars_change_pct'] = (df['sales_dollars_change'] / df['prev_sales_dollars']) * 100
+# Calculate the previous discount, units sold, and sales dollars for each SKU
+df['Prev Discount'] = df.groupby('SKU')['Discount'].shift(1)
+df['Prev Units Sold'] = df.groupby('SKU')['Total Units Sold'].shift(1)
+df['Prev Sales Dollars'] = df.groupby('SKU')['Total Sales Dollars'].shift(1)
 
-# Identify whether the discount went UP or DOWN
-df['discount_went_up'] = df['price_change'] < 0    # Discount increased (price decreased)
-df['discount_went_down'] = df['price_change'] > 0  # Discount decreased (price increased)
+# Calculate the changes
+df['Discount Change'] = df['Discount'] - df['Prev Discount']
+df['Units Sold Change'] = df['Total Units Sold'] - df['Prev Units Sold']
+df['Sales Dollars Change'] = df['Total Sales Dollars'] - df['Prev Sales Dollars']
 
-# Keep track of months where stock at the end is zero or negative
-df['stock_zero'] = df['stock'] <= 0
+# Calculate the lift based on discount changes
+df['Units Sold Lift'] = df.apply(
+    lambda row: -row['Units Sold Change'] if row['Discount Change'] < 0 else row['Units Sold Change'], axis=1)
+df['Sales Dollars Lift'] = df.apply(
+    lambda row: -row['Sales Dollars Change'] if row['Discount Change'] < 0 else row['Sales Dollars Change'], axis=1)
 
-# Calculate units_sold_lift and sales_dollars_lift based on discount change
-df['units_sold_lift'] = np.where(df['discount_went_down'], -df['units_sold_change'], df['units_sold_change'])
-df['units_sold_lift_pct'] = np.where(df['discount_went_down'], -df['units_sold_change_pct'], df['units_sold_change_pct'])
-df['sales_dollars_lift'] = np.where(df['discount_went_down'], -df['sales_dollars_change'], df['sales_dollars_change'])
-df['sales_dollars_lift_pct'] = np.where(df['discount_went_down'], -df['sales_dollars_change_pct'], df['sales_dollars_change_pct'])
+# Filter out rows where there was no discount change
+df_lift = df[df['Discount Change'] != 0].copy()
 
-# Filter to only rows where a discount changed and stock was available
-df_discount = df[(df['price_change'] != 0) & (~df['stock_zero'])].copy()
-
-# Adjust for external factors
-# Calculate average units sold change percentage among products without price changes and with stock available
-avg_units_sold_change_no_price_change = df[
-    (df['price_change'] == 0) & (~df['stock_zero'])
-]['units_sold_change_pct'].mean()
-
-# Adjust units_sold_lift_pct for external factors
-df_discount['adjusted_units_sold_lift_pct'] = df_discount['units_sold_lift_pct'] - avg_units_sold_change_no_price_change
-
-# Output the results
-results = df_discount[['SKU', 'Month', 'selling_price', 'prev_selling_price', 'price_change_pct',
-                       'units_sold_lift_pct', 'adjusted_units_sold_lift_pct', 'sales_dollars_lift_pct',
-                       'stock']]
-
-# Convert the results to a JSON file
-results.to_json('discounts_results.json', orient='records', indent=4)
+# Prepare the final result
+result = df_lift[['SKU', 'Date Range', 'Discount Change', 'Units Sold Lift', 'Sales Dollars Lift']].to_dict(orient='records')
 ```
 
 ### Creating a CSV
