@@ -1507,7 +1507,8 @@ def merge_data(discount_dict, sales_dict):
                 end_date = datetime.strptime(end_date_str, "%m_%d_%Y")
                 for sales_month_str, sales_value in sales.items():
                     sales_month_date = datetime.strptime(sales_month_str, "%Y-%m")
-                    if start_date <= sales_month_date <= end_date:
+                    sales_end_date = (sales_month_date.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+                    if start_date <= sales_end_date and sales_month_date <= end_date:
                         merged_data.append({
                             'SKU': sku,
                             'Date Range': date_range,
