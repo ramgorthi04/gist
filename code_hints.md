@@ -1855,5 +1855,130 @@ result = {
 
 ```
 
+### Merging Sales, Revenue, Stock and Discount Datasets: 
+```
+import json
+import pandas as pd
+from datetime import datetime
+
+# Copy the data
+data_copy = data.copy()
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Parse the JSON data
+sales_data = parse_json_if_string(data_copy.get('1', '[]'))
+discount_data = parse_json_if_string(data_copy.get('2', '[]'))
+financial_data = parse_json_if_string(data_copy.get('3', '[]'))
+stock_data = parse_json_if_string(data_copy.get('4', '[]'))
+
+# Convert to DataFrames
+sales_df = pd.DataFrame(sales_data)
+discount_df = pd.DataFrame(discount_data)
+financial_df = pd.DataFrame(financial_data)
+stock_df = pd.DataFrame(stock_data)
+
+# Standardize date format in sales data
+sales_df['OrderCreateDate'] = pd.to_datetime(sales_df['OrderCreateDate']).dt.to_period('M')
+
+# Adjust the melt function to exclude non-date columns
+discount_df = discount_df.melt(
+    id_vars=['SKU', 'Category', 'Collection', 'CurrentStatus', 'IsDiscontinued'],
+    var_name='DiscountPeriod',
+    value_name='Discount'
+)
+
+# Filter to only include Discount columns
+discount_df = discount_df[discount_df['DiscountPeriod'].str.startswith('Discount_')]
+
+# Extract StartDate and EndDate
+discount_df[['StartDate', 'EndDate']] = discount_df['DiscountPeriod'].str.extract(
+    r'Discount_(\d+_\d+_\d+)_to_(\d+_\d+_\d+)'
+)
+
+# Drop rows with NaN in StartDate or EndDate
+discount_df = discount_df.dropna(subset=['StartDate', 'EndDate'])
+
+# Convert StartDate and EndDate to datetime
+discount_df['StartDate'] = pd.to_datetime(
+    discount_df['StartDate'], format='%m_%d_%Y', errors='coerce'
+).dt.to_period('M')
+discount_df['EndDate'] = pd.to_datetime(
+    discount_df['EndDate'], format='%m_%d_%Y', errors='coerce'
+).dt.to_period('M')
+
+# Proceed with merging and further processing as before
+# Merge sales and discount data
+merged_df = pd.merge(
+    sales_df, discount_df,
+    left_on='ProductSKU', right_on='SKU',
+    how='left'
+)
+merged_df = merged_df[
+    (merged_df['OrderCreateDate'] >= merged_df['StartDate']) &
+    (merged_df['OrderCreateDate'] <= merged_df['EndDate'])
+]
+
+# Merge with financial data
+financial_df = financial_df.melt(
+    id_vars=['SKU'], var_name='Metric', value_name='Value'
+)
+financial_df[['Metric', 'Year', 'Month']] = financial_df['Metric'].str.extract(
+    r'(\w+)_(\d{4})_(\d{2})'
+)
+financial_df['Date'] = pd.to_datetime(
+    financial_df['Year'] + '-' + financial_df['Month'] + '-01',
+    errors='coerce'
+).dt.to_period('M')
+financial_df = financial_df.pivot_table(
+    index=['SKU', 'Date'], columns='Metric', values='Value', aggfunc='first'
+).reset_index()
+
+merged_df = pd.merge(
+    merged_df, financial_df,
+    left_on=['ProductSKU', 'OrderCreateDate'],
+    right_on=['SKU', 'Date'],
+    how='left'
+)
+
+# Prepare stock data
+stock_df = stock_df.melt(
+    id_vars=['selling_sku'], var_name='StockMonth', value_name='StockStatus'
+)
+# Extract the month and year
+stock_df['Month_Year'] = stock_df['StockMonth'].str.extract(r'in_stock_(\w+_\d{4})')[0]
+# Convert to datetime
+stock_df['Date'] = pd.to_datetime(
+    stock_df['Month_Year'], format='%b_%Y', errors='coerce'
+).dt.to_period('M')
+
+# Merge with stock data
+merged_df = pd.merge(
+    merged_df, stock_df,
+    left_on=['ProductSKU', 'OrderCreateDate'],
+    right_on=['selling_sku', 'Date'],
+    how='left'
+)
+
+# Select and rename columns
+result_df = merged_df[[
+    'ProductSKU', 'Category_x', 'Collection', 'Discount', 'QTY',
+    'Total', 'revenue', 'cost', 'margin', 'StockStatus'
+]]
+result_df.columns = [
+    'SKU', 'Category', 'Collection', 'Discount Percentages', 'QTY Sold',
+    'Total Sales', 'Monthly Revenue', 'Monthly Costs', 'Total Margin',
+    'Stock Status'
+]
+
+# Replace NaN with 0.0
+result_df = result_df.fillna(0.0)
+
+# Convert to JSON
+result = result_df.to_dict(orient='records')
+
+```
+
 ### Remove unnecessary data and return only the necessary data
 A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. 
