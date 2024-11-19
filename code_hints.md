@@ -2062,3 +2062,57 @@ data_copy = data.copy()
 
 result = filter_skus_in_stock(data_copy)
 ```
+
+### For each SKU, calculate optimal discount based on maximizing sales
+```
+import json
+
+# Copy the input data
+data_copy = data.copy()
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Assuming 'result' from previous normalization code is available
+data_copy['4'] = result  # Store the normalized data into data_copy['4']
+
+# Parse the data from key '4'
+sku_data = parse_json_if_string(data_copy.get('4', '[]'))
+
+# Initialize a dictionary to store the results
+result = {}
+
+# Iterate over each SKU in the data
+for sku_entry in sku_data:
+    for sku, periods in sku_entry.items():
+        # Dictionary to store total sales and counts for each discount rate
+        discount_stats = {}
+        
+        # Iterate over each period for the SKU
+        for period, metrics in periods.items():
+            discount_rate = metrics.get('DiscountRate', 0.0)
+            normalized_sales = metrics.get('NormalizedSales', 0.0)
+            
+            # Accumulate sales and count for the discount rate
+            if discount_rate not in discount_stats:
+                discount_stats[discount_rate] = {'total_sales': 0.0, 'count': 0}
+            
+            discount_stats[discount_rate]['total_sales'] += normalized_sales
+            discount_stats[discount_rate]['count'] += 1
+        
+        # Calculate average normalized sales for each discount rate
+        avg_sales = {rate: stats['total_sales'] / stats['count'] for rate, stats in discount_stats.items()}
+        
+        # Find the discount rate with the highest average sales
+        optimal_discount = max(avg_sales, key=avg_sales.get)
+        
+        # Store the optimal discount for the SKU
+        result[sku] = {'OptimalDiscount': optimal_discount}
+
+# Ensure the result is JSON serializable
+result = json.loads(json.dumps(result))
+
+result
+
+```
