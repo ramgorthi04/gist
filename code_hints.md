@@ -1986,3 +1986,68 @@ A good way to reduce data significantly is to only keep the most significant fig
 
 ### Adjust sales data using a seasonality index
 The seasonality index is computed by dividing each month's total sales by average monthly sales for the year. A seasonality index of 0.5 indicates that that month has half as many sales as average. To control for seasonality in discount calculations, each SKU's sales dollars and units sold for a particular month should be multiplied by 1/seasonality_index for that month.
+
+
+### Using stock flag data, filter out SKUs that are out of stock in given months
+```
+import json
+from datetime import datetime
+from calendar import monthrange
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+def parse_date_range(date_range):
+    """Parse DateRange string into a list of months (e.g., ['January_2024', 'February_2024'])."""
+    start_date_str, end_date_str = date_range.split(' to ')
+    start = datetime.strptime(start_date_str, '%m.%d.%Y')
+    end = datetime.strptime(end_date_str, '%m.%d.%Y')
+    months = []
+    while start <= end:
+        months.append(start.strftime('%B_%Y'))
+        # Increment month
+        if start.month == 12:
+            start = start.replace(year=start.year + 1, month=1)
+        else:
+            start = start.replace(month=start.month + 1)
+    return months
+
+def normalize_sku(sku):
+    """Normalize SKU formats to ensure consistent comparison."""
+    return sku.replace('-', '').strip().upper()
+
+def filter_skus_in_stock(data):
+    from datetime import timedelta  # Make sure to import timedelta
+    # Parse the JSON data
+    in_stock_data = parse_json_if_string(data.get('3', '[]'))
+    sales_data = parse_json_if_string(data.get('5', '[]'))
+
+    # Create a map of SKU to in-stock months
+    in_stock_map = {}
+    for item in in_stock_data:
+        sku = normalize_sku(item.get('SKU', ''))
+        in_stock_months = {month for month, in_stock in item.items()
+                           if isinstance(in_stock, int) and in_stock > 0}
+        in_stock_map[sku] = in_stock_months
+
+    # Filter sales data to include only SKUs that were in stock for the full DateRange
+    filtered_sales_data = []
+    for entry in sales_data:
+        date_range = entry.get('DateRange', '')
+        required_months = parse_date_range(date_range)
+        skus = entry.get('SKUs', [])
+        filtered_skus = []
+        for sku_info in skus:
+            sku = normalize_sku(sku_info.get('SKU', ''))
+            if sku in in_stock_map and all(month in in_stock_map[sku] for month in required_months):
+                filtered_skus.append(sku_info)
+        if filtered_skus:
+            filtered_sales_data.append({'DateRange': date_range, 'SKUs': filtered_skus})
+
+    return filtered_sales_data
+
+# 'data' is provided as input
+data_copy = data.copy()
+
+result = filter_skus_in_stock(data_copy)
+```
