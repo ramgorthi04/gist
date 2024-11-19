@@ -1450,7 +1450,7 @@ ALWAYS VERIFY THAT THE DATE FORMATS IN DATASETS THAT ARE BEING MERGED ARE ALIGNE
 
 ```
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 data_copy = data.copy()
 
@@ -1477,52 +1477,60 @@ def extract_discount_data(discount_data):
 def extract_sales_data(sales_data):
     sales_dict = {}
     for item in sales_data:
-        sku = normalize_sku(item.get('SKU'))
-        for key, value in item.items():
-            if 'Extended_Price' in key and value not in [None, '', ' ']:
-                try:
-                    # Extract month and year from the key
-                    month_name = key.split('_')[0]
-                    # Map month name to month number
-                    month_num = datetime.strptime(month_name, '%b').month
-                    # Determine the year (you need to adjust this logic based on your data)
-                    year = 2023 if month_name in ['Aug', 'Sep', 'Oct', 'Nov', 'Dec'] else 2024
-                    month_str = f"{year}-{month_num:02d}"
-                    sales_dict.setdefault(sku, {})[month_str] = float(value)
-                except ValueError:
-                    continue
+        sku = normalize_sku(item.get('ProductSKU'))
+        order_date_str = item.get('OrderCreateDate')
+        try:
+            order_date = datetime.strptime(order_date_str, "%Y-%m-%d %H:%M:%S.%f")
+            order_date_str = order_date.strftime("%Y-%m-%d")
+            qty = int(item.get('QTY', 0))
+            total = float(item.get('Total', 0.0))
+            sales_dict.setdefault(sku, {}).setdefault(order_date_str, {'Sales': 0.0, 'UnitsSold': 0})
+            sales_dict[sku][order_date_str]['Sales'] += total
+            sales_dict[sku][order_date_str]['UnitsSold'] += qty
+        except (ValueError, TypeError):
+            continue
     return sales_dict
 
 def merge_data(discount_dict, sales_dict):
-    merged_data = []
-    for sku, discounts in discount_dict.items():
-        sales = sales_dict.get(sku, {})
-        if not sales:
-            # No sales data for this SKU
-            continue
+    merged_data = {}
+    for sku, sales_dates in sales_dict.items():
+        discounts = discount_dict.get(sku, {})
+        merged_data[sku] = {}
+        # If the SKU has no discount data, assume discount is 0.0
+        if not discounts:
+            discounts = {'No_Discount': 0.0}
         for date_range, discount in discounts.items():
             try:
-                start_date_str, end_date_str = date_range.split('_to_')
-                start_date = datetime.strptime(start_date_str, "%m_%d_%Y")
-                end_date = datetime.strptime(end_date_str, "%m_%d_%Y")
-                for sales_month_str, sales_value in sales.items():
-                    sales_month_date = datetime.strptime(sales_month_str, "%Y-%m")
-                    sales_end_date = (sales_month_date.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
-                    if start_date <= sales_end_date and sales_month_date <= end_date:
-                        merged_data.append({
-                            'SKU': sku,
-                            'Date Range': date_range,
-                            'Discount': discount,
-                            'Sales Month': sales_month_str,
-                            'Sales Value': sales_value
-                        })
+                if date_range == 'No_Discount':
+                    # Set date range to cover all dates
+                    start_date = datetime.min
+                    end_date = datetime.max
+                    range_key = 'All_Dates'
+                else:
+                    start_date_str, end_date_str = date_range.split('_to_')
+                    start_date = datetime.strptime(start_date_str, "%m_%d_%Y")
+                    end_date = datetime.strptime(end_date_str, "%m_%d_%Y")
+                    range_key = f"{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}"
+                total_sales = 0.0
+                total_units = 0
+                for order_date_str, sales_info in sales_dates.items():
+                    order_date = datetime.strptime(order_date_str, "%Y-%m-%d")
+                    if start_date <= order_date <= end_date:
+                        total_sales += sales_info['Sales']
+                        total_units += sales_info['UnitsSold']
+                if total_sales > 0 or total_units > 0:
+                    merged_data[sku][range_key] = {
+                        'DiscountRate': discount,
+                        'Sales': total_sales,
+                        'UnitsSold': total_units
+                    }
             except ValueError:
                 continue
     return merged_data
 
 # Parse the JSON data
-discount_data = parse_json_if_string(data_copy.get('1', '[]'))
-sales_data = parse_json_if_string(data_copy.get('2', '[]'))
+sales_data = parse_json_if_string(data_copy.get('1', '[]'))
+discount_data = parse_json_if_string(data_copy.get('2', '[]'))
 
 # Extract relevant data
 discount_dict = extract_discount_data(discount_data)
@@ -1531,7 +1539,10 @@ sales_dict = extract_sales_data(sales_data)
 # Merge the data
 result = merge_data(discount_dict, sales_dict)
 
-print(result)
+# Ensure the result is JSON serializable
+result = json.loads(json.dumps(result))
+
+result
 ```
 
 ### Merge data with in stock and product attributes data
