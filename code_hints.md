@@ -1982,3 +1982,7 @@ result = result_df.to_dict(orient='records')
 
 ### Remove unnecessary data and return only the necessary data
 A good way to reduce data significantly is to only keep the most significant figures, ie, the top 10 largest and top 10 smallest. Or, you randomly sample the data to reduce it. 
+
+
+### Adjust sales data using a seasonality index
+The seasonality index is computed by dividing each month's total sales by average monthly sales for the year. A seasonality index of 0.5 indicates that that month has half as many sales as average. To control for seasonality in discount calculations, each SKU's sales dollars and units sold for a particular month should be multiplied by 1/seasonality_index for that month.
