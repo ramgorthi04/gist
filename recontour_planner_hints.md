@@ -348,7 +348,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract all sales data by SKU for this month.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -396,7 +396,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract all sales data for SKU 'BC-001' from Walmart over the last year, including ordered quantity and sales revenue.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
@@ -433,7 +433,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Retrieve all sales data for product BKG-003 from Walmart, including gross sales and ordered quantity.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -502,7 +502,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Retrieve all sales data for September 2024 from Walmart, including gross sales and ordered quantity.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -581,14 +581,14 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "3": {
             "Request": "Retrieve all order data for SKU 'BKG-000' from Walmart over the past year, including ordered quantity.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
         "4": {
             "Request": "Retrieve all return data for SKU 'BKG-000' from Walmart over the past year, including return quantity.",
-            "DataNeeded": "walmart.walmart_returns",
+            "DataNeeded": "walmart_operand.walmart_returns",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -643,7 +643,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Retrieve all sales data for 2024 from Walmart, including gross sales and ordered quantity.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -781,7 +781,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -822,7 +822,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Walmart for the year 2024, including ordered quantity and sales revenue.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -871,7 +871,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Retrieve all order data for October 2024 from Walmart, including order date and country.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
             "RequiresQuery": "True"
@@ -918,7 +918,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract all sales data by SKU for the year 2024 from Walmart, including ordered quantity and sales revenue.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
@@ -967,7 +967,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         },
         "2": {
             "Request": "Extract sales data by SKU for the last three months (July, August, September 2024) from Walmart, including ordered quantity and order dates.",
-            "DataNeeded": "walmart.walmart_orders",
+            "DataNeeded": "walmart_operand.walmart_orders",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
