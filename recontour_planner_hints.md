@@ -86,7 +86,7 @@ Product listings from Shopify stores. Key columns:
 
 ---
 
-## walmart.walmart_orders
+## walmart_operand.walmart_orders
 Transactional data from Walmart orders. Key columns:
 
 - **Date**: Order date.
@@ -101,7 +101,7 @@ Transactional data from Walmart orders. Key columns:
 
 ---
 
-## walmart.walmart_customer_reviews
+## walmart_operand.walmart_customer_reviews
 Customer reviews from Walmart. Key columns:
 
 - **Date**: Review date.
@@ -116,7 +116,7 @@ Customer reviews from Walmart. Key columns:
 
 ---
 
-## walmart.walmart_returns
+## walmart_operand.walmart_returns
 Product return data from Walmart. Key columns:
 
 - **return_date**: Return date.
@@ -129,7 +129,7 @@ Product return data from Walmart. Key columns:
 
 ---
 
-## walmart.walmart_inventory
+## walmart_operand.walmart_inventory
 Walmart inventory data over time. Key columns:
 
 - **Date**: Record date.
