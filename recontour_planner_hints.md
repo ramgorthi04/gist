@@ -1029,22 +1029,15 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "RequiresQuery": "True"
         },
         "4": {
-            "Request": "Calculate the average CPC for each channel by dividing PPC Spend by PPC Clicks.",
+            "Request": "Calculate the average CPC and conversion rate for each channel.",
             "DataNeeded": "1, 2, 3",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         },
         "5": {
-            "Request": "Calculate the conversion rate for each channel by dividing PPC Orders by PPC Clicks.",
-            "DataNeeded": "1, 2, 3",
-            "PaginationNeeded": "False",
-            "RequiresCode": "True",
-            "RequiresQuery": "False"
-        },
-        "6": {
             "Request": "Analyze the calculated average CPC and conversion rates to identify optimization opportunities.",
-            "DataNeeded": "4, 5",
+            "DataNeeded": "4",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "False"
