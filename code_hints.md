@@ -2212,3 +2212,50 @@ def calculate_metrics(data):
 result = calculate_metrics(data)
 
 ```
+
+### Aggregate the total sales from each region across all sales channels
+```
+import json
+
+# Function to parse JSON if the input is a string
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+# Copy the data dictionary
+data_copy = data.copy()
+
+# Parse the necessary data from each sales channel
+amazon_data = parse_json_if_string(data_copy.get('1', '[]'))
+walmart_data = parse_json_if_string(data_copy.get('2', '[]'))
+ebay_data = parse_json_if_string(data_copy.get('3', '[]'))
+shopify_data = parse_json_if_string(data_copy.get('4', '[]'))
+etsy_data = parse_json_if_string(data_copy.get('5', '[]'))
+
+# Initialize a dictionary to store total sales by region
+total_sales_by_region = {}
+
+# Function to aggregate sales from a given dataset
+def aggregate_sales(data, sales_key, country_key='country'):
+    for entry in data:
+        try:
+            country = entry.get(country_key, '').strip()
+            sales = entry.get(sales_key, 0.0)
+            if isinstance(sales, (int, float)) and country:
+                if country not in total_sales_by_region:
+                    total_sales_by_region[country] = 0.0
+                total_sales_by_region[country] += sales
+        except (TypeError, ValueError):
+            # Log error or continue safely
+            continue
+
+# Aggregate sales from each dataset
+aggregate_sales(amazon_data, 'gross_sales_including_vat')
+aggregate_sales(walmart_data, 'gross_sales')
+aggregate_sales(ebay_data, 'sales')  # Corrected to include country_key='country'
+aggregate_sales(shopify_data, 'gross_sales')
+aggregate_sales(etsy_data, 'sales')
+
+# Store the result
+result = total_sales_by_region
+
+```
