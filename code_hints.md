@@ -2116,3 +2116,76 @@ result = json.loads(json.dumps(result))
 result
 
 ```
+
+### Calculate average CPC and Conversion Rate
+```
+import json
+
+def parse_json_if_string(value):
+    return json.loads(value) if isinstance(value, str) else value
+
+def safe_float(value):
+    return value if isinstance(value, (int, float)) else 0.0
+
+def safe_int(value):
+    return value if isinstance(value, int) else 0
+
+def calculate_metrics(data):
+    # Parse the JSON data
+    data_copy = data.copy()
+    ppc_data = parse_json_if_string(data_copy.get('1', '[]'))
+    google_ads_data = parse_json_if_string(data_copy.get('2', '[]'))
+    amazon_data = parse_json_if_string(data_copy.get('3', '[]'))
+
+    # Initialize a results dictionary to store metrics by channel
+    results = {
+        "Shopify": {"non-channel": [], "Google Ads": [], "Amazon Ads": []},
+        "Amazon": {"non-channel": [], "Google Ads": [], "Amazon Ads": []}
+    }
+
+    # Helper function to calculate CPC and conversion rate
+    def calculate_cpc_conversion(spend, clicks, conversions):
+        cpc = spend / clicks if clicks > 0 else None
+        conversion_rate = (conversions / clicks) * 100 if clicks > 0 else None
+        return {"CPC": cpc, "Conversion Rate": conversion_rate}
+
+    # Process PPC data
+    for entry in ppc_data:
+        channel = entry.get('channel', 'Unknown')
+        spend = safe_float(entry.get('ppc_spend'))
+        clicks = safe_int(entry.get('ppc_clicks'))
+        conversions = safe_int(entry.get('ppc_orders'))
+
+        metrics = calculate_cpc_conversion(spend, clicks, conversions)
+        results["Shopify"]["non-channel"].append({"channel": channel, **metrics})
+
+    # Process Google Ads data
+    for entry in google_ads_data:
+        channel = entry.get('channel', 'Unknown')
+        spend = safe_float(entry.get('spend'))
+        clicks = safe_int(entry.get('clicks'))
+        conversions = safe_int(entry.get('conversions'))
+
+        metrics = calculate_cpc_conversion(spend, clicks, conversions)
+        results["Shopify"]["Google Ads"].append({"channel": channel, **metrics})
+
+    # Process Amazon data
+    for entry in amazon_data:
+        channel = entry.get('channel', 'Unknown')
+        spend = safe_float(entry.get('ppc_spend'))
+        clicks = safe_int(entry.get('ppc_clicks', 0))  # Default clicks to 0 if missing
+        conversions = safe_int(entry.get('ppc_sales', 0))  # Default conversions to 0 if missing
+
+        metrics = calculate_cpc_conversion(spend, clicks, conversions)
+        results["Amazon"]["Amazon Ads"].append({"channel": channel, **metrics})
+
+    # Sort each category's results by channel
+    for main_channel, subcategories in results.items():
+        for subcategory, metrics_list in subcategories.items():
+            metrics_list.sort(key=lambda x: x['channel'])
+
+    return results
+
+# Assuming 'data' is provided as input
+result = calculate_metrics(data)
+```
