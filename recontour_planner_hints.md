@@ -1003,3 +1003,51 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
         }
     }
 }
+
+### Average CPC and Conversion Rate by Channel
+{
+    "Plan": {
+        "1": {
+            "Request": "Retrieve PPC advertising metrics including PPC Spend, PPC Clicks, and PPC Orders for all channels.",
+            "DataNeeded": "non_channels_ppc.non_channels_ppcmetrics",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "2": {
+            "Request": "Retrieve Google Ads campaign data including Spend, Clicks, and Conversions for all channels.",
+            "DataNeeded": "google_ads.gads_campaign_report",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "3": {
+            "Request": "Retrieve Amazon advertising metrics including PPC Spend, PPC Sales, and PPC Clicks.",
+            "DataNeeded": "amazon_advertising.amz_ads_metrics_per_campaign_type",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "4": {
+            "Request": "Calculate the average CPC for each channel by dividing PPC Spend by PPC Clicks.",
+            "DataNeeded": "1, 2, 3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "5": {
+            "Request": "Calculate the conversion rate for each channel by dividing PPC Orders by PPC Clicks.",
+            "DataNeeded": "1, 2, 3",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False"
+        },
+        "6": {
+            "Request": "Analyze the calculated average CPC and conversion rates to identify optimization opportunities.",
+            "DataNeeded": "4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "False"
+        }
+    }
+}
