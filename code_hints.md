@@ -2125,10 +2125,16 @@ def parse_json_if_string(value):
     return json.loads(value) if isinstance(value, str) else value
 
 def safe_float(value):
-    return value if isinstance(value, (int, float)) else 0.0
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return 0.0
 
 def safe_int(value):
-    return value if isinstance(value, int) else 0
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return 0
 
 def calculate_metrics(data):
     # Parse the JSON data
@@ -2138,10 +2144,7 @@ def calculate_metrics(data):
     amazon_data = parse_json_if_string(data_copy.get('3', '[]'))
 
     # Initialize a dictionary to store aggregated metrics
-    results = {
-        "Shopify": {"non-channel": {}, "Google Ads": {}, "Amazon Ads": {}},
-        "Amazon": {"non-channel": {}, "Google Ads": {}, "Amazon Ads": {}}
-    }
+    results = {}
 
     # Helper function to calculate CPC and conversion rate
     def calculate_cpc_conversion(spend, clicks, conversions):
@@ -2149,67 +2152,56 @@ def calculate_metrics(data):
         conversion_rate = (conversions / clicks) * 100 if clicks > 0 else None
         return cpc, conversion_rate
 
-    # Process PPC data (non-channel for Shopify)
-    for entry in ppc_data:
-        channel = entry.get('channel', 'Unknown')
-        spend = safe_float(entry.get('ppc_spend'))
-        clicks = safe_int(entry.get('ppc_clicks'))
-        conversions = safe_int(entry.get('ppc_orders'))
+    # Define field mappings for each dataset
+    datasets = [
+        {'data': ppc_data, 'spend': 'ppc_spend', 'clicks': 'ppc_clicks', 'conversions': 'ppc_orders'},
+        {'data': google_ads_data, 'spend': 'spend', 'clicks': 'clicks', 'conversions': 'conversions'},
+        {'data': amazon_data, 'spend': 'ppc_spend', 'clicks': 'ppc_clicks', 'conversions': 'ppc_orders'}
+    ]
 
-        if channel not in results["Shopify"]["non-channel"]:
-            results["Shopify"]["non-channel"][channel] = {'total_spend': 0.0, 'total_clicks': 0, 'total_conversions': 0}
+    # Process each dataset
+    for dataset in datasets:
+        data_entries = dataset['data']
+        spend_field = dataset['spend']
+        clicks_field = dataset['clicks']
+        conversions_field = dataset['conversions']
 
-        results["Shopify"]["non-channel"][channel]['total_spend'] += spend
-        results["Shopify"]["non-channel"][channel]['total_clicks'] += clicks
-        results["Shopify"]["non-channel"][channel]['total_conversions'] += conversions
+        for entry in data_entries:
+            # Set default channel names if missing
+            channel = entry.get('channel')
+            if not channel:
+                if dataset is datasets[2]:
+                    channel = 'Amazon'  # For Amazon data
+                else:
+                    channel = 'Unknown'
 
-    # Process Google Ads data
-    for entry in google_ads_data:
-        channel = entry.get('channel', 'Unknown')
-        spend = safe_float(entry.get('spend'))
-        clicks = safe_int(entry.get('clicks'))
-        conversions = safe_int(entry.get('conversions'))
+            spend = safe_float(entry.get(spend_field, 0))
+            clicks = safe_int(entry.get(clicks_field, 0))
+            conversions = safe_int(entry.get(conversions_field, 0))
 
-        if channel not in results["Shopify"]["Google Ads"]:
-            results["Shopify"]["Google Ads"][channel] = {'total_spend': 0.0, 'total_clicks': 0, 'total_conversions': 0}
+            if channel not in results:
+                results[channel] = {'total_spend': 0.0, 'total_clicks': 0, 'total_conversions': 0}
 
-        results["Shopify"]["Google Ads"][channel]['total_spend'] += spend
-        results["Shopify"]["Google Ads"][channel]['total_clicks'] += clicks
-        results["Shopify"]["Google Ads"][channel]['total_conversions'] += conversions
+            results[channel]['total_spend'] += spend
+            results[channel]['total_clicks'] += clicks
+            results[channel]['total_conversions'] += conversions
 
-    # Process Amazon data
-    for entry in amazon_data:
-        channel = entry.get('channel', 'Unknown')
-        spend = safe_float(entry.get('ppc_spend'))
-        clicks = safe_int(entry.get('ppc_clicks', 0))  # Default clicks to 0 if missing
-        conversions = safe_int(entry.get('ppc_sales', 0))  # Default conversions to 0 if missing
-
-        if channel not in results["Amazon"]["Amazon Ads"]:
-            results["Amazon"]["Amazon Ads"][channel] = {'total_spend': 0.0, 'total_clicks': 0, 'total_conversions': 0}
-
-        results["Amazon"]["Amazon Ads"][channel]['total_spend'] += spend
-        results["Amazon"]["Amazon Ads"][channel]['total_clicks'] += clicks
-        results["Amazon"]["Amazon Ads"][channel]['total_conversions'] += conversions
-
-    # Calculate metrics for each category
+    # Calculate metrics for each channel
     final_results = {}
-    for main_channel, subcategories in results.items():
-        final_results[main_channel] = {}
-        for subcategory, channels in subcategories.items():
-            final_results[main_channel][subcategory] = {}
-            for channel, metrics in channels.items():
-                cpc, conversion_rate = calculate_cpc_conversion(
-                    metrics['total_spend'], metrics['total_clicks'], metrics['total_conversions']
-                )
-                final_results[main_channel][subcategory][channel] = {
-                    "Average CPC": cpc,
-                    "Conversion Rate": conversion_rate
-                }
+    for channel, metrics in results.items():
+        cpc, conversion_rate = calculate_cpc_conversion(
+            metrics['total_spend'], metrics['total_clicks'], metrics['total_conversions']
+        )
+        final_results[channel] = {
+            "Average CPC": cpc,
+            "Conversion Rate": conversion_rate
+        }
 
     return final_results
 
 # Assuming 'data' is provided as input
 result = calculate_metrics(data)
+
 
 ```
 
