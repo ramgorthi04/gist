@@ -2152,14 +2152,13 @@ def calculate_metrics(data):
         conversion_rate = (conversions / clicks) * 100 if clicks > 0 else None
         return cpc, conversion_rate
 
-    # Define field mappings for each dataset
+    # Define datasets excluding Amazon data for CPC and conversion rate
     datasets = [
         {'data': ppc_data, 'spend': 'ppc_spend', 'clicks': 'ppc_clicks', 'conversions': 'ppc_orders'},
-        {'data': google_ads_data, 'spend': 'spend', 'clicks': 'clicks', 'conversions': 'conversions'},
-        {'data': amazon_data, 'spend': 'ppc_spend', 'clicks': 'ppc_clicks', 'conversions': 'ppc_orders'}
+        {'data': google_ads_data, 'spend': 'spend', 'clicks': 'clicks', 'conversions': 'conversions'}
     ]
 
-    # Process each dataset
+    # Process datasets for CPC and conversion rate
     for dataset in datasets:
         data_entries = dataset['data']
         spend_field = dataset['spend']
@@ -2167,18 +2166,15 @@ def calculate_metrics(data):
         conversions_field = dataset['conversions']
 
         for entry in data_entries:
-            # Set default channel names if missing
-            channel = entry.get('channel')
-            if not channel:
-                if dataset is datasets[2]:
-                    channel = 'Amazon'  # For Amazon data
-                else:
-                    channel = 'Unknown'
+            # Handle channel field
+            channel = entry.get('channel', 'Unknown')
 
+            # Extract metrics with default values
             spend = safe_float(entry.get(spend_field, 0))
             clicks = safe_int(entry.get(clicks_field, 0))
             conversions = safe_int(entry.get(conversions_field, 0))
 
+            # Aggregate metrics
             if channel not in results:
                 results[channel] = {'total_spend': 0.0, 'total_clicks': 0, 'total_conversions': 0}
 
@@ -2186,8 +2182,22 @@ def calculate_metrics(data):
             results[channel]['total_clicks'] += clicks
             results[channel]['total_conversions'] += conversions
 
+    # Process Amazon data separately for ROAS calculation
+    amazon_spend = 0.0
+    amazon_sales = 0.0
+
+    for entry in amazon_data:
+        channel = entry.get('channel', 'Amazon')
+        spend = safe_float(entry.get('ppc_spend', 0))
+        sales = safe_float(entry.get('ppc_sales', 0))
+
+        amazon_spend += spend
+        amazon_sales += sales
+
     # Calculate metrics for each channel
     final_results = {}
+
+    # Calculate CPC and conversion rate for other channels
     for channel, metrics in results.items():
         cpc, conversion_rate = calculate_cpc_conversion(
             metrics['total_spend'], metrics['total_clicks'], metrics['total_conversions']
@@ -2197,11 +2207,17 @@ def calculate_metrics(data):
             "Conversion Rate": conversion_rate
         }
 
+    # Add Amazon metrics
+    final_results['Amazon'] = {
+        "Total Spend": amazon_spend,
+        "Total Sales": amazon_sales,
+        "ROAS": (amazon_sales / amazon_spend) if amazon_spend > 0 else None
+    }
+
     return final_results
 
 # Assuming 'data' is provided as input
 result = calculate_metrics(data)
-
 
 ```
 
