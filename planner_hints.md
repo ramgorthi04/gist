@@ -1,7 +1,55 @@
-Date last edited: 10/17/2024 at 7:26pm ET
+Date last edited: 11/29/2024 at 7:15pm PT
 Max N is 250.  
 
 # Successful Plans
+
+### Find optimal customers for re-engagement. Find customers most likely to order again. 
+{
+  "Plan": {
+    "1": {
+      "Request": "Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.",
+      "DataNeeded": "orders",
+      "PaginationNeeded": "True",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    },
+    "2": {
+      "Request": "Calculate Customer Lifetime Value (CLV) for each customer using orders data.",
+      "DataNeeded": "orders",
+      "PaginationNeeded": "False",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    },
+    "3": {
+      "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
+      "DataNeeded": "orders",
+      "PaginationNeeded": "False",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    },
+    "4": {
+      "Request": "Calculate the time since the last interaction purchase for each customer.",
+      "DataNeeded": "orders",
+      "PaginationNeeded": "False",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    },
+    "5": {
+      "Request": "Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers who haven't ordered in last N days",
+      "DataNeeded": "1, 2, 3, 4",
+      "PaginationNeeded": "False",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    },
+    "6": {
+      "Request": "Identify and rank the top S customers for re-engagement based on the combined analysis.",
+      "DataNeeded": "5",
+      "PaginationNeeded": "False",
+      "RequiresCode": "True",
+      "RequiresQuery": "False"
+    }
+  }
+}
 
 ### Segment customers based on their preferred shopping time (morning, afternoon, evening) and day of the week.
 {
