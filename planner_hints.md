@@ -1,4 +1,4 @@
-Date last edited: 11/29/2024 at 7:15pm PT
+Date last edited: 11/29/2024 at 9:48pm PT
 Max N is 250.  
 
 ## Successful Plans
