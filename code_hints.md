@@ -1346,7 +1346,8 @@ result = {
 ```
 
 
-### Using orders data, get the next likely order for all customers with SVD
+### Get the next likely order or product recommendations for all customers with SVD
+The following code uses the "orders" JSON from Shopify to generate recommendations for every customer. 
 ```
 import pandas as pd
 import numpy as np
@@ -1401,6 +1402,9 @@ def get_recommendations(email, predicted_ratings, interaction_matrix, n_recommen
     recommendations = user_ratings[user_purchases == 0]
     return recommendations.sort_values(ascending=False).head(n_recommendations).index.tolist()
 
+# Make a copy of data
+data = data.copy()
+
 # Preprocess data using the existing 'data_copy' variable
 df = preprocess_data(data_copy['orders'])
 interaction_matrix = create_interaction_matrix(df)
@@ -1412,6 +1416,8 @@ predicted_ratings = perform_svd(interaction_matrix)
 result = {}
 for email in interaction_matrix.index:
     result[email] = get_recommendations(email, predicted_ratings, interaction_matrix)
+
+# The final result is now stored in `result`
 ```
 
 ### Code to Fix Error: 'datetime.datetime' object has no attribute 'split'
