@@ -229,28 +229,6 @@ Max N is 250.
 }
 ```
 
-### Customers who haven't made a purchase in the last 3 months but were active before that
-```json
-{
-  "Plan": {
-    "1": {
-      "Request": "Identify customers who haven't made a purchase in the last 3 months.",
-      "DataNeeded": "orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs inactive in the last 3 months."
-    },
-    "2": {
-      "Request": "From the step 1 list, filter customers who have multiple past orders.",
-      "DataNeeded": "1, orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs who were previously active."
-    }
-  }
-}
-```
-
 ### Get Customer By Name
 ```json
 {
