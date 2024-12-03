@@ -13,42 +13,49 @@ You need to incorporate RFM, CLV, and time since last purchase to identify custo
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A dataset containing customer IDs and their calculated RFM scores (Recency, Frequency, Monetary values)."
+      "DesiredOutput": "A dataset containing customer emails and their calculated RFM scores (Recency, Frequency, Monetary values)."
     },
     "2": {
       "Request": "Calculate Customer Lifetime Value (CLV) for each customer using orders data.",
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A dataset containing customer IDs and their calculated CLV values."
+      "DesiredOutput": "A dataset containing customer emails and their calculated CLV values."
     },
     "3": {
       "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs identified as having declining purchase frequency over time."
+      "DesiredOutput": "A list of customer emails identified as having declining purchase frequency over time."
     },
     "4": {
       "Request": "Calculate the time since the last purchase for each customer.",
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A dataset containing customer IDs and the number of days since their last purchase."
+      "DesiredOutput": "A dataset containing customer emails and the number of days since their last purchase."
     },
     "5": {
       "Request": "Combine RFM scores, CLV, purchase trends, and time since last purchase to rank customers who haven't ordered in last N days.",
       "DataNeeded": "1, 2, 3, 4",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A ranked list of customer IDs who haven't ordered in the last N days, including their combined analysis scores."
+      "DesiredOutput": "A ranked list of customer emails who haven't ordered in the last N days, including their combined analysis scores."
     },
     "6": {
-      "Request": "Identify and rank the top S customers for re-engagement based on the combined analysis.",
-      "DataNeeded": "5",
+      "Request": "Retrieve first and last names for each customer selected for re-engagement.",
+      "DataNeeded": "5, customers",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A final ranked list of the top S customer IDs suitable for re-engagement."
+      "DesiredOutput": "A mapping of customer emails to their first and last name."
+    }
+    "7": {
+      "Request": "Generate a CSV of customers to re-engage.",
+      "DataNeeded": "5, 6",
+      "RequiresCode": "True",
+      "RequiresQuery": "False",
+      "DesiredOutput": "A ranked CSV of customers to re-engage with columns for first name, last name, email, and combined score."
     }
   }
 }
