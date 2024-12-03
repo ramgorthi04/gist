@@ -1,4 +1,4 @@
-Date last edited: 11/29/2024 at 9:48pm PT
+Date last edited: 12/3/2024 at 5:50pm JST
 Max N is 250.  
 
 ## Successful Plans
@@ -241,7 +241,7 @@ Max N is 250.
       "DesiredOutput": "A list of customer IDs inactive in the last 3 months."
     },
     "2": {
-      "Request": "From the above list, filter customers who have multiple past orders.",
+      "Request": "From the step 1 list, filter customers who have multiple past orders.",
       "DataNeeded": "1, orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
