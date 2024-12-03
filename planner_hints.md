@@ -4,6 +4,7 @@ Max N is 250.
 ## Successful Plans
 
 ### USE THIS PLAN EXACTLY to find optimal customers for re-engagement. Find customers most likely to order again.
+You need to incorporate RFM, CLV, and time since last purchase to identify customers to re-engage. CLV is important so we focus efforts on the customers with the highest revenue potential.
 ```json
 {
   "Plan": {
