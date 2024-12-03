@@ -119,64 +119,6 @@ Max N is 250.
 }
 ```
 
-### Find customers who made a purchase _+ days ago with no new purchase since then who are good fits for re-engagement. Select 10 likely to repurchase and generate a personalized email based on a given template:
-```json
-{
-  "Plan": {
-    "1": {
-      "Request": "Identify customers who haven't made a purchase in the last N days, including their last order date and total number of orders.",
-      "DataNeeded": "orders, customers",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs who haven't ordered in the last N days, with their last order date and total orders."
-    },
-    "2": {
-      "Request": "Select the top 10 customers most likely to repurchase based on past behavior.",
-      "DataNeeded": "1",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of the top 10 customer IDs with high likelihood to repurchase."
-    }
-  }
-}
-```
-
-### Select a cohort of customers that are highly likely to repurchase an item and haven't purchased recently, then sub-segment them into similar users, then personalize an email to each.
-```json
-{
-  "Plan": {
-    "1": {
-      "Request": "Get a list of customers who haven't made a purchase in the last 3 months.",
-      "DataNeeded": "orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs who haven't purchased in the last 3 months."
-    },
-    "2": {
-      "Request": "From the list in step 1, select customers with multiple past orders.",
-      "DataNeeded": "1, orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A refined list of customer IDs with multiple past purchases."
-    },
-    "3": {
-      "Request": "Compile a list of products purchased by each customer in the refined list.",
-      "DataNeeded": "2, orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A mapping of customer IDs to their purchased products."
-    },
-    "4": {
-      "Request": "Sub-segment the customers into groups based on similar purchase histories.",
-      "DataNeeded": "3",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "Segments of customers grouped by similar product interests."
-    }
-  }
-}
-```
-
 ### Identify which customers are most likely to purchase product X
 ```json
 {
