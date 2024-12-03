@@ -3,7 +3,7 @@ Max N is 250.
 
 ## Successful Plans
 
-### Find optimal customers for re-engagement. Find customers most likely to order again.
+### USE THIS PLAN EXACLTY to find optimal customers for re-engagement. Find customers most likely to order again.
 ```json
 {
   "Plan": {
