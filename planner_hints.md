@@ -341,28 +341,6 @@ You need to incorporate RFM, CLV, and time since last purchase to identify custo
 }
 ```
 
-### Create a cohort of customers who have purchased complementary products and might be interested in a new bundle offer.
-```json
-{
-  "Plan": {
-    "1": {
-      "Request": "Identify customers who have purchased complementary products.",
-      "DataNeeded": "orders, prompt",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs who purchased complementary products."
-    },
-    "2": {
-      "Request": "Retrieve detailed information on these customers.",
-      "DataNeeded": "1, customers",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "Customer details for targeted bundle offers."
-    }
-  }
-}
-```
-
 ### Show a chart of the SKU with the highest order volume.
 ```json
 {
