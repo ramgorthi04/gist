@@ -332,10 +332,11 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "AAA_General_Core_Tables.official_sku_database",
             "RequiresCode": "False",
             "RequiresQuery": "True", 
-            "DesiredOutput": ""
+            "DesiredOutput": "product_name"
         }
     }
 }
+
 
 ### Get the top SKU this month
 {
