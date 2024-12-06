@@ -89,11 +89,13 @@ Product listings from Shopify stores. Key columns:
 ## walmart_operand.walmart_orders
 Transactional data from Walmart orders. Key columns:
 
-- **Date**: Order date.
-- **Brand**: Brand performance.
-- **Country**: Market insights.
-- **SKU**: Product identifier.
-- **Gross Sales**: Revenue before refunds.
+- **date**: Order date.
+- **brand**: Brand performance.
+- **country**: Market insights.
+- **official_sku**: Product identifier.
+- **gross_sales**: Revenue before refunds.
+- **customerOrderId**
+- **ordered_quantity**
 
 **Potential Insights**:
 - Analyze sales trends, brand performance, and customer behavior.
@@ -104,11 +106,11 @@ Transactional data from Walmart orders. Key columns:
 ## walmart_operand.walmart_customer_reviews
 Customer reviews from Walmart. Key columns:
 
-- **Date**: Review date.
-- **Brand**: Product brand.
-- **Country**: Market region.
-- **SKU**: Product identifier.
-- **Average_rating**: Review ratings.
+- **date**: Review date.
+- **brand**: Product brand.
+- **country**: Market region.
+- **sku**: Product identifier.
+- **average_rating**: Review ratings.
 
 **Potential Insights**:
 - Assess product popularity and brand performance.
@@ -119,7 +121,8 @@ Customer reviews from Walmart. Key columns:
 ## walmart_operand.walmart_returns
 Product return data from Walmart. Key columns:
 
-- **return_date**: Return date.
+- **return_date**: Return date.\
+- **official_sku** product identifier
 - **brand**: Product brand.
 - **returnreason**: Reason for return.
 
@@ -132,8 +135,8 @@ Product return data from Walmart. Key columns:
 ## walmart_operand.walmart_inventory
 Walmart inventory data over time. Key columns:
 
-- **Date**: Record date.
-- **SKU**: Product identifier.
+- **date**: Record date.
+- **sku**: Product identifier.
 - **input_qty**: Quantity added to inventory.
 - **availtosell_qty**: Available stock.
 
@@ -146,12 +149,12 @@ Walmart inventory data over time. Key columns:
 ## Ebay.ebay_sales
 Sales transactions from eBay stores. Key columns:
 
-- **Date**: Transaction date.
-- **Brand**: Product brand.
-- **official_sku**: Official SKU.
-- **Item Title**: Product name.
-- **Sales**: Revenue generated.
-- **Units**: Number of units sold.
+- **date**: Transaction date.
+- **brand**: Product brand.
+- **Custom_label**: SAME AS OFFICIAL_SKU
+- **Item_title**: Product name.
+- **sales**: Revenue generated.
+- **units**: Number of units sold.
 
 **Potential Insights**:
 - Analyze sales trends and product performance.
@@ -163,7 +166,6 @@ Sales transactions from eBay stores. Key columns:
 Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent information available PER UNIT. 
 
 - **months_year**: The month and year of the data record.
-- **date**: The specific date of the COGS entry.
 - **brand**: The brand associated with the product.
 - **official_sku**: The stock-keeping unit identifier for the product.
 - **country**: The country where the cost data is relevant.
@@ -178,10 +180,12 @@ Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent informati
 ## Etsy.etsy_sales
 Sales records from Etsy. Key columns:
 
-- **Date**: Sale date.
-- **Brand**: Product brand.
-- **Sales**: Revenue.
-- **Quantity**: Units sold.
+- **date**: Sale date.
+- **brand**: Product brand.
+- **country**: Country 
+- **sales**: Revenue.
+- **sku** SKU. 
+- **quantity**: Units sold.
 
 **Potential Insights**:
 - Analyze sales trends, customer behavior, and geographical performance.
@@ -192,10 +196,11 @@ Sales records from Etsy. Key columns:
 ## shopify.shopify_orders
 Transactional data from Shopify orders. Key columns:
 
-- **Process Date**: Order processing date.
-- **Order ID**: Unique order identifier.
-- **Country**: Customer location.
-- **Gross Sales**: Revenue before refunds.
+- **process_date**: Order processing date.
+- **official_sku**: Unique order identifier.
+- **country**: Customer location.
+- **gross_sales**: Revenue before refunds.
+- **promo_amount**: promotion amount 
 
 **Potential Insights**:
 - Track sales, customer preferences, and product performance.
