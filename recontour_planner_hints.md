@@ -247,6 +247,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 - **ppc_orders**: Number of orders resulting from the PPC campaign.
 --- 
 
+
 ## Successful Plans
 ### Get the name of a particular SKU
 {
@@ -256,11 +257,10 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "AAA_General_Core_Tables.official_sku_database",
             "RequiresCode": "False",
             "RequiresQuery": "True", 
-            "DesiredOutput": "product_name"
+            "DesiredOutput": ""
         }
     }
 }
-
 
 ### Get the top SKU this month
 {
@@ -270,82 +270,95 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, gross_sales_not_including_vat, ordered_quantity"
         },
         "2": {
             "Request": "Extract all sales data by SKU for this month.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, gross_sales, ordered_quantity"
         },
         "3": {
             "Request": "Extract all sales data by SKU for this month.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, sales, units"
         },
         "4": {
             "Request": "Extract all sales data by SKU for this month.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, gross_sales, promo_amount"
         },
         "5": {
             "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify the best performing SKU this month.",
             "DataNeeded": "1, 2, 3, 4",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Best performing SKU by sales revenue and units sold"
         },
         "6": {
             "Request": "Retrieve the product name for the best performing SKU identified.",
             "DataNeeded": "AAA_General_Core_Tables.official_sku_database, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "product_name"
         }
     }
 }
+
 
 ### Chart sales for a particular SKU
 **NOTE** You must retrieve sales data from EVERY RELEVANT DATASET that contains orders information. You MUST BE THOROUGH.
 {
     "Plan": {
         "1": {
-            "Request": "Extract all sales data for SKU 'BC-001' from Amazon over the last year, including ordered quantity.",
+            "Request": "Extract all sales data for SKU 'BC-001' from Amazon over the last year, including ordered quantity and sales revenue.",
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
         },
         "2": {
             "Request": "Extract all sales data for SKU 'BC-001' from Walmart over the last year, including ordered quantity and sales revenue.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
         },
         "3": {
             "Request": "Extract all sales data for SKU 'BC-001' from eBay over the last year, including ordered quantity and sales revenue.",
             "DataNeeded": "Ebay.ebay_sales",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
         },
-         "4": {
+        "4": {
             "Request": "Extract all sales data for SKU 'BC-001' from Shopify over the last year, including ordered quantity and sales revenue.",
             "DataNeeded": "shopify.shopify_orders",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, gross_sales, promo_amount"
         },
         "5": {
             "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify for SKU 'BC-001' over the last year and plot sales over time.",
             "DataNeeded": "1, 2, 3, 4",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Chart of sales revenue and ordered quantity over time"
         }
     }
 }
+
 
 ### Profitability for a particular SKU
 {
@@ -355,66 +368,76 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
         },
         "2": {
             "Request": "Retrieve all sales data for product BKG-003 from Walmart, including gross sales and ordered quantity.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
         },
         "3": {
             "Request": "Retrieve all sales data for product BKG-003 from eBay, including sales revenue and units sold.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
         },
         "4": {
             "Request": "Retrieve all sales data for product BKG-003 from Shopify, including gross sales and ordered quantity.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity, gross_sales"
         },
         "5": {
             "Request": "Retrieve all sales data for product BKG-003 from Etsy, including sales revenue and quantity sold.",
             "DataNeeded": "Etsy.etsy_sales",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, sku, quantity, sales"
         },
         "6": {
             "Request": "Retrieve the cost of goods sold (COGS) per unit for product BKG-003.",
             "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "official_sku, cogs"
         },
         "7": {
             "Request": "Calculate the total revenue for product BKG-003 by aggregating sales data from all channels and the total quantity sold.",
             "DataNeeded": "1, 2, 3, 4, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total revenue and total quantity sold for BKG-003"
         },
         "8": {
             "Request": "Calculate the total cost for product BKG-003 by multiplying the COGS per unit by the total quantity sold.",
             "DataNeeded": "6, 7",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total cost for BKG-003"
         },
         "9": {
             "Request": "Calculate the profit for product BKG-003 by subtracting the total cost from the total revenue.",
             "DataNeeded": "7, 8",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Profit for BKG-003"
         }
     }
 }
+
 
 ### Total Profit in a Month 
 {
@@ -424,67 +447,76 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
         },
         "2": {
             "Request": "Retrieve all sales data for September 2024 from Walmart, including gross sales and ordered quantity.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
         },
         "3": {
             "Request": "Retrieve all sales data for September 2024 from eBay, including sales revenue and units sold.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
         },
         "4": {
             "Request": "Retrieve all sales data for September 2024 from Shopify, including gross sales and ordered quantity.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity, gross_sales"
         },
         "5": {
             "Request": "Retrieve all sales data for September 2024 from Etsy, including sales revenue and quantity sold.",
             "DataNeeded": "Etsy.etsy_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, sku, quantity, sales"
         },
         "6": {
             "Request": "Retrieve most recent cost of goods sold (COGS) per unit for all products.",
             "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "official_sku, cogs"
         },
         "7": {
             "Request": "Calculate the total revenue for September 2024 by aggregating sales data from all channels.",
             "DataNeeded": "1, 2, 3, 4, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total revenue for September 2024"
         },
         "8": {
             "Request": "Calculate the total cost for September 2024 by multiplying the COGS per unit by the total quantity sold per SKU.",
             "DataNeeded": "1, 2, 3, 4, 5, 6",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total cost for September 2024"
         },
         "9": {
             "Request": "Calculate the total profit for September 2024 by subtracting the total cost from the total revenue.",
             "DataNeeded": "7, 8",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total profit for September 2024"
         }
-    },
-    "Original user request": "Total profit Septemeber 2024  "
+    }
 }
+
 
 
 ### Return Rate of Particular SKU:
@@ -496,66 +528,76 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity"
         },
         "2": {
             "Request": "Retrieve all return data for SKU 'BKG-000' from Amazon over the past year, including return quantity.",
             "DataNeeded": "amazon_orders.amz_returns_report",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "return_date, official_sku, return_quantity"
         },
         "3": {
             "Request": "Retrieve all order data for SKU 'BKG-000' from Walmart over the past year, including ordered quantity.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity"
         },
         "4": {
             "Request": "Retrieve all return data for SKU 'BKG-000' from Walmart over the past year, including return quantity.",
             "DataNeeded": "walmart_operand.walmart_returns",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "return_date, official_sku, returnreason, return_quantity"
         },
         "5": {
             "Request": "Retrieve all order data for SKU 'BKG-000' from Shopify over the past year, including ordered quantity.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity"
         },
         "6": {
             "Request": "Retrieve all refund data for SKU 'BKG-000' from Shopify over the past year, including refund quantity.",
             "DataNeeded": "shopify.shopify_refunds",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "refund_date, official_sku, amount (representing refunded units)"
         },
         "7": {
             "Request": "Calculate the total ordered quantity for SKU 'BKG-000' from all channels over the past year including cancelled/refunded orders.",
             "DataNeeded": "1, 3, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total ordered quantity for SKU 'BKG-000'"
         },
         "8": {
             "Request": "Calculate the total returned quantity for SKU 'BKG-000' from all channels over the past year.",
             "DataNeeded": "2, 4, 6",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total returned quantity for SKU 'BKG-000'"
         },
         "9": {
             "Request": "Calculate the return rate for SKU 'BKG-000' by dividing the total returned quantity by the total ordered quantity.",
             "DataNeeded": "7, 8",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Return rate for SKU 'BKG-000'"
         }
     }
 }
+
 
 ### Top 10 Most Profitable Products and Any Unprofitable: 
 {
@@ -565,80 +607,92 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
         },
         "2": {
             "Request": "Retrieve all sales data for 2024 from Walmart, including gross sales and ordered quantity.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
         },
         "3": {
             "Request": "Retrieve all sales data for 2024 from eBay, including sales revenue and units sold.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
         },
         "4": {
             "Request": "Retrieve all sales data for 2024 from Shopify, including gross sales and ordered quantity.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity, gross_sales"
         },
         "5": {
             "Request": "Retrieve all sales data for 2024 from Etsy, including sales revenue and quantity sold.",
             "DataNeeded": "Etsy.etsy_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, sku, quantity, sales"
         },
         "6": {
             "Request": "Retrieve the most recent cost of goods sold (COGS) per unit for all products.",
             "DataNeeded": "COGS.cin7_stockvaluation_cogs_output",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "official_sku, cogs"
         },
         "7": {
             "Request": "Calculate the total revenue and quantity sold for each SKU in 2024 by aggregating sales data from all channels.",
             "DataNeeded": "1, 2, 3, 4, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total revenue and total quantity sold per SKU"
         },
         "8": {
             "Request": "Calculate the total cost for each SKU in 2024 by multiplying the COGS per unit by the total quantity sold.",
             "DataNeeded": "6, 7",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Total cost per SKU"
         },
         "9": {
             "Request": "Calculate the profit for each SKU in 2024 by subtracting the total cost from the total revenue.",
             "DataNeeded": "7, 8",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Profit per SKU"
         },
         "10": {
             "Request": "Identify the top 10 most profitable products based on the calculated profits.",
             "DataNeeded": "9",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Top 10 most profitable SKUs with their profits"
         },
         "11": {
             "Request": "Highlight any products that are unprofitable and suggest actions.",
             "DataNeeded": "9",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "List of unprofitable SKUs with suggested actions"
         }
     }
 }
+
 
 ### Calculate the lifetime value (LTV) of our top 100 customers, including their average order value, total number of orders, purchase frequency, and total revenue generated. FYI, the only customer data we have is in Shopify. Present this in a ranked table
 {
@@ -699,42 +753,50 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 {
     "Plan": {
         "1": {
-            "Request": "Extract all sales data for variations of SKU LB-006 for October 2023.",
+            "Request": "Extract all sales data for SKU 'LB-006' from Amazon for October 2023, including ordered quantity and sales revenue.",
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
         "2": {
-            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "Request": "Extract all sales data for SKU 'LB-006' from Walmart for October 2023, including ordered quantity and sales revenue.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
         "3": {
-            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "Request": "Extract all sales data for SKU 'LB-006' from eBay for October 2023, including units sold and sales revenue.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
         "4": {
-            "Request": "Extract all sales data for variations of SKU SKU LB-006 for October 2023.",
+            "Request": "Extract all sales data for SKU 'LB-006' from Shopify for October 2023, including ordered quantity and sales revenue.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "False",
             "RequiresCode": "False",
             "RequiresQuery": "True"
         },
         "5": {
-            "Request": "Aggregate sales data from Amazon, Walmart, eBay, and Shopify to identify the most popular variation of SKU LB-006 in October 2023.",
-            "DataNeeded": "1, 2, 3, 4",
+            "Request": "Extract all sales data for SKU 'LB-006' from Etsy for October 2023, including quantity sold and sales revenue.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "True"
+        },
+        "6": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, Shopify, and Etsy to identify the most popular variation of SKU 'LB-006' in October 2023.",
+            "DataNeeded": "1, 2, 3, 4, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False"
         }
     }
 }
+
 
 ### Chart Product Extensions/Variations for SKU: 
 {
@@ -744,45 +806,52 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "DataNeeded": "amazon_orders.amz_orders_wbr",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
         },
         "2": {
             "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Walmart for the year 2024, including ordered quantity and sales revenue.",
             "DataNeeded": "walmart_operand.walmart_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
         },
         "3": {
             "Request": "Extract all sales data for product extensions of SKU 'LB-006' from eBay for the year 2024, including ordered quantity and sales revenue.",
             "DataNeeded": "Ebay.ebay_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
         },
         "4": {
             "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Shopify for the year 2024, including ordered quantity and sales revenue.",
             "DataNeeded": "shopify.shopify_orders",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity, gross_sales"
         },
         "5": {
             "Request": "Extract all sales data for product extensions of SKU 'LB-006' from Etsy for the year 2024, including ordered quantity and sales revenue.",
             "DataNeeded": "Etsy.etsy_sales",
             "PaginationNeeded": "True",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, sku, quantity, sales"
         },
         "6": {
             "Request": "Aggregate sales data from Amazon, Walmart, eBay, Shopify, and Etsy for product extensions of SKU 'LB-006' and divide by month, then chart over 2024.",
             "DataNeeded": "1, 2, 3, 4, 5",
             "PaginationNeeded": "False",
             "RequiresCode": "True",
-            "RequiresQuery": "False"
+            "RequiresQuery": "False",
+            "DesiredOutput": "Monthly chart of total sales and ordered quantity for all extensions of SKU 'LB-006'"
         }
     }
 }
+
 
 
 ### Group Sales By Reigon/Country: 
