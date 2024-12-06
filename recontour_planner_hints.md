@@ -9,19 +9,11 @@ Data on Amazon orders, covering order dates, locations, channels, products, and 
 - **purchase_date_PST**: Date of purchase in PST for timing analysis.
 - **country**: Geographic insights, supporting regional sales analysis.
 - **channel**: Sales channel for identifying market reach (e.g., Amazon, eBay).
-- **account**: Differentiates orders by Amazon account for account-specific analysis.
 - **brand**: Provides insights into brand performance.
 - **official_sku**: Product tracking through official SKU for detailed inventory and product analysis.
-- **asin**: Amazon Standard Identification Number (ASIN) for tracking individual products.
 - **order_status**: Order status (e.g., Shipped, Delivered) to monitor fulfillment and identify delays.
-- **amazon_order_id**: Unique identifier for each order.
 - **ordered_quantity**: Total quantity of each product ordered, enabling sales volume tracking.
-- **gross_sales_including_vat**: Total sales value including VAT for revenue analysis.
-
-**Potential Insights**:
-- Analyze geographic sales distribution, brand performance, and channel effectiveness.
-- Ensure tax compliance and calculate revenue with and without VAT.
-- Track order statuses for logistics and customer service improvements.
+- **gross_sales_not_including_vat**: Total sales value excluding VAT for revenue analysis.
 
 ---
 
@@ -33,10 +25,6 @@ A product catalog covering various brands, countries, and channels. Key columns:
 - **channel**: Sales channel analysis.
 - **product_name**: Product-level insights.
 - **official_sku**: Track product listings.
-
-**Potential Insights**:
-- Analyze pricing trends and channel performance.
-- Inventory management and market strategy.
 
 ---
 
@@ -64,25 +52,17 @@ Product listings from Etsy, including stock, pricing, and customization options.
 - **price**: Pricing details.
 - **num_favorers**: Popularity metric.
 
-**Potential Insights**:
-- Evaluate product performance and inventory management.
-- Analyze customer preferences and operational efficiency.
-
 ---
 
 ## shopify.shopify_products
 Product listings from Shopify stores. Key columns:
 
-- **Date**: Record date.
-- **Store**: Shopify store.
-- **Brand**: Product brand.
-- **Official SKU**: Product identifier.
-- **Price**: Product pricing.
-- **Inventory Quantity**: Stock levels.
-
-**Potential Insights**:
-- Analyze inventory, pricing, and brand performance.
-- Track product lifecycles and sales trends.
+- **date**: Record date.
+- **store**: Shopify store.
+- **brand**: Product brand.
+- **official_sku**: Product identifier.
+- **price**: Product pricing.
+- **inventory_quantity**: Stock levels.
 
 ---
 
@@ -94,12 +74,8 @@ Transactional data from Walmart orders. Key columns:
 - **country**: Market insights.
 - **official_sku**: Product identifier.
 - **gross_sales**: Revenue before refunds.
-- **customerOrderId**
-- **ordered_quantity**
-
-**Potential Insights**:
-- Analyze sales trends, brand performance, and customer behavior.
-- Optimize fulfillment methods and manage refunds.
+- **customerOrderId** Customer Order ID
+- **ordered_quantity** Number of items ordered
 
 ---
 
@@ -111,10 +87,7 @@ Customer reviews from Walmart. Key columns:
 - **country**: Market region.
 - **sku**: Product identifier.
 - **average_rating**: Review ratings.
-
-**Potential Insights**:
-- Assess product popularity and brand performance.
-- Identify customer satisfaction trends.
+- **number_negat_reviews**: Number of negative reviews.
 
 ---
 
@@ -126,10 +99,6 @@ Product return data from Walmart. Key columns:
 - **brand**: Product brand.
 - **returnreason**: Reason for return.
 
-**Potential Insights**:
-- Identify trends in returns and brand performance.
-- Optimize return processes and customer satisfaction.
-
 ---
 
 ## walmart_operand.walmart_inventory
@@ -139,10 +108,6 @@ Walmart inventory data over time. Key columns:
 - **sku**: Product identifier.
 - **input_qty**: Quantity added to inventory.
 - **availtosell_qty**: Available stock.
-
-**Potential Insights**:
-- Monitor stock levels and sales activity.
-- Forecast demand and optimize supply chain.
 
 ---
 
@@ -155,11 +120,7 @@ Sales transactions from eBay stores. Key columns:
 - **Item_title**: Product name.
 - **sales**: Revenue generated.
 - **units**: Number of units sold.
-
-**Potential Insights**:
-- Analyze sales trends and product performance.
-- Optimize inventory and pricing strategies.
-
+  
 ---
 
 ## COGS.cin7_stockvaluation_cogs_output
@@ -168,13 +129,8 @@ Comprehensive Cost of Goods Sold (COGS) data sorted by the most recent informati
 - **months_year**: The month and year of the data record.
 - **brand**: The brand associated with the product.
 - **official_sku**: The stock-keeping unit identifier for the product.
-- **country**: The country where the cost data is relevant.
+- **Country**: The country where the cost data is relevant.
 - **cogs**: The calculated cost of goods sold for the product.
-
-**Potential Insights**:
-- Track COGS trends over time for recent data.
-- Assess brand-specific cost performance by region.
-- Identify opportunities to reduce costs across supply chains.
 ---
 
 ## Etsy.etsy_sales
@@ -187,10 +143,6 @@ Sales records from Etsy. Key columns:
 - **sku** SKU. 
 - **quantity**: Units sold.
 
-**Potential Insights**:
-- Analyze sales trends, customer behavior, and geographical performance.
-- Optimize inventory and marketing strategies.
-
 ---
 
 ## shopify.shopify_orders
@@ -202,23 +154,15 @@ Transactional data from Shopify orders. Key columns:
 - **gross_sales**: Revenue before refunds.
 - **promo_amount**: promotion amount 
 
-**Potential Insights**:
-- Track sales, customer preferences, and product performance.
-- Optimize order fulfillment and pricing strategies.
-
 ---
 
 ## shopify.shopify_refunds
 Refund transactions from Shopify. Key columns:
 
-- **order_id**: Associated order identifier.
+- **official_sku**: Associated order identifier.
 - **refund_date**: Refund processing date.
 - **brand**: Product brand.
 - **amount**: Refund value.
-
-**Potential Insights**:
-- Analyze refund trends and financial impact.
-- Identify product or service issues causing returns.
 
 ---
 
@@ -226,13 +170,11 @@ Refund transactions from Shopify. Key columns:
 Amazon product returns. Key columns:
 
 - **order_date**: Order date.
+- **official_sku**: product identifier. 
 - **return_date**: Return date.
 - **reason**: Reason for return.
 - **return_quantity**: Quantity returned.
-
-**Potential Insights**:
-- Assess return reasons and product performance.
-- Optimize customer service and logistics.
+- **reason**: reason for return
 
 ---
 
@@ -243,65 +185,48 @@ Weekly Best Seller Rank (BSR) data for Amazon products. Key columns:
 - **brand**: Product brand.
 - **avg_bsr**: Average Best Seller Rank.
 
-**Potential Insights**:
-- Track product performance and seasonal trends.
-- Compare brands and identify market opportunities.
-
 ---
 
 ## shopify.shopify_customers_orders_data
-Customer order data from Shopify. Key columns:
+Customer-specific order data from Shopify. Key columns:
 
 - **month**: Order month.
+- **country** country.
 - **brand**: Product brand.
+- **customer_life** new or old customer.
 - **customer_country**: Customer location.
 - **gross_sales**: Total sales.
 - **customer_name**
-- **verified_email**
-
-**Potential Insights**:
-- Analyze customer behavior and sales trends.
-- Optimize marketing and sales strategies.
-
+- **verified_email** 
 ---
 
 ## amazon_advertising.amz_ads_metrics_per_campaign_type
 This dataset contains advertising metrics for Amazon campaigns, organized by campaign type, brand, and country. Key columns include:
 
-- **Date**: Tracking advertising performance over time.
-- **Campaign Type**: Type of Amazon ad campaign (e.g., Sponsored Products).
-- **Brand**: Brand associated with the campaign.
-- **Country**: Geographic region where the campaign was run.
-- **Channel**: Platform where the campaign was executed.
-- **Official SKU**: Specific product SKU targeted by the campaign.
-- **PPC Spend**: Amount spent on pay-per-click advertising.
-- **PPC Sales**: Revenue generated from pay-per-click ads.
-
-**Potential Insights**:
-- Analyze the effectiveness of ad campaigns across different brands and countries.
-- Correlate ad spend with revenue generation and optimize budget allocation.
-- Identify underperforming campaigns and adjust strategies accordingly.
+- **date**: Tracking advertising performance over time.
+- **campaign_type**: Type of Amazon ad campaign (e.g., Sponsored Products).
+- **brand**: Brand associated with the campaign.
+- **country**: Geographic region where the campaign was run.
+- **channel**: Platform where the campaign was executed.
+- **official_sky**: Specific product SKU targeted by the campaign.
+- **ppc_spend**: Amount spent on pay-per-click advertising.
+- **ppc_sales**: Revenue generated from pay-per-click ads.
 
 ---
 
 ## google_ads.gads_campaign_report
 This dataset reports performance metrics for Google Ads campaigns run through Shopify. Key columns include:
 
-- **Date**: Date of campaign performance.
-- **Brand**: Brand associated with the campaign.
-- **Country**: Geographic region where the ad was shown.
-- **Channel**: Platform the ad was shown on (e.g., Shopify).
-- **Campaign Name**: Name of the Google Ads campaign.
-- **Spend**: Total money spent on the ad campaign.
-- **Conversions Value**: Value generated from conversions.
-- **Clicks**: Number of clicks generated from the ad.
-- **Impressions**: Number of times the ad was viewed.
-- **Conversions**: Number of successful conversions generated by the ad.
-
-**Potential Insights**:
-- Measure campaign success by analyzing spend vs. conversion rates.
-- Optimize Google Ads performance by evaluating click-through rates and conversion values.
-- Identify geographic regions where campaigns are most effective.
+- **date**: Date of campaign performance.
+- **brand**: Brand associated with the campaign.
+- **country**: Geographic region where the ad was shown.
+- **channel**: Platform the ad was shown on (e.g., Shopify).
+- **campaign name**: Name of the Google Ads campaign.
+- **spend**: Total money spent on the ad campaign.
+- **conversions_value**: Value generated from conversions.
+- **clicks**: Number of clicks generated from the ad.
+- **impressions**: Number of times the ad was viewed.
+- **conversions**: Number of successful conversions generated by the ad.
 
 ---
 
@@ -311,21 +236,15 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
 - **Month**: The month of ad performance.
 - **Year_US_Week**: Year and U.S. week number.
 - **US_Week**: Week number in the U.S. calendar.
-- **Brand**: Brand running the PPC campaign.
-- **Country**: Geographic region where the campaign was executed.
-- **Channel**: Platform where the campaign ran (e.g., Shopify).
-- **Campaign Name**: Name of the PPC campaign.
-- **PPC Spend**: Money spent on the PPC campaign.
-- **PPC Sales**: Sales generated from the PPC campaign.
-- **PPC Clicks**: Number of clicks generated from the PPC ad.
-- **PPC Impressions**: Number of times the PPC ad was shown.
-- **PPC Orders**: Number of orders resulting from the PPC campaign.
-
-**Potential Insights**:
-- Compare week-to-week PPC performance for different brands.
-- Correlate PPC spend with sales and identify high-ROI campaigns.
-- Track performance by country and channel to optimize targeting strategies.
-
+- **brand**: Brand running the PPC campaign.
+- **country**: Geographic region where the campaign was executed.
+- **channel**: Platform where the campaign ran (e.g., Shopify).
+- **campaign_name**: Name of the PPC campaign.
+- **ppc_spend**: Money spent on the PPC campaign.
+- **ppc_sales**: Sales generated from the PPC campaign.
+- **ppc_clicks**: Number of clicks generated from the PPC ad.
+- **ppc_impressions**: Number of times the PPC ad was shown.
+- **ppc_orders**: Number of orders resulting from the PPC campaign.
 --- 
 
 ## Successful Plans
