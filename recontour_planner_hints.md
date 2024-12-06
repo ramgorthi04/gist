@@ -28,11 +28,11 @@ Data on Amazon orders, covering order dates, locations, channels, products, and 
 ## AAA_General_Core_Tables.official_sku_database
 A product catalog covering various brands, countries, and channels. Key columns:
 
-- **Brand**: Analyze brand performance.
-- **Country**: Geographic distribution.
-- **Channel**: Sales channel analysis.
-- **Product Name**: Product-level insights.
-- **Official SKU/ASIN**: Track product listings.
+- **brand**: Analyze brand performance.
+- **country**: Geographic distribution.
+- **channel**: Sales channel analysis.
+- **product_name**: Product-level insights.
+- **official_sku**: Track product listings.
 
 **Potential Insights**:
 - Analyze pricing trends and channel performance.
@@ -331,7 +331,8 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "Request": "Get the name associated with the SKU BC-001",
             "DataNeeded": "AAA_General_Core_Tables.official_sku_database",
             "RequiresCode": "False",
-            "RequiresQuery": "True"
+            "RequiresQuery": "True", 
+            "DesiredOutput": ""
         }
     }
 }
