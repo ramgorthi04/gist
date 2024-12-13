@@ -1177,90 +1177,327 @@ result = {
 ### Combine RFM scores, CLV, purchase trends, and time since last interaction to rank customers who haven't ordered in last n days
 ```
 import json
-from collections import defaultdict
 from datetime import datetime, timedelta
+import math
 import numpy as np
+import pandas as pd
 
-# Function to safely parse JSON
 def parse_json_if_string(value):
-    return json.loads(value) if isinstance(value, str) else value
+    try:
+        if isinstance(value, str):
+            return json.loads(value)
+        return value
+    except Exception as e:
+        print("Error parsing JSON:", str(e))
+        return {}
 
-# Create a copy of the input data dictionary
-data_copy = data.copy()
+def min_max_scale(series):
+    try:
+        # Replace NaN with 0.0
+        if isinstance(series, pd.Series):
+            series = series.fillna(0.0)
+        s_min = series.min()
+        s_max = series.max()
+        if s_min == s_max:
+            # All values are the same
+            scaled = pd.Series([1.0]*len(series), index=series.index)
+            return scaled
+        return (series - s_min) / (s_max - s_min)
+    except Exception as e:
+        print("Error in min_max_scale:", str(e))
+        return series
 
-# Safely access data using their respective keys from the data dictionary
-rfm_data = parse_json_if_string(data_copy.get('1', '{}')).get('rfm_scores', {})
-clv_data = parse_json_if_string(data_copy.get('2', '{}')).get('customer_lifetime_value', {})
-declining_data = parse_json_if_string(data_copy.get('3', '[]'))
-time_since_last_purchase_data = parse_json_if_string(data_copy.get('4', '{}')).get('time_since_last_purchase', {})
+def standardize_date(date_str):
+    # Ensure all dates are in YYYY-MM-DD format
+    # date_str could be various formats, try to parse with datetime
+    # If fails, return empty string or a safe default
+    if date_str is None:
+        return ""
+    try:
+        # Try multiple formats if needed
+        # We'll assume incoming are ISO or something parseable by strptime
+        formats = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S", "%Y/%m/%d", "%m/%d/%Y"]
+        d = None
+        for f in formats:
+            try:
+                d = datetime.strptime(date_str, f)
+                break
+            except:
+                pass
+        if d is not None:
+            return d.strftime("%Y-%m-%d")
+        else:
+            return ""
+    except Exception as e:
+        print("Date parsing error:", str(e))
+        return ""
 
-# Parameters
-N = 30  # Number of days to consider for customers who haven't purchased
+def remove_dashes_from_sku(sku):
+    # SKU Normalization: always remove dashes
+    try:
+        if sku is None:
+            return ""
+        if isinstance(sku, str):
+            return sku.replace("-", "")
+        return str(sku).replace("-", "")
+    except Exception as e:
+        print("Error normalizing SKU:", str(e))
+        return ""
 
-# Merge data into a single dictionary
-customers = {}
-for email in rfm_data:
-    time_since_last = time_since_last_purchase_data.get(email)
-    if time_since_last is None:
-        time_since_last = float('inf')
-    else:
+def build_customer_df(data, inactivity_days=30, 
+                      recency_weight=0.3, frequency_weight=0.2, 
+                      monetary_weight=0.3, clv_weight=0.2, trend_weight=0.1):
+    print("Starting build_customer_df")
+    # Copy data
+    data_copy = data.copy()
+    
+    # Parse data
+    # Following guidelines:
+    # orders_data = parse_json_if_string(data_copy.get('1', '[]')) # According to guidelines snippet
+    orders_data = parse_json_if_string(data_copy.get('1', '[]'))
+    customers_data = parse_json_if_string(data_copy.get('customers', '{}'))
+    declining_data = parse_json_if_string(data_copy.get('3', '[]'))
+    
+    # Extract sub-data from customers_data
+    rfm_data = {}
+    clv_data = {}
+    time_since_data = {}
+    try:
+        if isinstance(customers_data, dict):
+            val = customers_data.get('rfm_scores')
+            if isinstance(val, dict):
+                rfm_data = val
+            val = customers_data.get('customer_lifetime_value')
+            if isinstance(val, dict):
+                clv_data = val
+            val = customers_data.get('time_since_last_purchase')
+            if isinstance(val, dict):
+                time_since_data = val
+    except Exception as e:
+        print("Error extracting from customers_data:", str(e))
+    
+    # Build slope dict from declining_data
+    slope_dict = {}
+    try:
+        if isinstance(declining_data, list):
+            for entry in declining_data:
+                if isinstance(entry, dict):
+                    em = entry.get('email')
+                    sl = entry.get('slope')
+                    if em is not None and sl is not None:
+                        slope_dict[em] = float(sl)
+    except Exception as e:
+        print("Error building slope_dict:", str(e))
+    
+    # Build DataFrame from rfm_data
+    # rfm_data structure: {email: {"recency": ..., "frequency": ..., "monetary": ...}, ...}
+    # Use pandas DataFrame
+    # Allowed modules: pandas
+    # We must handle possible missing keys
+    # Construct lists and then DataFrame
+    emails = []
+    recs = []
+    freqs = []
+    mons = []
+    for k in rfm_data:
+        if isinstance(k, str):
+            v = rfm_data.get(k, {})
+            if isinstance(v, dict):
+                emails.append(k)
+                rec = v.get('recency')
+                if rec is None:
+                    rec = 0.0
+                fre = v.get('frequency')
+                if fre is None:
+                    fre = 0.0
+                mon = v.get('monetary')
+                if mon is None:
+                    mon = 0.0
+                # Convert to float safely
+                try:
+                    rec = float(rec)
+                except:
+                    rec = 0.0
+                try:
+                    fre = float(fre)
+                except:
+                    fre = 0.0
+                try:
+                    mon = float(mon)
+                except:
+                    mon = 0.0
+                recs.append(rec)
+                freqs.append(fre)
+                mons.append(mon)
+    df_dict = {}
+    df_dict['email'] = emails
+    df_dict['recency'] = recs
+    df_dict['frequency'] = freqs
+    df_dict['monetary'] = mons
+    df = pd.DataFrame(df_dict)
+    
+    # Add CLV
+    clv_vals = []
+    for i in range(len(df)):
+        em = df['email'].iloc[i]
+        cval = clv_data.get(em, 0.0)
+        if cval is None:
+            cval = 0.0
         try:
-            time_since_last = float(time_since_last)
-        except ValueError:
-            time_since_last = float('inf')
+            cval = float(cval)
+        except:
+            cval = 0.0
+        clv_vals.append(cval)
+    df['clv'] = clv_vals
+    
+    # Add time_since_last_purchase
+    tsl_vals = []
+    for i in range(len(df)):
+        em = df['email'].iloc[i]
+        tval = time_since_data.get(em)
+        if tval is None:
+            tval = float('inf')
+        else:
+            try:
+                tval = float(tval)
+            except:
+                tval = float('inf')
+        tsl_vals.append(tval)
+    df['time_since_last_purchase'] = tsl_vals
+    
+    # Add slope
+    slope_vals = []
+    for i in range(len(df)):
+        em = df['email'].iloc[i]
+        sl = slope_dict.get(em, 0.0)
+        if sl is None:
+            sl = 0.0
+        try:
+            sl = float(sl)
+        except:
+            sl = 0.0
+        slope_vals.append(sl)
+    df['slope'] = slope_vals
+    
+    # Filter inactivity
+    df = df[df['time_since_last_purchase'] >= inactivity_days]
+    if len(df) == 0:
+        print("No customers found after inactivity filter.")
+        return pd.DataFrame()
+    
+    # Handle NaN
+    df = df.fillna(0.0)
+    
+    # Scale features
+    # Lower recency is better, invert after scaling
+    scaled_rec = min_max_scale(df['recency'])
+    try:
+        scaled_rec = 1 - scaled_rec
+    except:
+        scaled_rec = scaled_rec
+    
+    scaled_freq = min_max_scale(df['frequency'])
+    scaled_mon = min_max_scale(df['monetary'])
+    scaled_clv = min_max_scale(df['clv'])
+    scaled_slope = min_max_scale(df['slope'])
+    
+    total_weight = recency_weight + frequency_weight + monetary_weight + clv_weight + trend_weight
+    scores = []
+    for i in range(len(df)):
+        val = (recency_weight * scaled_rec.iloc[i] +
+               frequency_weight * scaled_freq.iloc[i] +
+               monetary_weight * scaled_mon.iloc[i] +
+               clv_weight * scaled_clv.iloc[i] +
+               trend_weight * scaled_slope.iloc[i]) / total_weight
+        scores.append(val)
+    df['total_score'] = scores
+    
+    # Sort by total_score desc
+    df = df.sort_values('total_score', ascending=False)
+    
+    # Assign tiers using quantiles
+    # We have 5 tiers: A(top 20%), B(20-40%), C(40-60%), D(60-80%), E(bottom 20%)
+    # Use pd.qcut
+    # If less than 5 unique values, qcut can fail, handle with try-except
+    try:
+        df['tier'] = pd.qcut(df['total_score'], q=[0,0.2,0.4,0.6,0.8,1.0], labels=['E','D','C','B','A'])
+    except Exception as e:
+        print("Error in qcut:", str(e))
+        # If error, assign everyone to single tier
+        tiers = []
+        for i in range(len(df)):
+            tiers.append('A')
+        df['tier'] = tiers
+    
+    # Get top 500
+    if len(df) > 500:
+        df = df.head(500)
+    
+    # Remove dashes from any SKU fields if present
+    # It's unclear where SKU is stored; if in orders_data or customers_data?
+    # We'll assume df does not have SKU. If SKU in orders_data, we can't join without a key?
+    # Guidelines say always remove dashes from SKU. Let's assume we don't have SKUs in final df.
+    # If needed, we could attempt a column 'sku' if it existed.
+    if 'sku' in df.columns:
+        norm_skus = []
+        for i in range(len(df)):
+            sku_val = df['sku'].iloc[i]
+            sku_val = remove_dashes_from_sku(sku_val)
+            norm_skus.append(sku_val)
+        df['sku'] = norm_skus
+    
+    # Convert all to JSON serializable
+    # Replace NaNs again if any
+    df = df.fillna(0.0)
+    
+    # Ensure no timestamps not JSON serializable
+    # If we had date columns, convert them with standardize_date
+    # No date columns currently in df. If we had, we'd do:
+    # for col in df.columns:
+    #    if col.endswith('date'):
+    #        new_vals = []
+    #        for val in df[col]:
+    #            val_str = str(val)
+    #            val_str = standardize_date(val_str)
+    #            new_vals.append(val_str)
+    #        df[col] = new_vals
+    
+    # Create a final result dictionary
+    # Convert df to a dict of records
+    # Allowed built-ins: dict, list. to_dict() is allowed from pandas.
+    records = df.to_dict(orient='records')
+    
+    # Ensure all values are JSON serializable: convert numpy types
+    final_records = []
+    for r in records:
+        new_r = {}
+        for key in r:
+            val = r[key]
+            if isinstance(val, np.float64) or isinstance(val, np.float32) or isinstance(val, np.int64) or isinstance(val, np.int32):
+                val = float(val)
+            # Convert other numpy types if needed
+            if pd.isna(val):
+                val = 0.0
+            new_r[key] = val
+        final_records.append(new_r)
+    
+    # Store in result
+    result = {"customers": final_records}
+    return result
 
-    customers[email] = {
-        'recency': rfm_data[email]['recency'],
-        'frequency': rfm_data[email]['frequency'],
-        'monetary': rfm_data[email]['monetary'],
-        'clv': clv_data.get(email, 0),
-        'time_since_last_purchase': time_since_last
-    }
-
-# Filter customers who haven't purchased in the last N days
-filtered_customers = {}
-for email, data in customers.items():
-    days_since = data['time_since_last_purchase']
-    if days_since >= N:
-        filtered_customers[email] = data
-
-# Calculate weighted score
-# Normalize RFM scores and CLV
-if filtered_customers:
-    max_recency = max([data['recency'] for data in filtered_customers.values()])
-    max_frequency = max([data['frequency'] for data in filtered_customers.values()])
-    max_monetary = max([data['monetary'] for data in filtered_customers.values()])
-    max_clv = max([data['clv'] for data in filtered_customers.values()])
-else:
-    max_recency = max_frequency = max_monetary = max_clv = 1  # Avoid division by zero
-
-for email, data in filtered_customers.items():
-    # Normalize the scores
-    recency_score = (max_recency - data['recency']) / max_recency  # Higher score for more recent customers
-    frequency_score = data['frequency'] / max_frequency
-    monetary_score = data['monetary'] / max_monetary
-    clv_score = data['clv'] / max_clv
-
-    # Weights (adjust these weights as needed)
-    recency_weight = 0.3
-    frequency_weight = 0.2
-    monetary_weight = 0.3
-    clv_weight = 0.2
-
-    # Calculate weighted score
-    total_score = (
-        recency_weight * recency_score +
-        frequency_weight * frequency_score +
-        monetary_weight * monetary_score +
-        clv_weight * clv_score
-    )
-    filtered_customers[email]['total_score'] = total_score
-
-# Sort customers by total_score
-top_customers = sorted(filtered_customers.items(), key=lambda x: x[1]['total_score'], reverse=True)
-
-# Get the top 500 customers
-result = top_customers[:500]
+# MAIN EXECUTION
+# We must define data externally and call build_customer_df. The environment will provide 'data'.
+# Just call build_customer_df and store in result.
+try:
+    print("Starting main execution")
+    final_result = build_customer_df(data)
+    if not isinstance(final_result, dict):
+        final_result = {}
+    result = final_result
+    print("Processing complete")
+except Exception as e:
+    print("Main execution error:", str(e))
+    result = {}
 ```
 
 ### Calculate profitability of a product given various data sources
