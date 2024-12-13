@@ -1,4 +1,4 @@
-Date last edited: 12/3/2024 at 5:50pm JST
+Date last edited: 12/13/2024 at 5:33pm JST
 Max N is 250.  
 
 ## Successful Plans
@@ -291,14 +291,14 @@ You need to incorporate RFM, CLV, and time since last purchase to identify custo
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs with multiple orders."
+      "DesiredOutput": "A list of customer emails with multiple orders."
     },
     "2": {
       "Request": "Analyze spending patterns to find customers with increasing order amounts.",
       "DataNeeded": "1, orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer IDs showing consistent spending increases."
+      "DesiredOutput": "A list of customer emails showing consistent spending increases."
     }
   }
 }
