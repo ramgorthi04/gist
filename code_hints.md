@@ -1,4 +1,4 @@
-Date last edited: 12/13/2024 at 4:53PM
+Date last edited: 12/13/2024 at 5:03PM
 
 # Successful Code Logics
 
@@ -1236,12 +1236,10 @@ def build_customer_df(data, inactivity_days=90,
     declining_json = parse_json_if_string(data_copy.get('3', '{}'))
     declining_list = []
     if isinstance(declining_json, dict):
-        # might be under 'declining_customers' key
         dec_val = declining_json.get('declining_customers', [])
         if isinstance(dec_val, list):
             declining_list = dec_val
     elif isinstance(declining_json, list):
-        # if directly a list
         declining_list = declining_json
 
     slope_dict = {}
@@ -1322,7 +1320,6 @@ def build_customer_df(data, inactivity_days=90,
         em = df['email'].iloc[i]
         tval = time_since_data.get(em)
         if tval is None:
-            # If not present, assume large number so considered inactive
             tval = float('inf')
         else:
             try:
@@ -1349,7 +1346,6 @@ def build_customer_df(data, inactivity_days=90,
     # Filter by inactivity
     inactive_df = df[df['time_since_last_purchase'] >= inactivity_days]
     if len(inactive_df) == 0:
-        # If no one meets inactivity, just use all customers to avoid empty output
         print("No customers found after inactivity filter, using all customers.")
         inactive_df = df.copy()
 
@@ -1377,26 +1373,30 @@ def build_customer_df(data, inactivity_days=90,
         scores.append(val)
     inactive_df['total_score'] = scores
 
-    # Ensure no NaN
+    # Ensure no inf or NaN
+    inactive_df = inactive_df.replace([np.inf, -np.inf], 0.0)
     inactive_df = inactive_df.fillna(0.0)
 
     # Sort and tier
     inactive_df = inactive_df.sort_values('total_score', ascending=False)
-    # qcut on total_score directly
-    try:
-        # If qcut fails, fallback
-        # Use total_score only (no rank), ensure no NaN or Inf
-        finite_scores = inactive_df['total_score'].replace([np.inf, -np.inf], 0.0)
-        finite_scores = finite_scores.fillna(0.0)
-        # qcut might fail if all scores are identical. Check unique values:
-        if len(finite_scores.unique()) < 2:
-            # All same score, assign everyone to 'A'
-            inactive_df['tier'] = 'A'
-        else:
-            inactive_df['tier'] = pd.qcut(finite_scores, q=[0,0.2,0.4,0.6,0.8,1.0], labels=['E','D','C','B','A'])
-    except Exception as e:
-        print("Error in qcut:", str(e))
+    finite_scores = inactive_df['total_score']
+    finite_scores = finite_scores.fillna(0.0)
+    if len(finite_scores.unique()) < 2:
+        # All same score, assign 'A'
         inactive_df['tier'] = 'A'
+    else:
+        # qcut on finite_scores directly
+        # Convert to a numpy array first to avoid categorical issues
+        arr = finite_scores.values
+        # qcut to create tiers
+        try:
+            tiers = pd.qcut(arr, q=[0,0.2,0.4,0.6,0.8,1.0], labels=['E','D','C','B','A'])
+            # Convert categorical to string
+            tiers = tiers.astype(str)
+            inactive_df['tier'] = tiers
+        except Exception as e:
+            print("Error in qcut:", str(e))
+            inactive_df['tier'] = 'A'
 
     if len(inactive_df) > 500:
         inactive_df = inactive_df.head(500)
@@ -1412,7 +1412,6 @@ def build_customer_df(data, inactivity_days=90,
                 v = float(v)
             if pd.isna(v):
                 v = 0.0
-            # Convert inf to a finite number if any:
             if isinstance(v, float) and (np.isinf(v)):
                 v = 0.0
             new_r[k] = v
