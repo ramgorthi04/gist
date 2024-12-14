@@ -924,6 +924,68 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
     }
 }
 
+### Plot the top 5 product extensions in one chart in 2024
+{
+    "Plan": {
+        "1": {
+            "Request": "Extract all sales data for product extensions from Amazon for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "amazon_orders.amz_orders_wbr",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True",
+            "DesiredOutput": "purchase_date_PST, official_sku, ordered_quantity, gross_sales_not_including_vat"
+        },
+        "2": {
+            "Request": "Extract all sales data for product extensions from Walmart for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "walmart_operand.walmart_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, official_sku, ordered_quantity, gross_sales"
+        },
+        "3": {
+            "Request": "Extract all sales data for product extensions from eBay for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "Ebay.ebay_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, Custom_label, units, sales"
+        },
+        "4": {
+            "Request": "Extract all sales data for product extensions from Shopify for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "shopify.shopify_orders",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True",
+            "DesiredOutput": "process_date, official_sku, ordered_quantity, gross_sales"
+        },
+        "5": {
+            "Request": "Extract all sales data for product extensions from Etsy for the year 2024, including ordered quantity and sales revenue.",
+            "DataNeeded": "Etsy.etsy_sales",
+            "PaginationNeeded": "True",
+            "RequiresCode": "False",
+            "RequiresQuery": "True",
+            "DesiredOutput": "date, sku, quantity, sales"
+        },
+        "6": {
+            "Request": "Aggregate sales data from Amazon, Walmart, eBay, Shopify, and Etsy to identify the top 5 product extensions based on total sales in 2024.",
+            "DataNeeded": "1, 2, 3, 4, 5",
+            "PaginationNeeded": "False",
+            "RequiresCode": "True",
+            "RequiresQuery": "False",
+            "DesiredOutput": "top_5_product_extensions"
+        },
+        "7": {
+            "Request": "Plot the top 5 product extensions in one chart, divided by time and plotted over 2024.",
+            "DataNeeded": "6",
+            "PaginationNeeded": "False",
+            "RequiresCode": "False",
+            "RequiresQuery": "False",
+            "DesiredOutput": "Chart of top 5 product extensions over time in 2024"
+        }
+    }
+}
+
 
 ### Get Top 2 SKUs and Plot Over a Year
 {
