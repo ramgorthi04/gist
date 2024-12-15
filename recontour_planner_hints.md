@@ -973,7 +973,7 @@ This dataset contains pay-per-click (PPC) advertising metrics segmented by week,
             "PaginationNeeded": "False",
             "RequiresCode": "True",
             "RequiresQuery": "False",
-            "DesiredOutput": "top_5_product_extensions"
+            "DesiredOutput": "top_5_product_extensions, month, sales"
         },
         "7": {
             "Request": "Plot the top 5 product extensions in one chart, divided by time and plotted over 2024.",
