@@ -375,6 +375,161 @@ result = total_costs
 
 ```
 
+### Retrieve first and last names for each customer selected for re-engagement.
+```
+import json
+
+data_copy = data.copy()
+
+def parse_json_if_string(value):
+    try:
+        if isinstance(value, str):
+            parsed = json.loads(value)
+            print("Parsed JSON successfully.")
+            return parsed
+        elif isinstance(value, dict):
+            print("Value is already a dictionary.")
+            return value
+        else:
+            print(f"Unexpected type for JSON parsing: {type(value)}")
+            return {}
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
+        return {}
+
+try:
+    # Parse the '4' key to get the list of customer emails for re-engagement
+    ranked_data = parse_json_if_string(data_copy.get('4', '{}'))
+    customers_list = ranked_data.get('customers', [])
+    if not isinstance(customers_list, list):
+        print("Warning: 'customers' in key '4' is not a list.")
+        customers_list = []
+    
+    emails_to_reengage = []
+    for customer in customers_list:
+        email = customer.get('email')
+        if isinstance(email, str):
+            emails_to_reengage.append(email)
+        else:
+            print(f"Invalid or missing email in customer entry: {customer}")
+    
+    print(f"Number of emails to re-engage: {len(emails_to_reengage)}")
+    
+    # Parse the 'customers' key to get customer details
+    customers_data = parse_json_if_string(data_copy.get('customers', '{}'))
+    results = customers_data.get('results', [])
+    if not isinstance(results, list):
+        print("Warning: 'results' in 'customers' is not a list.")
+        results = []
+    
+    email_to_name = {}
+    for cust in results:
+        cust_email = cust.get('email')
+        first_name = cust.get('firstName')
+        last_name = cust.get('lastName')
+        
+        if not isinstance(cust_email, str):
+            print(f"Invalid or missing email in customer data: {cust}")
+            continue
+        
+        if not isinstance(first_name, str):
+            print(f"Missing or invalid firstName for email {cust_email}. Setting as empty string.")
+            first_name = ""
+        
+        if not isinstance(last_name, str):
+            print(f"Missing or invalid lastName for email {cust_email}. Setting as empty string.")
+            last_name = ""
+        
+        email_to_name[cust_email] = {
+            "firstName": first_name,
+            "lastName": last_name
+        }
+    
+    # Create the final mapping of emails to first and last names
+    reengage_mapping = {}
+    for email in emails_to_reengage:
+        names = email_to_name.get(email, {"firstName": "", "lastName": ""})
+        reengage_mapping[email] = names
+    
+    print("Successfully created the re-engagement mapping.")
+    result = reengage_mapping
+
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+    result = {"error": str(e)}
+```
+
+### Calculate Customer Lifetime Value for each customer using orders data
+```
+import json
+import pandas as pd
+from datetime import datetime, timezone
+
+def parse_json_if_string(value):
+    try:
+        if isinstance(value, str):
+            return json.loads(value)
+        else:
+            return value
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
+        return {}
+
+data_copy = data.copy()
+
+try:
+    orders_data = parse_json_if_string(data_copy.get('orders', '{}'))
+    if not isinstance(orders_data, dict):
+        print("Orders data is not a dictionary.")
+        result = {"error": "Invalid orders data format."}
+    else:
+        clv_dict = {}
+        results = orders_data.get('results', [])
+        if not isinstance(results, list):
+            print("Results is not a list.")
+            result = {"error": "Invalid results format."}
+        else:
+            for order in results:
+                if not isinstance(order, dict):
+                    print(f"Order is not a dictionary: {order}")
+                    continue
+                email = order.get('email')
+                total_price_set = order.get('totalPriceSet', {})
+                shop_money = total_price_set.get('shopMoney', {})
+                amount = shop_money.get('amount')
+                
+                if not isinstance(email, str):
+                    print(f"Invalid email format: {email}")
+                    continue
+                if not isinstance(amount, str):
+                    print(f"Invalid amount format for email {email}: {amount}")
+                    continue
+                try:
+                    total = float(amount)
+                except ValueError:
+                    print(f"Cannot convert amount to float for email {email}: {amount}")
+                    continue
+                
+                if email in clv_dict:
+                    clv_dict[email] += total
+                else:
+                    clv_dict[email] = total
+
+        clv_list = []
+        for email, clv in clv_dict.items():
+            clv_list.append({"email": email, "clv": clv})
+        
+        try:
+            df = pd.DataFrame(clv_list)
+            result = df.to_dict(orient='records')
+        except Exception as e:
+            print(f"Error creating DataFrame: {e}")
+            result = {"error": "Failed to create result dataset."}
+
+except Exception as e:
+    print(f"Unexpected error: {e}")
+    result = {"error": str(e)}
+```
 
 ### Calculate Recency, Frequency, and Monetary (RFM) scores for each customer using orders data.
 ```
