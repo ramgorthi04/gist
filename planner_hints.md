@@ -3,8 +3,8 @@ Max N is 250.
 
 ## Successful Plans
 
-### Find customers to re-engage who have not purchased since a particular time. 
-You need to incorporate RFM, CLV, and time since last purchase to identify customers to re-engage. CLV is important so we focus efforts on the customers with the highest revenue potential.
+### Find customers to re-engage who have not purchased in N days. 
+Use this plan, just fill in the number of customers and number of days (N). You need to include all of these steps, including RFM, CLV, and time since last purchase.
 ```json
 {
   "Plan": {
@@ -23,36 +23,29 @@ You need to incorporate RFM, CLV, and time since last purchase to identify custo
       "DesiredOutput": "A dataset containing customer emails and their calculated CLV values."
     },
     "3": {
-      "Request": "Analyze purchase frequency trends to identify customers with declining activity.",
-      "DataNeeded": "orders",
-      "RequiresCode": "True",
-      "RequiresQuery": "False",
-      "DesiredOutput": "A list of customer emails identified as having declining purchase frequency over time."
-    },
-    "4": {
       "Request": "Calculate the time since the last purchase for each customer.",
       "DataNeeded": "orders",
       "RequiresCode": "True",
       "RequiresQuery": "False",
       "DesiredOutput": "A dataset containing customer emails and the number of days since their last purchase."
     },
-    "5": {
+    "4": {
       "Request": "Combine RFM scores, CLV, purchase trends, and time since last purchase to rank customers who haven't ordered in last N days.",
-      "DataNeeded": "1, 2, 3, 4",
+      "DataNeeded": "1, 2, 3",
       "RequiresCode": "True",
       "RequiresQuery": "False",
       "DesiredOutput": "A ranked list of customer emails who haven't ordered in the last N days, including their combined analysis scores."
     },
-    "6": {
+    "5": {
       "Request": "Retrieve first and last names for each customer selected for re-engagement.",
-      "DataNeeded": "5, customers",
+      "DataNeeded": "4, customers",
       "RequiresCode": "True",
       "RequiresQuery": "False",
       "DesiredOutput": "A mapping of customer emails to their first and last name."
     }
-    "7": {
-      "Request": "Generate a CSV of customers to re-engage.",
-      "DataNeeded": "5, 6",
+    "6": {
+      "Request": "Generate a CSV of customers to re-engage using emails, combined scores, and name data.",
+      "DataNeeded": "4, 5",
       "RequiresCode": "True",
       "RequiresQuery": "False",
       "DesiredOutput": "A ranked CSV of customers to re-engage with columns for first name, last name, email, and combined score."
